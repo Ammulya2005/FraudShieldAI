@@ -1,0 +1,8 @@
+Model,Accuracy
+Logistic Regression,80.26
+Decision Tree,100.0
+Random Forest,100.0
+KNN,84.28
+SVM,98.06
+XGBoost,99.98
+Isolation Forest,52.55
