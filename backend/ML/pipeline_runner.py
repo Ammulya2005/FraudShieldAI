@@ -7,7 +7,7 @@ sys.path.append(os.getcwd())
 from backend.ML.preprocessing.data_load import load_data, basic_cleaning
 from backend.ML.preprocessing.balance_data import balance_dataset
 from backend.ML.preprocessing.feature_engineering import create_features
-from backend.ML.training.train_XGBoost import train_xgboost_pipeline
+from backend.ML.training.train_xgboost import train_xgboost_pipeline
 from backend.ML.training.train_isolation_forest import train_and_save_isolation_forest
 RAW_DATA_PATH = r"backend\ML\data\raw\creditcard.csv"
 BALANCED_DATA_PATH = r"backend\ML\data\processed\balanced_creditcard_new.csv"
