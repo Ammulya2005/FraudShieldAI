@@ -1,14 +1,20 @@
+#Import necessary libraries and modules
 import os
 import sys
 import joblib
 import pandas as pd
+
 PROJECT_ROOT = os.path.abspath(
     os.path.join(os.path.dirname(__file__), "../../..")
 )
+sys.path.append(os.path.join(PROJECT_ROOT, "backend", "ML"))
 ML_ROOT = os.path.join(PROJECT_ROOT, "backend", "ML")
 sys.path.append(ML_ROOT)
+
 from preprocessing.feature_engineering import create_features
 from inference.risk_scoring import calculate_risk_level
+
+# Define paths for model artifacts
 MODEL_PATH = os.path.join(
     PROJECT_ROOT,
     "backend",
@@ -16,6 +22,7 @@ MODEL_PATH = os.path.join(
     "saved_models",
     "xgboost_model.pkl"
 )
+
 SCALER_PATH = os.path.join(
     PROJECT_ROOT,
     "backend",
@@ -23,6 +30,7 @@ SCALER_PATH = os.path.join(
     "saved_models",
     "scaler.pkl"
 )
+
 FEATURE_COLUMNS_PATH = os.path.join(
     PROJECT_ROOT,
     "backend",
@@ -30,6 +38,7 @@ FEATURE_COLUMNS_PATH = os.path.join(
     "saved_models",
     "feature_columns.pkl"
 )
+
 ENCODER_PATH = os.path.join(
     PROJECT_ROOT,
     "backend",
@@ -37,6 +46,8 @@ ENCODER_PATH = os.path.join(
     "saved_models",
     "label_encoders.pkl"
 )
+
+# Load model artifacts, preprocess input, and make prediction
 def load_artifacts():
     """
     Load trained model, scaler, feature columns, and label encoders.
@@ -49,6 +60,7 @@ def load_artifacts():
     else:
         label_encoders = {}
     return model, scaler, feature_columns, label_encoders
+# Encode categorical input columns using saved LabelEncoders
 def encode_input_data(
     df: pd.DataFrame,
     label_encoders: dict
@@ -69,6 +81,7 @@ def encode_input_data(
             )
             df[col] = encoder.transform(df[col])
     return df
+# Align input DataFrame columns with training feature columns
 def align_columns(
     df: pd.DataFrame,
     feature_columns: list
@@ -83,6 +96,7 @@ def align_columns(
             df[col] = 0
     df = df[feature_columns]
     return df
+# Main function to predict fraud for a single transaction
 def predict_single_transaction(transaction: dict) -> dict:
     """
     Predict fraud for a single transaction.

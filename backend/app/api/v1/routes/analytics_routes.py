@@ -1,58 +1,101 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 
-from backend.database.transaction_repository import get_recent_transactions
-from backend.database.alert_repository import get_recent_alerts
+from backend.database.connection import get_database
 
 router = APIRouter(prefix="/analytics", tags=["Analytics"])
-
-
-@router.get("/fraud-trends")
-async def fraud_trends():
-    return {"message": "Fraud trends endpoint ready"}
-
-
-@router.get("/transaction-volume")
-async def transaction_volume():
-    transactions = await get_recent_transactions(1000)
-    return {"transaction_volume": len(transactions)}
-
-
-@router.get("/merchant-risk")
-async def merchant_risk():
-    return {"message": "Merchant risk endpoint ready"}
-
-
-@router.get("/location-risk")
-async def location_risk():
-    return {"message": "Location risk endpoint ready"}
-
-
-@router.get("/device-risk")
-async def device_risk():
-    return {"message": "Device risk endpoint ready"}
-
-
-@router.get("/hourly-fraud-rate")
-async def hourly_fraud_rate():
-    return {"message": "Hourly fraud rate endpoint ready"}
+db = get_database()
 
 
 @router.get("/monthly-summary")
 async def monthly_summary():
-    transactions = await get_recent_transactions(1000)
-    alerts = await get_recent_alerts(1000)
+    try:
+        total_transactions = await db["transactions"].count_documents({})
+        total_alerts = await db["fraud_alerts"].count_documents({})
 
-    total_transactions = len(transactions)
-    total_alerts = len(alerts)
+        fraud_rate = (
+            round((total_alerts / total_transactions) * 100, 2)
+            if total_transactions > 0
+            else 0
+        )
 
-    fraud_rate = (
-        round((total_alerts / total_transactions) * 100, 2)
-        if total_transactions > 0
-        else 0
-    )
+        return {
+            "total_transactions": total_transactions,
+            "total_fraud_alerts": total_alerts,
+            "fraud_rate": fraud_rate
+        }
 
-    return {
-        "total_transactions": total_transactions,
-        "total_fraud_alerts": total_alerts,
-        "fraud_rate": fraud_rate
-    }
+    except Exception as error:
+        raise HTTPException(status_code=500, detail=str(error))
+
+
+@router.get("/transaction-volume")
+async def transaction_volume():
+    try:
+        count = await db["transactions"].count_documents({})
+        return {"transaction_volume": count}
+
+    except Exception as error:
+        raise HTTPException(status_code=500, detail=str(error))
+
+
+@router.get("/merchant-risk")
+async def merchant_risk():
+    try:
+        pipeline = [
+            {
+                "$group": {
+                    "_id": "$transaction.Merchant_Category",
+                    "total": {"$sum": 1}
+                }
+            },
+            {"$sort": {"total": -1}}
+        ]
+
+        result = await db["transactions"].aggregate(pipeline).to_list(length=20)
+
+        return result
+
+    except Exception as error:
+        raise HTTPException(status_code=500, detail=str(error))
+
+
+@router.get("/location-risk")
+async def location_risk():
+    try:
+        pipeline = [
+            {
+                "$group": {
+                    "_id": "$transaction.Location",
+                    "total": {"$sum": 1}
+                }
+            },
+            {"$sort": {"total": -1}}
+        ]
+
+        result = await db["transactions"].aggregate(pipeline).to_list(length=20)
+
+        return result
+
+    except Exception as error:
+        raise HTTPException(status_code=500, detail=str(error))
+
+
+@router.get("/device-risk")
+async def device_risk():
+    try:
+        pipeline = [
+            {
+                "$group": {
+                    "_id": "$transaction.Device_Type",
+                    "total": {"$sum": 1}
+                }
+            },
+            {"$sort": {"total": -1}}
+        ]
+
+        result = await db["transactions"].aggregate(pipeline).to_list(length=20)
+
+        return result
+
+    except Exception as error:
+        raise HTTPException(status_code=500, detail=str(error))

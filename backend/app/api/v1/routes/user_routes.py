@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
 
-from backend.app.schemas.user_schema import UserCreate, UserUpdate
+from backend.app.schemas.user_schema import UserRegister, UserUpdate
 from backend.app.core.security import (
     hash_password,
     require_roles
@@ -46,7 +46,7 @@ async def fetch_user(
 
 @router.post("/")
 async def add_user(
-    user: UserCreate,
+    user: UserRegister,
     current_user: dict = Depends(
         require_roles(["Admin", "Super Admin"])
     )

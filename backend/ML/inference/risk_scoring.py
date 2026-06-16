@@ -1,3 +1,4 @@
+# Risk scoring logic to convert fraud probability into business risk levels.
 def calculate_risk_level(fraud_probability: float) -> str:
     """
     Convert fraud probability into business risk level.

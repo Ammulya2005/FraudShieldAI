@@ -1,13 +1,12 @@
 from typing import Optional
-
 from pydantic import BaseModel, EmailStr
 
 
-class UserCreate(BaseModel):
+class UserRegister(BaseModel):
     name: str
     email: EmailStr
     password: str
-    role: str = "Analyst"
+    confirm_password: str
 
 
 class UserLogin(BaseModel):

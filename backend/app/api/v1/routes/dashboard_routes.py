@@ -1,54 +1,69 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 
-from backend.database.transaction_repository import get_recent_transactions
-from backend.database.alert_repository import get_recent_alerts
+from backend.database.connection import get_database
+from backend.app.utils.serializers import serialize_documents
 
 router = APIRouter(prefix="/dashboard", tags=["Dashboard"])
+db = get_database()
 
 
 @router.get("/summary")
 async def dashboard_summary():
-    transactions = await get_recent_transactions(1000)
-    alerts = await get_recent_alerts(1000)
+    try:
+        total_transactions = await db["transactions"].count_documents({})
+        total_alerts = await db["fraud_alerts"].count_documents({})
 
-    return {
-        "total_transactions": len(transactions),
-        "total_fraud_alerts": len(alerts),
-        "system_status": "running"
-    }
+        fraud_rate = (
+            round((total_alerts / total_transactions) * 100, 2)
+            if total_transactions > 0
+            else 0
+        )
+
+        return {
+            "total_transactions": total_transactions,
+            "total_fraud_alerts": total_alerts,
+            "fraud_rate": fraud_rate,
+            "system_status": "running"
+        }
+
+    except Exception as error:
+        raise HTTPException(status_code=500, detail=str(error))
 
 
 @router.get("/live-transactions")
 async def live_transactions():
-    return await get_recent_transactions(20)
+    try:
+        cursor = db["transactions"].find().sort("created_at", -1).limit(20)
+        records = await cursor.to_list(length=20)
+
+        return serialize_documents(records)
+
+    except Exception as error:
+        raise HTTPException(status_code=500, detail=str(error))
 
 
 @router.get("/fraud-stats")
 async def fraud_stats():
-    transactions = await get_recent_transactions(1000)
-    alerts = await get_recent_alerts(1000)
+    try:
+        fraud_count = await db["fraud_alerts"].count_documents({})
+        genuine_count = await db["transactions"].count_documents({}) - fraud_count
 
-    return {
-        "total_transactions": len(transactions),
-        "fraud_alerts": len(alerts)
-    }
+        return {
+            "fraud_transactions": fraud_count,
+            "genuine_transactions": genuine_count
+        }
 
-
-@router.get("/risk-distribution")
-async def risk_distribution():
-    return {"message": "Risk distribution endpoint ready"}
+    except Exception as error:
+        raise HTTPException(status_code=500, detail=str(error))
 
 
 @router.get("/recent-alerts")
 async def recent_alerts():
-    return await get_recent_alerts(20)
+    try:
+        cursor = db["fraud_alerts"].find().sort("created_at", -1).limit(10)
+        records = await cursor.to_list(length=10)
 
+        return serialize_documents(records)
 
-@router.get("/top-risk-users")
-async def top_risk_users():
-    return {"message": "Top risk users endpoint ready"}
-
-
-@router.get("/top-risk-locations")
-async def top_risk_locations():
-    return {"message": "Top risk locations endpoint ready"}
+    except Exception as error:
+        raise HTTPException(status_code=500, detail=str(error))
