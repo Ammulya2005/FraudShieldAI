@@ -1,23 +1,15 @@
 from fastapi import APIRouter
 
-router = APIRouter(prefix="/health", tags=["Health"])
+router = APIRouter(prefix="/api/v1/health", tags=["Health"])
 
+@router.get("")
+def health_check():
+    return {"status": "healthy"}
 
-@router.get("/")
-async def health():
-    return {"status": "healthy", "service": "FraudShield AI"}
+@router.get("/readiness")
+def readiness_check():
+    return {"status": "ready"}
 
-
-@router.get("/db")
-async def db_health():
-    return {"database": "connected"}
-
-
-@router.get("/kafka")
-async def kafka_health():
-    return {"kafka": "running"}
-
-
-@router.get("/model")
-async def model_health():
-    return {"model": "loaded"}
+@router.get("/liveness")
+def liveness_check():
+    return {"status": "alive"}

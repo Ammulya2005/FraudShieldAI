@@ -9,3 +9,10 @@ faker
 pymongo
 xgboost
 python-multipart
+motor
+email-validator
+python-jose[cryptography]
+passlib[bcrypt]
+bcrypt
+python-dotenv
+pydantic-settings

@@ -1,124 +1,128 @@
-from fastapi import APIRouter, HTTPException, Depends
+# This file defines the API routes for managing users in the application. It includes endpoints for fetching all users, fetching a user by ID, updating user information, deleting a user, and managing user account status (locking, unlocking, activating, deactivating). Access to these endpoints is restricted based on user roles, ensuring that only authorized users can perform specific actions related to user management.
+from fastapi import (
+    APIRouter,
+    Depends
+)
 
-from backend.app.schemas.user_schema import UserRegister, UserUpdate
-from backend.app.core.security import (
-    hash_password,
+from backend.app.core.rbac import (
     require_roles
 )
-from backend.database.user_repository import (
-    create_user,
-    get_all_users,
-    get_user_by_id,
-    update_user,
-    delete_user,
-    get_user_by_email
+
+from backend.app.schemas.user_management_schema import (
+    UserUpdate
+)
+# from backend.app.schemas.user_schema import (
+from backend.app.services.user_service import (
+    fetch_all_users,
+    fetch_user_by_id,
+    update_existing_user,
+    remove_user,
+    lock_user_account,
+    unlock_user_account,
+    activate_user_account,
+    deactivate_user_account
 )
 
 router = APIRouter(
-    prefix="/users",
-    tags=["Users & RBAC"]
+    prefix="/api/v1/users",
+    tags=["Users"]
 )
 
-
+# Endpoint to fetch all users. Only users with the "admin" or "super_admin" roles can access this endpoint.
 @router.get("/")
-async def fetch_users(
-    current_user: dict = Depends(
-        require_roles(["Admin", "Super Admin"])
+async def get_all_users(
+    current_user=Depends(
+        require_roles(
+            ["admin", "super_admin"]
+        )
     )
 ):
-    return await get_all_users()
+    return await fetch_all_users()
 
-
+# Endpoint to fetch a user by their ID. Only users with the "admin" or "super_admin" roles can access this endpoint.
 @router.get("/{user_id}")
-async def fetch_user(
+async def get_user(
     user_id: str,
-    current_user: dict = Depends(
-        require_roles(["Admin", "Super Admin"])
+    current_user=Depends(
+        require_roles(
+            ["admin", "super_admin"]
+        )
     )
 ):
-    user = await get_user_by_id(user_id)
+    return await fetch_user_by_id(user_id)
 
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-
-    return user
-
-
-@router.post("/")
-async def add_user(
-    user: UserRegister,
-    current_user: dict = Depends(
-        require_roles(["Admin", "Super Admin"])
-    )
-):
-    existing_user = await get_user_by_email(user.email)
-
-    if existing_user:
-        raise HTTPException(status_code=400, detail="Email already exists")
-
-    user_data = user.dict()
-    user_data["password"] = hash_password(user.password)
-
-    return await create_user(user_data)
-
-
+# Endpoint to update user information. Only users with the "admin" or "super_admin" roles can access this endpoint.
 @router.put("/{user_id}")
-async def edit_user(
+async def update_user_route(
     user_id: str,
-    user: UserUpdate,
-    current_user: dict = Depends(
-        require_roles(["Admin", "Super Admin"])
+    request: UserUpdate,
+    current_user=Depends(
+        require_roles(
+            ["admin", "super_admin"]
+        )
     )
 ):
-    updated_user = await update_user(
+    return await update_existing_user(
         user_id,
-        user.dict()
+        request.model_dump(exclude_none=True)
     )
 
-    if not updated_user:
-        raise HTTPException(status_code=404, detail="User not found")
-
-    return updated_user
-
-
+# Endpoint to delete a user. Only users with the "super_admin" role can access this endpoint.
 @router.delete("/{user_id}")
-async def remove_user(
+async def delete_user_route(
     user_id: str,
-    current_user: dict = Depends(
-        require_roles(["Super Admin"])
+    current_user=Depends(
+        require_roles(
+            ["super_admin"]
+        )
     )
 ):
-    deleted = await delete_user(user_id)
+    return await remove_user(user_id)
 
-    if not deleted:
-        raise HTTPException(status_code=404, detail="User not found")
-
-    return {"message": "User deleted successfully"}
-
-
-@router.patch("/{user_id}/status")
-async def change_user_status(
+# Endpoint to lock a user account. Only users with the "admin" or "super_admin" roles can access this endpoint.
+@router.patch("/{user_id}/lock")
+async def lock_user_route(
     user_id: str,
-    is_active: bool,
-    current_user: dict = Depends(
-        require_roles(["Admin", "Super Admin"])
+    current_user=Depends(
+        require_roles(
+            ["admin", "super_admin"]
+        )
     )
 ):
-    return await update_user(
-        user_id,
-        {"is_active": is_active}
-    )
+    return await lock_user_account(user_id)
 
-
-@router.patch("/{user_id}/role")
-async def change_user_role(
+# Endpoint to unlock a user account. Only users with the "admin" or "super_admin" roles can access this endpoint.
+@router.patch("/{user_id}/unlock")
+async def unlock_user_route(
     user_id: str,
-    role: str,
-    current_user: dict = Depends(
-        require_roles(["Super Admin"])
+    current_user=Depends(
+        require_roles(
+            ["admin", "super_admin"]
+        )
     )
 ):
-    return await update_user(
-        user_id,
-        {"role": role}
+    return await unlock_user_account(user_id)
+
+# Endpoint to activate a user account. Only users with the "admin" or "super_admin" roles can access this endpoint.
+@router.patch("/{user_id}/activate")
+async def activate_user_route(
+    user_id: str,
+    current_user=Depends(
+        require_roles(
+            ["admin", "super_admin"]
+        )
     )
+):
+    return await activate_user_account(user_id)
+
+# Endpoint to deactivate a user account. Only users with the "admin" or "super_admin" roles can access this endpoint.
+@router.patch("/{user_id}/deactivate")
+async def deactivate_user_route(
+    user_id: str,
+    current_user=Depends(
+        require_roles(
+            ["admin", "super_admin"]
+        )
+    )
+):
+    return await deactivate_user_account(user_id)

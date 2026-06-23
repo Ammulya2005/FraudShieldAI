@@ -1,5 +1,7 @@
 import pandas as pd
 import numpy as np
+
+#Adding transaction features to the dataset
 def add_transaction_features(df: pd.DataFrame) -> pd.DataFrame:
     """
     Create transaction amount and balance related features.

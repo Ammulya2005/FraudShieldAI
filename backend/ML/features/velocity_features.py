@@ -1,5 +1,6 @@
 import pandas as pd
-
+# This function adds Velocity features
+ 
 def add_velocity_features(df: pd.DataFrame) -> pd.DataFrame:
     """
     Create transaction velocity based features.

@@ -1,4 +1,7 @@
 import pandas as pd
+
+# Adding behavioral features to the dataset
+
 def add_behavioral_features(df: pd.DataFrame) -> pd.DataFrame:
     """
     Create spending behavior related features.

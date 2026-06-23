@@ -1,4 +1,6 @@
 from xgboost import XGBClassifier
+
+#Creating a function to build the XGBoost model for fraud detection
 def build_xgboost_model() -> XGBClassifier:
     """
     Create XGBoost classification model for fraud detection.
@@ -13,6 +15,8 @@ def build_xgboost_model() -> XGBClassifier:
         random_state=42
     )
     return model
+
+# Training and prediction functions for the XGBoost model
 def train_xgboost_model(X_train, y_train):
     """
     Train XGBoost fraud detection model.
@@ -20,12 +24,16 @@ def train_xgboost_model(X_train, y_train):
     model = build_xgboost_model()
     model.fit(X_train, y_train)
     return model
+
+# Predicting functions for the XGBoost model
 def predict_xgboost_model(model, X_test):
     """
     Predict fraud labels using trained XGBoost model.
     """
     predictions = model.predict(X_test)
     return predictions
+
+# Predicting probabilities for the XGBoost model
 def predict_xgboost_probability(model, X_test):
     """
     Predict fraud probability using trained XGBoost model.

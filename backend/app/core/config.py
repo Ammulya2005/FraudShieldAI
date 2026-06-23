@@ -1,44 +1,39 @@
-import os
 from dotenv import load_dotenv
+import os
 
 load_dotenv()
-
+# Load configuration from environment variables
 APP_NAME = os.getenv("APP_NAME")
-APP_VERSION = os.getenv("APP_VERSION")
 
 MONGO_URI = os.getenv("MONGO_URI")
 DATABASE_NAME = os.getenv("DATABASE_NAME")
 
-KAFKA_BOOTSTRAP_SERVERS = os.getenv(
-    "KAFKA_BOOTSTRAP_SERVERS"
-)
+JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
+JWT_REFRESH_SECRET_KEY = os.getenv("JWT_REFRESH_SECRET_KEY")
 
-KAFKA_TOPIC = os.getenv(
-    "KAFKA_TOPIC"
-)
-
-KAFKA_CONSUMER_GROUP = os.getenv(
-    "KAFKA_CONSUMER_GROUP"
-)
-
-PRODUCER_MAX_TRANSACTIONS = int(
-    os.getenv("PRODUCER_MAX_TRANSACTIONS", 20)
-)
-
-CONSUMER_MAX_TRANSACTIONS = int(
-    os.getenv("CONSUMER_MAX_TRANSACTIONS", 20)
-)
-
-PRODUCER_INTERVAL_SECONDS = int(
-    os.getenv("PRODUCER_INTERVAL_SECONDS", 2)
-)
-
-SECRET_KEY = os.getenv("SECRET_KEY")
+JWT_ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
 
 ACCESS_TOKEN_EXPIRE_MINUTES = int(
-    os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 60)
+    os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 30)
 )
 
-ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
+REFRESH_TOKEN_EXPIRE_DAYS = int(
+    os.getenv("REFRESH_TOKEN_EXPIRE_DAYS", 7)
+)
+# Logging configuration
+LOG_DIR = os.getenv("LOG_DIR", "logs")
+LOG_FILE = os.getenv("LOG_FILE", "app.log")
 
-DEBUG = os.getenv("DEBUG", "True").lower() == "true"
+LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
+TRANSACTIONS_COLLECTION = os.getenv("TRANSACTIONS_COLLECTION", "transactions")
+FRAUD_CASES_COLLECTION = os.getenv("FRAUD_CASES_COLLECTION", "fraud_cases")
+ALERTS_COLLECTION = os.getenv("ALERTS_COLLECTION", "alerts")
+AUDIT_LOGS_COLLECTION = os.getenv("AUDIT_LOGS_COLLECTION", "audit_logs")
+MODELS_COLLECTION = os.getenv("MODELS_COLLECTION", "models")
+NOTIFICATIONS_COLLECTION = os.getenv("NOTIFICATIONS_COLLECTION", "notifications")
+PERMISSIONS_COLLECTION = os.getenv("PERMISSIONS_COLLECTION", "permissions")
+SETTINGS_COLLECTION = os.getenv("SETTINGS_COLLECTION", "settings")
+USERS_COLLECTION = "users"
+ROLES_COLLECTION = "roles"
+USER_ROLES_COLLECTION = "user_roles"
+CASE_REVIEWS_COLLECTION = "case_reviews"

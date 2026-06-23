@@ -1,41 +1,28 @@
-from fastapi import APIRouter
+from typing import Any, Dict, Optional
 
-router = APIRouter(
-    prefix="/reports",
-    tags=["Reports"]
-)
+from fastapi import APIRouter, Body, Depends, Query
 
+from backend.app.core.rbac import require_roles
 
-@router.get("/fraud-summary")
-async def fraud_summary_report():
-    return {"message": "Fraud summary report endpoint ready"}
+router = APIRouter(prefix="/api/v1/reports", tags=["Reports"])
 
+@router.post("/generate")
+async def generate_report(
+    request: Dict[str, Any] = Body(...),
+    current_user=Depends(require_roles(["analyst", "fraud_manager", "admin", "super_admin"]))
+):
+    return {"status": "started", "request": request}
 
-@router.get("/transaction-summary")
-async def transaction_summary_report():
-    return {"message": "Transaction summary report endpoint ready"}
+@router.get("")
+async def list_reports(
+    report_type: Optional[str] = Query(None),
+    current_user=Depends(require_roles(["analyst", "fraud_manager", "admin", "super_admin"]))
+):
+    return {"report_type": report_type, "reports": []}
 
-
-@router.get("/high-risk-users")
-async def high_risk_users_report():
-    return {"message": "High-risk users report endpoint ready"}
-
-
-@router.get("/daily")
-async def daily_report():
-    return {"message": "Daily report endpoint ready"}
-
-
-@router.get("/monthly")
-async def monthly_report():
-    return {"message": "Monthly report endpoint ready"}
-
-
-@router.get("/export/csv")
-async def export_csv_report():
-    return {"message": "CSV export endpoint ready"}
-
-
-@router.get("/export/pdf")
-async def export_pdf_report():
-    return {"message": "PDF export endpoint ready"}
+@router.get("/{report_id}")
+async def get_report(
+    report_id: str,
+    current_user=Depends(require_roles(["analyst", "fraud_manager", "admin", "super_admin"]))
+):
+    return {"report_id": report_id, "report": None}

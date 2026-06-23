@@ -1,4 +1,6 @@
 from sklearn.model_selection import cross_val_score
+
+# A function to calculate cross-validation score
 def calculate_validation_score(
     model,
     X_train,

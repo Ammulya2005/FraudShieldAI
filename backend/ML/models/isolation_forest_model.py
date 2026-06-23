@@ -1,4 +1,6 @@
 from sklearn.ensemble import IsolationForest
+
+#Creating Isolation Forest model for anomaly detection
 def create_isolation_forest_model() -> IsolationForest:
     """
     Create Isolation Forest model for anomaly detection.
@@ -10,6 +12,8 @@ def create_isolation_forest_model() -> IsolationForest:
         n_jobs=-1
     )
     return model
+
+#Training Isolation Forest model 
 def train_isolation_forest_model(X_train) -> IsolationForest:
     """
     Train Isolation Forest model using feature data only.
@@ -17,6 +21,8 @@ def train_isolation_forest_model(X_train) -> IsolationForest:
     model = create_isolation_forest_model()
     model.fit(X_train)
     return model
+
+#Function to predict anomalies using Isolation Forest
 def predict_isolation_forest(model, X_test):
     """
     Predict anomalies using Isolation Forest.
@@ -34,6 +40,8 @@ def predict_isolation_forest(model, X_test):
         for value in raw_predictions
     ]
     return predictions
+
+#Function to generate anamoly scores
 def anomaly_score_isolation_forest(model, X_test):
     """
     Generate anomaly scores using Isolation Forest.

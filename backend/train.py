@@ -1,6 +1,7 @@
 import os
 import joblib
 import pandas as pd
+
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
@@ -10,9 +11,12 @@ from sklearn.ensemble import RandomForestClassifier, IsolationForest
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
 from xgboost import XGBClassifier
+
+#Loading the dataset
 df = pd.read_csv(r"C:\FraudShieldAI\backend\dataset\balanced_creditcard_new.csv")
 print("Dataset Loaded Successfully")
 print("Shape:", df.shape)
+
 print("\nFraud Label Count:")
 print(df["Fraud_Label"].value_counts())
 drop_columns = [
@@ -28,6 +32,7 @@ X = pd.get_dummies(X, drop_first=True)
 X = X.fillna(0)
 os.makedirs(r"C:\FraudShieldAI\backend\models", exist_ok=True)
 joblib.dump(X.columns.tolist(), r"C:\FraudShieldAI\backend\models\columns.pkl")
+
 X_train, X_test, y_train, y_test = train_test_split(
     X,
     y,
@@ -39,6 +44,7 @@ scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 joblib.dump(scaler, r"C:\FraudShieldAI\backend\models\scaler.pkl")
+
 models = {
     "Logistic Regression": LogisticRegression(max_iter=1000),
     "Decision Tree": DecisionTreeClassifier(random_state=42),
