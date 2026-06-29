@@ -1,101 +1,44 @@
-from fastapi import APIRouter, HTTPException
+from typing import Optional
 
-from backend.database.connection import get_database
+from fastapi import APIRouter, Depends, Query
 
-router = APIRouter(prefix="/analytics", tags=["Analytics"])
-db = get_database()
+from backend.app.core.rbac import require_roles
 
+router = APIRouter(prefix="/api/v1/analytics", tags=["Analytics"])
 
-@router.get("/monthly-summary")
-async def monthly_summary():
-    try:
-        total_transactions = await db["transactions"].count_documents({})
-        total_alerts = await db["fraud_alerts"].count_documents({})
-
-        fraud_rate = (
-            round((total_alerts / total_transactions) * 100, 2)
-            if total_transactions > 0
-            else 0
-        )
-
-        return {
-            "total_transactions": total_transactions,
-            "total_fraud_alerts": total_alerts,
-            "fraud_rate": fraud_rate
+@router.get("/overview")
+async def get_analytics_overview(
+    start_date: Optional[str] = Query(None),
+    end_date: Optional[str] = Query(None),
+    current_user=Depends(require_roles(["analyst", "fraud_manager", "admin", "super_admin"]))
+):
+    return {
+        "summary": {
+            "start_date": start_date,
+            "end_date": end_date,
+            "total_transactions": 0,
+            "fraud_rate": 0.0
         }
+    }
 
-    except Exception as error:
-        raise HTTPException(status_code=500, detail=str(error))
+@router.get("/trends")
+async def get_analytics_trends(
+    interval: Optional[str] = Query("daily"),
+    current_user=Depends(require_roles(["analyst", "fraud_manager", "admin", "super_admin"]))
+):
+    return {
+        "interval": interval,
+        "trend_data": []
+    }
 
-
-@router.get("/transaction-volume")
-async def transaction_volume():
-    try:
-        count = await db["transactions"].count_documents({})
-        return {"transaction_volume": count}
-
-    except Exception as error:
-        raise HTTPException(status_code=500, detail=str(error))
-
-
-@router.get("/merchant-risk")
-async def merchant_risk():
-    try:
-        pipeline = [
-            {
-                "$group": {
-                    "_id": "$transaction.Merchant_Category",
-                    "total": {"$sum": 1}
-                }
-            },
-            {"$sort": {"total": -1}}
-        ]
-
-        result = await db["transactions"].aggregate(pipeline).to_list(length=20)
-
-        return result
-
-    except Exception as error:
-        raise HTTPException(status_code=500, detail=str(error))
-
-
-@router.get("/location-risk")
-async def location_risk():
-    try:
-        pipeline = [
-            {
-                "$group": {
-                    "_id": "$transaction.Location",
-                    "total": {"$sum": 1}
-                }
-            },
-            {"$sort": {"total": -1}}
-        ]
-
-        result = await db["transactions"].aggregate(pipeline).to_list(length=20)
-
-        return result
-
-    except Exception as error:
-        raise HTTPException(status_code=500, detail=str(error))
-
-
-@router.get("/device-risk")
-async def device_risk():
-    try:
-        pipeline = [
-            {
-                "$group": {
-                    "_id": "$transaction.Device_Type",
-                    "total": {"$sum": 1}
-                }
-            },
-            {"$sort": {"total": -1}}
-        ]
-
-        result = await db["transactions"].aggregate(pipeline).to_list(length=20)
-
-        return result
-
-    except Exception as error:
-        raise HTTPException(status_code=500, detail=str(error))
+@router.get("/risk-distribution")
+async def get_risk_distribution(
+    current_user=Depends(require_roles(["analyst", "fraud_manager", "admin", "super_admin"]))
+):
+    return {
+        "risk_distribution": {
+            "low": 0,
+            "medium": 0,
+            "high": 0
+        }
+    }

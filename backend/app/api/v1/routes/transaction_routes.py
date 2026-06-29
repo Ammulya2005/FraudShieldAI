@@ -1,136 +1,129 @@
-from datetime import datetime
-from bson import ObjectId
-from fastapi import APIRouter, HTTPException
+# This file defines the API routes for managing transactions in the application. It includes endpoints for creating new transactions, fetching all transactions, and fetching transactions based on their risk level (high-risk, fraudulent, legitimate). Access to these endpoints is restricted based on user roles, ensuring that only authorized users can perform specific actions.
+from fastapi import (
+    APIRouter,
+    Depends
+)
 
-from backend.database.connection import get_database
-from backend.app.utils.serializers import serialize_document, serialize_documents
+from backend.app.schemas.transaction_schema import (
+    TransactionCreate
+)
 
-router = APIRouter(prefix="/transactions", tags=["Transactions"])
-db = get_database()
-collection = db["transactions"]
+from backend.app.services.transaction_service import (
+    create_new_transaction,
+    fetch_all_transactions,
+    fetch_transaction_by_id,
+    fetch_high_risk_transactions,
+    fetch_fraudulent_transactions,
+    fetch_legitimate_transactions
+)
 
+from backend.app.core.rbac import (
+    require_roles
+)
 
-@router.post("/")
-async def create_transaction(transaction: dict):
-    try:
-        transaction["created_at"] = datetime.utcnow()
-        result = await collection.insert_one(transaction)
+router = APIRouter(
+    prefix="/api/v1/transactions",
+    tags=["Transactions"]
+)
 
-        saved = await collection.find_one({"_id": result.inserted_id})
-        return serialize_document(saved)
-
-    except Exception as error:
-        raise HTTPException(status_code=500, detail=str(error))
-
-
-@router.get("/")
-async def get_transactions(limit: int = 50):
-    try:
-        cursor = collection.find().sort("created_at", -1).limit(limit)
-        records = await cursor.to_list(length=limit)
-
-        return serialize_documents(records)
-
-    except Exception as error:
-        raise HTTPException(status_code=500, detail=str(error))
-
-
-@router.get("/{transaction_id}")
-async def get_transaction(transaction_id: str):
-    try:
-        query = {"transaction.Transaction_ID": transaction_id}
-
-        record = await collection.find_one(query)
-
-        if not record:
-            raise HTTPException(status_code=404, detail="Transaction not found")
-
-        return serialize_document(record)
-
-    except HTTPException:
-        raise
-
-    except Exception as error:
-        raise HTTPException(status_code=500, detail=str(error))
-
-
-@router.put("/{transaction_id}")
-async def update_transaction(transaction_id: str, update_data: dict):
-    try:
-        result = await collection.update_one(
-            {"transaction.Transaction_ID": transaction_id},
-            {"$set": update_data}
+# Endpoint to create a new transaction. Only users with the "analyst", "fraud_manager", "admin", or "super_admin" roles can access this endpoint.
+@router.post("")
+async def create_transaction_route(
+    transaction: TransactionCreate,
+    current_user=Depends(
+        require_roles(
+            [
+                "analyst",
+                "fraud_manager",
+                "admin",
+                "super_admin"
+            ]
         )
+    )
+):
+    return await create_new_transaction(
+        transaction
+    )
 
-        if result.matched_count == 0:
-            raise HTTPException(status_code=404, detail="Transaction not found")
-
-        updated = await collection.find_one(
-            {"transaction.Transaction_ID": transaction_id}
+# Endpoint to fetch all transactions. Only users with the "analyst", "fraud_manager", "admin", or "super_admin" roles can access this endpoint.
+@router.get("")
+async def get_transactions_route(
+    current_user=Depends(
+        require_roles(
+            [
+                "analyst",
+                "fraud_manager",
+                "admin",
+                "super_admin"
+            ]
         )
+    )
+):
+    return await fetch_all_transactions()
 
-        return serialize_document(updated)
-
-    except HTTPException:
-        raise
-
-    except Exception as error:
-        raise HTTPException(status_code=500, detail=str(error))
-
-
-@router.delete("/{transaction_id}")
-async def delete_transaction(transaction_id: str):
-    try:
-        result = await collection.delete_one(
-            {"transaction.Transaction_ID": transaction_id}
-        )
-
-        if result.deleted_count == 0:
-            raise HTTPException(status_code=404, detail="Transaction not found")
-
-        return {"message": "Transaction deleted successfully"}
-
-    except HTTPException:
-        raise
-
-    except Exception as error:
-        raise HTTPException(status_code=500, detail=str(error))
-
-
-@router.get("/user/{user_id}")
-async def get_user_transactions(user_id: str):
-    try:
-        cursor = collection.find({"transaction.User_ID": user_id})
-        records = await cursor.to_list(length=100)
-
-        return serialize_documents(records)
-
-    except Exception as error:
-        raise HTTPException(status_code=500, detail=str(error))
-
-
-@router.get("/status/{status}")
-async def get_transactions_by_status(status: str):
-    try:
-        cursor = collection.find({"status": status})
-        records = await cursor.to_list(length=100)
-
-        return serialize_documents(records)
-
-    except Exception as error:
-        raise HTTPException(status_code=500, detail=str(error))
-
-
+# Endpoint to fetch a transaction by its ID. Only users with the "analyst", "fraud_manager", "admin", or "super_admin" roles can access this endpoint.
 @router.get("/high-risk")
-async def get_high_risk_transactions():
-    try:
-        cursor = collection.find({
-            "prediction.risk_level": "High Risk"
-        }).sort("created_at", -1)
+async def get_high_risk_route(
+    current_user=Depends(
+        require_roles(
+            [
+                "analyst",
+                "fraud_manager",
+                "admin",
+                "super_admin"
+            ]
+        )
+    )
+):
+    return await fetch_high_risk_transactions()
 
-        records = await cursor.to_list(length=100)
+# Endpoint to fetch fraudulent transactions. Only users with the "analyst", "fraud_manager", "admin", or "super_admin" roles can access this endpoint.
+@router.get("/fraudulent")
+async def get_fraudulent_route(
+    current_user=Depends(
+        require_roles(
+            [
+                "analyst",
+                "fraud_manager",
+                "admin",
+                "super_admin"
+            ]
+        )
+    )
+):
+    return await fetch_fraudulent_transactions()
 
-        return serialize_documents(records)
+# Endpoint to fetch legitimate transactions. Only users with the "analyst", "fraud_manager", "admin", or "super_admin" roles can access this endpoint.
+@router.get("/legitimate")
+async def get_legitimate_route(
+    current_user=Depends(
+        require_roles(
+            [
+                "analyst",
+                "fraud_manager",
+                "admin",
+                "super_admin"
+            ]
+        )
+    )
+):
+    return await fetch_legitimate_transactions()
 
-    except Exception as error:
-        raise HTTPException(status_code=500, detail=str(error))
+# Endpoint to fetch a transaction by its ID. Only users with the "analyst", "fraud_manager", "admin", or "super_admin" roles can access this endpoint.S
+@router.get("/{transaction_id}")
+async def get_transaction_by_id_route(
+    transaction_id: str,
+    current_user=Depends(
+        require_roles(
+            [
+                "analyst",
+                "fraud_manager",
+                "admin",
+                "super_admin"
+            ]
+        )
+    )
+):
+    return await fetch_transaction_by_id(
+        transaction_id
+    )

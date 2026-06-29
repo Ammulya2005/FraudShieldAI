@@ -1,41 +1,26 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
-router = APIRouter(
-    prefix="/admin",
-    tags=["Admin"]
-)
+from backend.app.core.rbac import require_roles
 
+router = APIRouter(prefix="/api/v1/admin", tags=["Admin"])
 
-@router.get("/system-summary")
-async def system_summary():
+@router.get("/status")
+async def get_admin_status(
+    current_user=Depends(require_roles(["admin", "super_admin"]))
+):
     return {
-        "system": "FraudShield AI",
-        "status": "running",
-        "message": "System summary endpoint ready"
+        "status": "ok",
+        "service": "admin",
+        "user_id": str(current_user["_id"])
     }
 
-
-@router.get("/users-summary")
-async def users_summary():
-    return {"message": "Users summary endpoint ready"}
-
-
-@router.get("/fraud-review-queue")
-async def fraud_review_queue():
-    return {"message": "Fraud review queue endpoint ready"}
-
-
-@router.patch("/transactions/{transaction_id}/override")
-async def override_transaction(transaction_id: str):
+@router.get("/metrics")
+async def get_admin_metrics(
+    current_user=Depends(require_roles(["admin", "super_admin"]))
+):
     return {
-        "transaction_id": transaction_id,
-        "message": "Transaction override endpoint ready"
-    }
-
-
-@router.patch("/alerts/{alert_id}/assign")
-async def assign_alert(alert_id: str):
-    return {
-        "alert_id": alert_id,
-        "message": "Alert assignment endpoint ready"
+        "active_users": 0,
+        "open_cases": 0,
+        "pending_alerts": 0,
+        "system_health": "good"
     }
