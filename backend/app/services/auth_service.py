@@ -1,8 +1,7 @@
 from fastapi import HTTPException, status
 
 from backend.app.schemas.auth_schema import (
-    UserRegister,
-    UserLogin
+    UserRegister
 )
 
 from backend.app.core.jwt_handler import (
@@ -10,6 +9,7 @@ from backend.app.core.jwt_handler import (
     create_refresh_token,
     verify_refresh_token
 )
+
 from backend.app.core.security import (
     hash_password,
     verify_password
@@ -21,6 +21,8 @@ from backend.app.repositories.user_repository import (
     change_password
 )
 
+
+# REGISTER USER
 async def register_user(user: UserRegister):
 
     existing_user = await get_user_by_email(
@@ -58,11 +60,15 @@ async def register_user(user: UserRegister):
     }
 
 
-async def login_user(user: UserLogin):
+# LOGIN USING OAUTH2 CREDENTIALS
+async def login_user(
+    username: str,
+    password: str
+):
 
-    db_user = await get_user_by_email(user.email)
-
-    print("DB USER:", db_user)
+    db_user = await get_user_by_email(
+        username
+    )
 
     if not db_user:
         raise HTTPException(
@@ -71,7 +77,7 @@ async def login_user(user: UserLogin):
         )
 
     if not verify_password(
-        user.password,
+        password,
         db_user["password"]
     ):
         raise HTTPException(
@@ -82,25 +88,23 @@ async def login_user(user: UserLogin):
     access_token = create_access_token(
         {
             "sub": str(db_user["_id"]),
-            "email": db_user["email"]
+            "username": db_user["username"],
+            "email": db_user["email"],
+            "role": db_user.get("role", "user")
         }
     )
-
-    print("ACCESS TOKEN:", access_token)
-
     refresh_token = create_refresh_token(
-        {
-            "sub": str(db_user["_id"])
-        }
-    )
-
-    print("REFRESH TOKEN:", refresh_token)
+        data={"sub": str(db_user["_id"])}
+        )
 
     return {
         "access_token": access_token,
         "refresh_token": refresh_token,
         "token_type": "bearer"
     }
+
+
+# CHANGE PASSWORD
 async def update_password(
     current_user,
     old_password: str,
@@ -131,6 +135,9 @@ async def update_password(
     return {
         "message": "Password changed successfully"
     }
+
+
+# REFRESH TOKEN
 async def refresh_access_token(
     refresh_token: str
 ):

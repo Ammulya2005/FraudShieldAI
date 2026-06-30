@@ -1,4 +1,6 @@
-# This file defines the API routes for managing transactions in the application. It includes endpoints for creating new transactions, fetching all transactions, and fetching transactions based on their risk level (high-risk, fraudulent, legitimate). Access to these endpoints is restricted based on user roles, ensuring that only authorized users can perform specific actions.
+# This file defines API routes for transaction management
+# with role-based authorization.
+
 from fastapi import (
     APIRouter,
     Depends
@@ -20,32 +22,34 @@ from backend.app.services.transaction_service import (
 from backend.app.core.rbac import (
     require_roles
 )
-
 router = APIRouter(
-    prefix="/api/v1/transactions",
+    prefix="/transactions",
     tags=["Transactions"]
 )
 
-# Endpoint to create a new transaction. Only users with the "analyst", "fraud_manager", "admin", or "super_admin" roles can access this endpoint.
+# Create Transaction
+# User, Admin and Superadmin only
 @router.post("")
 async def create_transaction_route(
     transaction: TransactionCreate,
     current_user=Depends(
         require_roles(
             [
-                "analyst",
-                "fraud_manager",
+                "user",
                 "admin",
-                "super_admin"
+                "superadmin"
             ]
         )
     )
 ):
+
     return await create_new_transaction(
         transaction
     )
 
-# Endpoint to fetch all transactions. Only users with the "analyst", "fraud_manager", "admin", or "super_admin" roles can access this endpoint.
+
+# View All Transactions
+# Analyst, Fraud Manager, Admin, Superadmin
 @router.get("")
 async def get_transactions_route(
     current_user=Depends(
@@ -54,14 +58,16 @@ async def get_transactions_route(
                 "analyst",
                 "fraud_manager",
                 "admin",
-                "super_admin"
+                "superadmin"
             ]
         )
     )
 ):
+
     return await fetch_all_transactions()
 
-# Endpoint to fetch a transaction by its ID. Only users with the "analyst", "fraud_manager", "admin", or "super_admin" roles can access this endpoint.
+
+# High Risk Transactions
 @router.get("/high-risk")
 async def get_high_risk_route(
     current_user=Depends(
@@ -70,14 +76,16 @@ async def get_high_risk_route(
                 "analyst",
                 "fraud_manager",
                 "admin",
-                "super_admin"
+                "superadmin"
             ]
         )
     )
 ):
+
     return await fetch_high_risk_transactions()
 
-# Endpoint to fetch fraudulent transactions. Only users with the "analyst", "fraud_manager", "admin", or "super_admin" roles can access this endpoint.
+
+# Fraudulent Transactions
 @router.get("/fraudulent")
 async def get_fraudulent_route(
     current_user=Depends(
@@ -86,14 +94,16 @@ async def get_fraudulent_route(
                 "analyst",
                 "fraud_manager",
                 "admin",
-                "super_admin"
+                "superadmin"
             ]
         )
     )
 ):
+
     return await fetch_fraudulent_transactions()
 
-# Endpoint to fetch legitimate transactions. Only users with the "analyst", "fraud_manager", "admin", or "super_admin" roles can access this endpoint.
+
+# Legitimate Transactions
 @router.get("/legitimate")
 async def get_legitimate_route(
     current_user=Depends(
@@ -102,14 +112,16 @@ async def get_legitimate_route(
                 "analyst",
                 "fraud_manager",
                 "admin",
-                "super_admin"
+                "superadmin"
             ]
         )
     )
 ):
+
     return await fetch_legitimate_transactions()
 
-# Endpoint to fetch a transaction by its ID. Only users with the "analyst", "fraud_manager", "admin", or "super_admin" roles can access this endpoint.S
+
+# Transaction By ID
 @router.get("/{transaction_id}")
 async def get_transaction_by_id_route(
     transaction_id: str,
@@ -119,11 +131,12 @@ async def get_transaction_by_id_route(
                 "analyst",
                 "fraud_manager",
                 "admin",
-                "super_admin"
+                "superadmin"
             ]
         )
     )
 ):
+
     return await fetch_transaction_by_id(
         transaction_id
     )

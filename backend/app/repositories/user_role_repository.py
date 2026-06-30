@@ -16,15 +16,10 @@ async def assign_role(
     )
 
 
-async def get_user_roles(
-    user_id: str
-):
+async def get_user_roles(user_id: str) -> list:
+    # Look for the assignment doc matching the user_id
+    doc = await db[USER_ROLE_COLLECTION].find_one({"user_id": user_id})
+    if doc and "roles" in doc:
+        return doc["roles"]  # Should return an array like: ["user", "analyst"]
+    return []
 
-    roles = []
-
-    async for role in db[USER_ROLE_COLLECTION].find(
-        {"user_id": user_id}
-    ):
-        roles.append(role["role_name"])
-
-    return roles
