@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, Query
 
 from backend.app.core.rbac import require_roles
 
-router = APIRouter(prefix="/api/v1/audit-logs", tags=["Audit Logs"])
+router = APIRouter(prefix="/audit-logs", tags=["Audit Logs"])
 
 @router.get("")
 async def list_audit_logs(
@@ -18,7 +18,7 @@ async def list_audit_logs(
         "logs": []
     }
 
-@router.get("/{audit_id}")
+@router.get("/audit_id")
 async def get_audit_log(
     audit_id: str,
     current_user=Depends(require_roles(["admin", "super_admin"]))

@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, Query
 
 from backend.app.core.rbac import require_roles
 
-router = APIRouter(prefix="/api/v1/fraud", tags=["Fraud"])
+router = APIRouter(prefix="/fraud", tags=["Fraud"])
 
 @router.get("/summary")
 async def get_fraud_summary(

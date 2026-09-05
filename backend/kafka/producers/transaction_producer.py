@@ -48,7 +48,7 @@ def run_transaction_producer():
         )
         print(
             f"[{count + 1}/{PRODUCER_MAX_TRANSACTIONS}] "
-            f"Produced Transaction: {transaction['Transaction_ID']}"
+            f"Produced Transaction: {transaction['transaction_id']}"
         )
         time.sleep(PRODUCER_INTERVAL_SECONDS)
     producer.close()

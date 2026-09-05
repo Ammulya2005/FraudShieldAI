@@ -17,7 +17,7 @@ from backend.app.services.dashboard_service import (
 )
 
 router = APIRouter(
-    prefix="/api/v1/dashboard",
+    prefix="/dashboard",
     tags=["Dashboard"]
 )
 

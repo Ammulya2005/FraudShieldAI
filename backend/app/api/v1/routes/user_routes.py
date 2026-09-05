@@ -24,7 +24,7 @@ from backend.app.services.user_service import (
 )
 
 router = APIRouter(
-    prefix="/api/v1/users",
+    prefix="/users",
     tags=["Users"]
 )
 
@@ -40,7 +40,7 @@ async def get_all_users(
     return await fetch_all_users()
 
 # Endpoint to fetch a user by their ID. Only users with the "admin" or "super_admin" roles can access this endpoint.
-@router.get("/{user_id}")
+@router.get("/user_id")
 async def get_user(
     user_id: str,
     current_user=Depends(
@@ -52,7 +52,7 @@ async def get_user(
     return await fetch_user_by_id(user_id)
 
 # Endpoint to update user information. Only users with the "admin" or "super_admin" roles can access this endpoint.
-@router.put("/{user_id}")
+@router.put("/user_id")
 async def update_user_route(
     user_id: str,
     request: UserUpdate,
@@ -68,7 +68,7 @@ async def update_user_route(
     )
 
 # Endpoint to delete a user. Only users with the "super_admin" role can access this endpoint.
-@router.delete("/{user_id}")
+@router.delete("/user_id")
 async def delete_user_route(
     user_id: str,
     current_user=Depends(
@@ -80,7 +80,7 @@ async def delete_user_route(
     return await remove_user(user_id)
 
 # Endpoint to lock a user account. Only users with the "admin" or "super_admin" roles can access this endpoint.
-@router.patch("/{user_id}/lock")
+@router.patch("/user_id/lock")
 async def lock_user_route(
     user_id: str,
     current_user=Depends(
@@ -92,7 +92,7 @@ async def lock_user_route(
     return await lock_user_account(user_id)
 
 # Endpoint to unlock a user account. Only users with the "admin" or "super_admin" roles can access this endpoint.
-@router.patch("/{user_id}/unlock")
+@router.patch("/user_id/unlock")
 async def unlock_user_route(
     user_id: str,
     current_user=Depends(
@@ -104,7 +104,7 @@ async def unlock_user_route(
     return await unlock_user_account(user_id)
 
 # Endpoint to activate a user account. Only users with the "admin" or "super_admin" roles can access this endpoint.
-@router.patch("/{user_id}/activate")
+@router.patch("/user_id/activate")
 async def activate_user_route(
     user_id: str,
     current_user=Depends(
@@ -116,7 +116,7 @@ async def activate_user_route(
     return await activate_user_account(user_id)
 
 # Endpoint to deactivate a user account. Only users with the "admin" or "super_admin" roles can access this endpoint.
-@router.patch("/{user_id}/deactivate")
+@router.patch("/user_id/deactivate")
 async def deactivate_user_route(
     user_id: str,
     current_user=Depends(

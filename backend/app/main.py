@@ -1,8 +1,10 @@
 import os
+from pathlib import Path
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from backend.app.api.v1.api_router import api_router
 from backend.database.mongodb import (
@@ -59,6 +61,9 @@ async def lifespan(app: FastAPI):
             "Error closing MongoDB connection"
         )
 
+BASE_DIR = Path(__file__).resolve().parents[2]
+FRONTEND_DIR = BASE_DIR / "frontend"
+
 
 app = FastAPI(
     title=APP_NAME or "FraudShieldAI",
@@ -104,10 +109,11 @@ app.include_router(
 )
 
 
-@app.get("/")
-async def root():
-
-    return {
-        "message":
-        f"{APP_NAME or 'FraudShieldAI'} Running"
-    }
+app.mount(
+    "/",
+    StaticFiles(
+        directory=str(FRONTEND_DIR),
+        html=True
+    ),
+    name="frontend"
+)

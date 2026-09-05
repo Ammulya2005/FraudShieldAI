@@ -15,7 +15,7 @@ from backend.app.core.rbac import (
 )
 
 router = APIRouter(
-    prefix="/api/v1/roles",
+    prefix="/roles",
     tags=["Roles"]
 )
 

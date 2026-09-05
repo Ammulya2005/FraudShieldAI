@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FraudShield AI — Real-Time Detection Hub</title>
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="dark-theme">
+  <div id="toast-container"></div>
+
+  <div id="app" class="app-layout">
+    <aside id="sidebar" class="sidebar hidden">
+      <div class="brand">
+        <div class="shield-icon">🛡️</div>
+        <h2>FraudShield<span>AI</span></h2>
+      </div>
+      
+      <nav class="nav-menu">
+        <a href="#/dashboard" class="nav-item" data-role="all">
+          <span class="icon">📊</span> Overview
+        </a>
+        <a href="#/transactions" class="nav-item" data-role="all">
+          <span class="icon">⚡</span> Transactions
+        </a>
+        <a href="#/alerts" class="nav-item" data-role="analyst,manager,admin">
+          <span class="icon">🚨</span> Alerts
+        </a>
+        <a href="#/cases" class="nav-item" data-role="analyst,manager,admin">
+          <span class="icon">📁</span> Fraud Cases
+        </a>
+        <a href="#/models" class="nav-item" data-role="manager,admin">
+          <span class="icon">🧠</span> ML Models
+        </a>
+        <a href="#/admin" class="nav-item" data-role="admin">
+          <span class="icon">⚙️</span> Administration
+        </a>
+      </nav>
+
+      <div class="user-profile-widget">
+        <div class="user-meta">
+          <span id="user-display-name" class="user-name">Loading...</span>
+          <span id="user-display-role" class="user-role badge badge-info">Role</span>
+        </div>
+        <button id="btn-logout" class="btn btn-outline-danger btn-sm">Sign Out</button>
+      </div>
+    </aside>
+
+    <main class="main-viewport">
+      <header id="topbar" class="topbar hidden">
+        <div class="system-status">
+          <span class="live-indicator"></span>
+          <span id="kafka-stream-status">Engine: Polling</span>
+        </div>
+        <div class="topbar-actions">
+          <button id="btn-stream-toggle" class="btn btn-sm btn-primary">Start Stream Ingestion</button>
+        </div>
+      </header>
+
+      <section id="router-view" class="view-container">
+        </section>
+    </main>
+  </div>
+
+  <script type="module" src="js/router.js"></script>
+</body>
+</html>

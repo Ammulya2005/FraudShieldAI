@@ -5,6 +5,7 @@ from backend.app.core.dependencies import (
     get_current_user
 )
 
+from backend.app.repositories.user_role_repository import get_user_roles
 from backend.app.schemas.auth_schema import (
     TokenResponse,
     UserRegister,
@@ -54,13 +55,17 @@ async def me(
         get_current_user
     )
 ):
+    roles = await get_user_roles(
+        str(current_user["_id"])
+    )
 
     return {
         "id": str(current_user["_id"]),
         "username": current_user["username"],
         "email": current_user["email"],
         "is_active": current_user["is_active"],
-        "is_verified": current_user["is_verified"]
+        "is_verified": current_user["is_verified"],
+        "roles": roles
     }
 
 

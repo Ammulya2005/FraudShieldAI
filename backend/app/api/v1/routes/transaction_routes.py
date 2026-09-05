@@ -37,7 +37,7 @@ async def create_transaction_route(
             [
                 "user",
                 "admin",
-                "superadmin"
+                "super_admin"
             ]
         )
     )
@@ -58,7 +58,7 @@ async def get_transactions_route(
                 "analyst",
                 "fraud_manager",
                 "admin",
-                "superadmin"
+                "super_admin"
             ]
         )
     )
@@ -76,7 +76,7 @@ async def get_high_risk_route(
                 "analyst",
                 "fraud_manager",
                 "admin",
-                "superadmin"
+                "super_admin"
             ]
         )
     )
@@ -94,7 +94,7 @@ async def get_fraudulent_route(
                 "analyst",
                 "fraud_manager",
                 "admin",
-                "superadmin"
+                "super_admin"
             ]
         )
     )
@@ -112,7 +112,7 @@ async def get_legitimate_route(
                 "analyst",
                 "fraud_manager",
                 "admin",
-                "superadmin"
+                "super_admin"
             ]
         )
     )
@@ -122,7 +122,7 @@ async def get_legitimate_route(
 
 
 # Transaction By ID
-@router.get("/{transaction_id}")
+@router.get("/transaction_id")
 async def get_transaction_by_id_route(
     transaction_id: str,
     current_user=Depends(
@@ -131,7 +131,7 @@ async def get_transaction_by_id_route(
                 "analyst",
                 "fraud_manager",
                 "admin",
-                "superadmin"
+                "super_admin"
             ]
         )
     )

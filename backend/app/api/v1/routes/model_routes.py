@@ -4,7 +4,7 @@ from fastapi import APIRouter, Body, Depends
 
 from backend.app.core.rbac import require_roles
 
-router = APIRouter(prefix="/api/v1/models", tags=["Models"])
+router = APIRouter(prefix="/models", tags=["Models"])
 
 @router.post("/train")
 async def train_model(
@@ -22,21 +22,21 @@ async def list_models(
 ):
     return {"models": []}
 
-@router.get("/{model_id}")
+@router.get("/model_id")
 async def get_model(
     model_id: str,
     current_user=Depends(require_roles(["analyst", "fraud_manager", "admin", "super_admin"]))
 ):
     return {"model_id": model_id, "details": None}
 
-@router.post("/{model_id}/deploy")
+@router.post("/model_id/deploy")
 async def deploy_model(
     model_id: str,
     current_user=Depends(require_roles(["admin", "super_admin"]))
 ):
     return {"model_id": model_id, "status": "deploying"}
 
-@router.post("/{model_id}/predict")
+@router.post("/model_id/predict")
 async def predict_with_model(
     model_id: str,
     input_data: Dict[str, Any] = Body(...),

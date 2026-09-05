@@ -20,7 +20,7 @@ from backend.app.core.rbac import (
 
 
 router = APIRouter(
-    prefix="/api/v1/case-reviews",
+    prefix="/case-reviews",
     tags=["Case Reviews"]
 )
 
@@ -61,7 +61,7 @@ async def get_all_case_reviews_route(
     return await fetch_all_case_reviews()
 
 
-@router.get("/{review_id}")
+@router.get("/review_id")
 async def get_case_review_route(
     review_id: str,
     current_user=Depends(
@@ -78,7 +78,7 @@ async def get_case_review_route(
     return await fetch_case_review(review_id)
 
 
-@router.get("/case/{case_id}")
+@router.get("/case/case_id")
 async def get_case_reviews_by_case_route(
     case_id: str,
     current_user=Depends(
@@ -95,7 +95,7 @@ async def get_case_reviews_by_case_route(
     return await fetch_case_reviews_by_case(case_id)
 
 
-@router.put("/{review_id}")
+@router.put("/review_id")
 async def update_case_review_route(
     review_id: str,
     review_update: CaseReviewUpdate,
@@ -116,7 +116,7 @@ async def update_case_review_route(
     )
 
 
-@router.delete("/{review_id}")
+@router.delete("/review_id")
 async def delete_case_review_route(
     review_id: str,
     current_user=Depends(

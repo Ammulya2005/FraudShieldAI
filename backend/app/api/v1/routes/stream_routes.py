@@ -4,7 +4,7 @@ from fastapi import APIRouter, Body, Depends
 
 from backend.app.core.rbac import require_roles
 
-router = APIRouter(prefix="/api/v1/stream", tags=["Stream"])
+router = APIRouter(prefix="/stream", tags=["Stream"])
 
 @router.get("/status")
 async def get_stream_status(

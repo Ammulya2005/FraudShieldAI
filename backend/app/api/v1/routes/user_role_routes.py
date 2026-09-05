@@ -15,7 +15,7 @@ from backend.app.core.rbac import (
 )
 
 router = APIRouter(
-    prefix="/api/v1/user-roles",
+    prefix="/user-roles",
     tags=["User Roles"]
 )
 
@@ -35,7 +35,7 @@ async def assign_role_route(
     return await assign_user_role(request)
 
 # Endpoint to fetch the roles assigned to a specific user. Only users with the "admin" or "super_admin" roles can access this endpoint.
-@router.get("/{user_id}")
+@router.get("/user_id")
 async def get_user_roles_route(
     user_id: str
 ):

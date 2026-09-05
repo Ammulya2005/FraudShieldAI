@@ -4,7 +4,7 @@ from fastapi import APIRouter, Body, Depends, Query
 
 from backend.app.core.rbac import require_roles
 
-router = APIRouter(prefix="/api/v1/settings", tags=["Settings"])
+router = APIRouter(prefix="/settings", tags=["Settings"])
 
 @router.get("")
 async def get_settings(
@@ -20,7 +20,7 @@ async def update_settings(
 ):
     return {"updated": settings}
 
-@router.get("/{setting_key}")
+@router.get("/setting_key")
 async def get_setting(
     setting_key: str,
     current_user=Depends(require_roles(["admin", "super_admin"]))

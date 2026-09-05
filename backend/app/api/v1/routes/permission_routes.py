@@ -4,7 +4,7 @@ from fastapi import APIRouter, Body, Depends
 
 from backend.app.core.rbac import require_roles
 
-router = APIRouter(prefix="/api/v1/permissions", tags=["Permissions"])
+router = APIRouter(prefix="/permissions", tags=["Permissions"])
 
 @router.post("")
 async def create_permission(
@@ -19,14 +19,14 @@ async def list_permissions(
 ):
     return {"permissions": []}
 
-@router.get("/{permission_id}")
+@router.get("/permission_id")
 async def get_permission(
     permission_id: str,
     current_user=Depends(require_roles(["admin", "super_admin"]))
 ):
     return {"permission_id": permission_id, "permission": None}
 
-@router.put("/{permission_id}")
+@router.put("/permission_id")
 async def update_permission(
     permission_id: str,
     permission: Dict[str, Any] = Body(...),
@@ -34,7 +34,7 @@ async def update_permission(
 ):
     return {"permission_id": permission_id, "updated": permission}
 
-@router.delete("/{permission_id}")
+@router.delete("/permission_id")
 async def delete_permission(
     permission_id: str,
     current_user=Depends(require_roles(["super_admin"]))

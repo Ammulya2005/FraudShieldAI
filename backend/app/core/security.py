@@ -19,10 +19,11 @@ security = HTTPBearer()
 
 
 ROLE_HIERARCHY = {
-    "Analyst": 1,
-    "Fraud Manager": 2,
-    "Admin": 3,
-    "Super Admin": 4
+     "user": 1,
+    "analyst": 2,
+    "fraud_manager": 3,
+    "admin": 4,
+    "super_admin": 5
 }
 
 
@@ -73,17 +74,17 @@ def get_current_user(
         )
 
 
-def require_roles(allowed_roles: List[str]):
-    def role_checker(current_user: dict = Depends(get_current_user)):
+# def require_roles(allowed_roles: List[str]):
+#     def role_checker(current_user: dict = Depends(get_current_user)):
 
-        user_role = current_user.get("role")
+#         user_role = current_user.get("role")
 
-        if user_role not in allowed_roles:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="Access denied for this role"
-            )
+#         if user_role not in allowed_roles:
+#             raise HTTPException(
+#                 status_code=status.HTTP_403_FORBIDDEN,
+#                 detail="Access denied for this role"
+#             )
 
-        return current_user
+#         return current_user
 
-    return role_checker
+#     return role_checker

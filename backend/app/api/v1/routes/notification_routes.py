@@ -4,7 +4,7 @@ from fastapi import APIRouter, Body, Depends, Query
 
 from backend.app.core.rbac import require_roles
 
-router = APIRouter(prefix="/api/v1/notifications", tags=["Notifications"])
+router = APIRouter(prefix="/notifications", tags=["Notifications"])
 
 @router.post("/send")
 async def send_notification(
@@ -20,14 +20,14 @@ async def list_notifications(
 ):
     return {"user_id": user_id, "notifications": []}
 
-@router.get("/{notification_id}")
+@router.get("/notification_id")
 async def get_notification(
     notification_id: str,
     current_user=Depends(require_roles(["analyst", "fraud_manager", "admin", "super_admin"]))
 ):
     return {"notification_id": notification_id, "notification": None}
 
-@router.delete("/{notification_id}")
+@router.delete("/notification_id")
 async def delete_notification(
     notification_id: str,
     current_user=Depends(require_roles(["admin", "super_admin"]))

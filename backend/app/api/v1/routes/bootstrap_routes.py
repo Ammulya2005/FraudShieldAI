@@ -5,12 +5,12 @@ from backend.app.services.bootstrap_service import (
 )
 
 router = APIRouter(
-    prefix="/api/v1/bootstrap",
+    prefix="/bootstrap",
     tags=["Bootstrap"]
 )
 
 
-@router.post("/super-admin/{email}")
+@router.post("/super-admin/email")
 async def bootstrap_super_admin(
     email: str
 ):

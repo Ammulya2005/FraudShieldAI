@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, Query
 
 from backend.app.core.rbac import require_roles
 
-router = APIRouter(prefix="/api/v1/analytics", tags=["Analytics"])
+router = APIRouter(prefix="/analytics", tags=["Analytics"])
 
 @router.get("/overview")
 async def get_analytics_overview(

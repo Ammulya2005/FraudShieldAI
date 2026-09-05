@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 
 from backend.app.core.rbac import require_roles
 
-router = APIRouter(prefix="/api/v1/admin", tags=["Admin"])
+router = APIRouter(prefix="/admin", tags=["Admin"])
 
 @router.get("/status")
 async def get_admin_status(
