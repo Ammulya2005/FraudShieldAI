@@ -44,15 +44,19 @@ async def delete_user(user_id: str):
     )
 
 
-async def get_all_users():
+async def get_all_users(page: int = 1, page_size: int = 50):
 
     users = []
 
-    async for user in db[USERS_COLLECTION].find():
+    async for user in db[USERS_COLLECTION].find().skip((page - 1) * page_size).limit(page_size):
         user["_id"] = str(user["_id"])
         users.append(user)
 
     return users
+
+
+async def count_users():
+    return await db[USERS_COLLECTION].count_documents({})
 
 async def update_user(
     user_id: str,

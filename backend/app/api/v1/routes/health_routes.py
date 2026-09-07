@@ -1,6 +1,9 @@
+import asyncio
 import time
 from fastapi import APIRouter, status, HTTPException
 from backend.database.mongodb import db
+from backend.kafka.config import KAFKA_BOOTSTRAP_SERVERS
+from kafka import KafkaAdminClient
 
 router = APIRouter(prefix="/health", tags=["Health"])
 
@@ -21,8 +24,29 @@ async def detailed_health_check():
         health_status = "unhealthy"
         dependencies["mongodb"] = {"status": "disconnected", "error": str(e)}
 
-    # 2. Add Kafka / ML checks here as needed
-    # (e.g., verifying client.brokers or checking if the .pkl model file is initialized in memory)
+    try:
+        start_time = time.time()
+
+        def probe_kafka():
+            client = KafkaAdminClient(
+                bootstrap_servers=KAFKA_BOOTSTRAP_SERVERS,
+                request_timeout_ms=2000
+            )
+            client.close()
+
+        await asyncio.to_thread(probe_kafka)
+        dependencies["kafka"] = {
+            "status": "connected",
+            "bootstrap_servers": KAFKA_BOOTSTRAP_SERVERS,
+            "latency_ms": round((time.time() - start_time) * 1000, 2)
+        }
+    except Exception as e:
+        health_status = "unhealthy"
+        dependencies["kafka"] = {
+            "status": "disconnected",
+            "bootstrap_servers": KAFKA_BOOTSTRAP_SERVERS,
+            "error": str(e)
+        }
 
     if health_status == "unhealthy":
         raise HTTPException(

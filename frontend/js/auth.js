@@ -58,8 +58,8 @@ export const AuthState = {
       return this.user.roles[0].toLowerCase();
     }
 
-    // User has no assigned role
-    return 'user';
+    // Keep missing role state visible instead of granting a default role.
+    return 'unknown';
   },
 
   canAccess(targetRoles) {

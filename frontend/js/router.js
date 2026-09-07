@@ -7,14 +7,16 @@ import { renderAlerts, initAlertsEvents } from './views/alerts.js';
 import { renderCases, initCasesEvents } from './views/cases.js';
 import { renderModels, initModelsEvents } from './views/models.js';
 import { renderAdmin, initAdminEvents } from './views/admin.js';
+import { renderHome, initHomeEvents } from './views/home.js';
 
 const routes = {
+  '/home': { render: renderHome, init: initHomeEvents, roles: ['all'] },
   '/login': { render: renderLogin, init: initLoginEvents, roles: ['all'] },
-  '/dashboard': { render: renderDashboard, init: initDashboardEvents, roles: ['all'] },
-  '/transactions': { render: renderTransactions, init: initTransactionsEvents, roles: ['all'] },
-  '/alerts': { render: renderAlerts, init: initAlertsEvents, roles: ['analyst', 'manager', 'admin'] },
-  '/cases': { render: renderCases, init: initCasesEvents, roles: ['analyst', 'manager', 'admin'] },
-  '/models': { render: renderModels, init: initModelsEvents, roles: ['manager', 'admin'] },
+  '/dashboard': { render: renderDashboard, init: initDashboardEvents, roles: ['analyst', 'fraud_manager', 'admin', 'super_admin'] },
+  '/transactions': { render: renderTransactions, init: initTransactionsEvents, roles: ['analyst', 'fraud_manager', 'admin', 'super_admin'] },
+  '/alerts': { render: renderAlerts, init: initAlertsEvents, roles: ['analyst', 'fraud_manager', 'admin'] },
+  '/cases': { render: renderCases, init: initCasesEvents, roles: ['analyst', 'fraud_manager', 'admin'] },
+  '/models': { render: renderModels, init: initModelsEvents, roles: ['fraud_manager', 'admin'] },
   '/admin': { render: renderAdmin, init: initAdminEvents, roles: ['admin'] },
 };
 
@@ -24,10 +26,10 @@ export async function router() {
     window.currentViewPoller = null;
   }
 
-  const path = window.location.hash.slice(1) || '/dashboard';
+  const path = window.location.hash.slice(1) || '/home';
   const authenticated = await AuthState.init();
 
-  if (!authenticated && path !== '/login') {
+  if (!authenticated && path !== '/login' && path !== '/home') {
     window.location.hash = '#/login';
     return;
   }
@@ -68,7 +70,7 @@ function updateNavRBAC() {
   const currentRole = AuthState.getUserRole();
   document.querySelectorAll('.nav-item').forEach(item => {
     const allowed = item.getAttribute('data-role').split(',');
-    if (allowed.includes('all') || allowed.includes(currentRole)) {
+    if (currentRole === 'super_admin' || allowed.includes('all') || allowed.includes(currentRole)) {
       item.style.display = 'flex';
     } else {
       item.style.display = 'none';
@@ -78,8 +80,8 @@ function updateNavRBAC() {
 
 function setupUserWidget() {
   if (!AuthState.user) return;
-  document.getElementById('user-display-name').innerText = AuthState.user.username || 'Analyst';
-  document.getElementById('user-display-role').innerText = AuthState.getUserRole();
+  document.getElementById('user-display-name').innerText = AuthState.user.username || 'Unnamed user';
+  document.getElementById('user-display-role').innerText = AuthState.getUserRole().replace('_', ' ');
 }
 
 // Global Event Listeners

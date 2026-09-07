@@ -18,7 +18,7 @@ async def list_audit_logs(
         "logs": []
     }
 
-@router.get("/audit_id")
+@router.get("/{audit_id}")
 async def get_audit_log(
     audit_id: str,
     current_user=Depends(require_roles(["admin", "super_admin"]))

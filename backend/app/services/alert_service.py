@@ -6,6 +6,7 @@ from fastapi import HTTPException, status
 from backend.app.repositories.alert_repository import (
     create_alert,
     get_all_alerts,
+    count_alerts,
     get_alert_by_alert_id,
     update_alert,
     delete_alert,
@@ -45,8 +46,10 @@ async def create_new_alert(alert):
     }
 
 
-async def fetch_all_alerts():
-    return await get_all_alerts()
+async def fetch_all_alerts(page: int = 1, page_size: int = 50):
+    alerts = await get_all_alerts(page, page_size)
+    total = await count_alerts()
+    return {"items": alerts, "page": page, "page_size": page_size, "total": total, "pages": (total + page_size - 1) // page_size}
 
 
 async def fetch_alert(alert_id: str):

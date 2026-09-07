@@ -6,6 +6,7 @@ from fastapi import HTTPException, status
 from backend.app.repositories.fraud_case_repository import (
     create_fraud_case,
     get_all_fraud_cases,
+    count_fraud_cases,
     get_fraud_case_by_case_id,
     update_fraud_case,
     delete_fraud_case,
@@ -44,8 +45,10 @@ async def create_new_fraud_case(case):
     }
 
 
-async def fetch_all_fraud_cases():
-    return await get_all_fraud_cases()
+async def fetch_all_fraud_cases(page: int = 1, page_size: int = 50):
+    cases = await get_all_fraud_cases(page, page_size)
+    total = await count_fraud_cases()
+    return {"items": cases, "page": page, "page_size": page_size, "total": total, "pages": (total + page_size - 1) // page_size}
 
 
 async def fetch_fraud_case(case_id: str):

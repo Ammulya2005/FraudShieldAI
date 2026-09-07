@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 
 from backend.app.core.rbac import (
     require_roles
@@ -42,6 +42,8 @@ async def create_alert_route(
 
 @router.get("")
 async def get_all_alerts_route(
+    page: int = Query(1, ge=1),
+    page_size: int = Query(50, ge=1, le=50),
     current_user=Depends(
         require_roles([
             "analyst",
@@ -51,10 +53,10 @@ async def get_all_alerts_route(
         ])
     )
 ):
-    return await fetch_all_alerts()
+    return await fetch_all_alerts(page, page_size)
 
 
-@router.get("/alert_id")
+@router.get("/{alert_id}")
 async def get_alert_route(
     alert_id: str,
     current_user=Depends(
@@ -69,7 +71,7 @@ async def get_alert_route(
     return await fetch_alert(alert_id)
 
 
-@router.put("/alert_id")
+@router.put("/{alert_id}")
 async def update_alert_route(
     alert_id: str,
     alert_update: AlertUpdate,
@@ -87,7 +89,7 @@ async def update_alert_route(
     )
 
 
-@router.delete("/alert_id")
+@router.delete("/{alert_id}")
 async def delete_alert_route(
     alert_id: str,
     current_user=Depends(
@@ -100,7 +102,7 @@ async def delete_alert_route(
     return await delete_existing_alert(alert_id)
 
 
-@router.patch("/alert_id/assign")
+@router.patch("/{alert_id}/assign")
 async def assign_alert_route(
     alert_id: str,
     request: AlertAssignRequest,
@@ -118,7 +120,7 @@ async def assign_alert_route(
     )
 
 
-@router.patch("/alert_id/acknowledge")
+@router.patch("/{alert_id}/acknowledge")
 async def acknowledge_alert_route(
     alert_id: str,
     current_user=Depends(
@@ -133,7 +135,7 @@ async def acknowledge_alert_route(
     return await acknowledge_existing_alert(alert_id)
 
 
-@router.patch("/alert_id/resolve")
+@router.patch("/{alert_id}/resolve")
 async def resolve_alert_route(
     alert_id: str,
     request: AlertResolveRequest,

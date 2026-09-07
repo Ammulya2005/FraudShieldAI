@@ -14,16 +14,20 @@ async def create_fraud_case(case_data: dict):
     return str(result.inserted_id)
 
 
-async def get_all_fraud_cases():
+async def get_all_fraud_cases(page: int = 1, page_size: int = 50):
     fraud_cases = []
 
     async for fraud_case in db[
         FRAUD_CASES_COLLECTION
-    ].find().sort("created_at", -1):
+    ].find().sort("created_at", -1).skip((page - 1) * page_size).limit(page_size):
         fraud_case["_id"] = str(fraud_case["_id"])
         fraud_cases.append(fraud_case)
 
     return fraud_cases
+
+
+async def count_fraud_cases():
+    return await db[FRAUD_CASES_COLLECTION].count_documents({})
 
 
 async def get_fraud_case_by_case_id(case_id: str):

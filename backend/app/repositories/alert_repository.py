@@ -14,16 +14,20 @@ async def create_alert(alert_data: dict):
     return str(result.inserted_id)
 
 
-async def get_all_alerts():
+async def get_all_alerts(page: int = 1, page_size: int = 50):
     alerts = []
 
     async for alert in db[
         ALERTS_COLLECTION
-    ].find().sort("created_at", -1):
+    ].find().sort("created_at", -1).skip((page - 1) * page_size).limit(page_size):
         alert["_id"] = str(alert["_id"])
         alerts.append(alert)
 
     return alerts
+
+
+async def count_alerts():
+    return await db[ALERTS_COLLECTION].count_documents({})
 
 
 async def get_alert_by_alert_id(alert_id: str):

@@ -28,7 +28,8 @@ export function renderAlerts() {
 }
 
 export async function initAlertsEvents() {
-  const alerts = await API.getAlerts().catch(() => []);
+  const response = await API.getAlerts().catch(() => ({ items: [] }));
+  const alerts = response.items || [];
   const tbody = document.getElementById('alerts-tbody');
   if (!tbody) return;
 

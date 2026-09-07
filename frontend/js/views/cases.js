@@ -27,7 +27,8 @@ export function renderCases() {
 }
 
 export async function initCasesEvents() {
-  const cases = await API.getFraudCases().catch(() => []);
+  const response = await API.getFraudCases().catch(() => ({ items: [] }));
+  const cases = response.items || [];
   const tbody = document.getElementById('cases-tbody');
   if (!tbody) return;
 

@@ -51,13 +51,16 @@ def require_roles(allowed_roles: list[str]):
             for role in allowed_roles
         ]
 
-        # Default role
-        if not user_roles:
-            user_roles = ["user"]
-
         # Super admin bypass
         if "super_admin" in user_roles:
             return current_user
+
+        # An unassigned account must not inherit application privileges.
+        if not user_roles:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Access denied: no role is assigned to this account"
+            )
 
         # Check permission
         if not any(

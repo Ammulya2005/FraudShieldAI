@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 
 from backend.app.core.rbac import (
     require_roles
@@ -41,6 +41,8 @@ async def create_fraud_case_route(
 
 @router.get("")
 async def get_all_fraud_cases_route(
+    page: int = Query(1, ge=1),
+    page_size: int = Query(50, ge=1, le=50),
     current_user=Depends(
         require_roles([
             "analyst",
@@ -50,10 +52,10 @@ async def get_all_fraud_cases_route(
         ])
     )
 ):
-    return await fetch_all_fraud_cases()
+    return await fetch_all_fraud_cases(page, page_size)
 
 
-@router.get("/case_id")
+@router.get("/{case_id}")
 async def get_fraud_case_route(
     case_id: str,
     current_user=Depends(
@@ -68,7 +70,7 @@ async def get_fraud_case_route(
     return await fetch_fraud_case(case_id)
 
 
-@router.put("/case_id")
+@router.put("/{case_id}")
 async def update_fraud_case_route(
     case_id: str,
     fraud_case: FraudCaseUpdate,
@@ -86,7 +88,7 @@ async def update_fraud_case_route(
     )
 
 
-@router.delete("/case_id")
+@router.delete("/{case_id}")
 async def delete_fraud_case_route(
     case_id: str,
     current_user=Depends(
@@ -99,7 +101,7 @@ async def delete_fraud_case_route(
     return await delete_existing_fraud_case(case_id)
 
 
-@router.patch("/case_id/assign")
+@router.patch("/{case_id}/assign")
 async def assign_fraud_case_route(
     case_id: str,
     request: FraudCaseAssignRequest,
@@ -117,7 +119,7 @@ async def assign_fraud_case_route(
     )
 
 
-@router.patch("/case_id/close")
+@router.patch("/{case_id}/close")
 async def close_fraud_case_route(
     case_id: str,
     request: FraudCaseCloseRequest,

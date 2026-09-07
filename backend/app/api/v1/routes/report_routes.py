@@ -20,7 +20,7 @@ async def list_reports(
 ):
     return {"report_type": report_type, "reports": []}
 
-@router.get("/report_id")
+@router.get("/{report_id}")
 async def get_report(
     report_id: str,
     current_user=Depends(require_roles(["analyst", "fraud_manager", "admin", "super_admin"]))

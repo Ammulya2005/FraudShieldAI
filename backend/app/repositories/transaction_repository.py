@@ -15,12 +15,12 @@ async def create_transaction(
     return str(result.inserted_id)
 
 
-async def get_all_transactions():
+async def get_all_transactions(page: int = 1, page_size: int = 50):
     transactions = []
 
     async for transaction in db[
         TRANSACTIONS_COLLECTION
-    ].find():
+    ].find().skip((page - 1) * page_size).limit(page_size):
         transaction["_id"] = str(
             transaction["_id"]
         )
@@ -104,3 +104,7 @@ async def get_legitimate_transactions():
         transactions.append(transaction)
 
     return transactions
+
+
+async def count_transactions():
+    return await db[TRANSACTIONS_COLLECTION].count_documents({})

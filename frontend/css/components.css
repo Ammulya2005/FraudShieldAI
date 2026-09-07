@@ -111,6 +111,41 @@
   border-color: var(--accent-primary);
 }
 
+.password-field {
+  position: relative;
+}
+
+.password-field .form-control {
+  width: 100%;
+  padding-right: 4.5rem;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 0.65rem;
+  transform: translateY(-50%);
+  border: 0;
+  background: transparent;
+  color: var(--accent-primary);
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.password-toggle:hover,
+.password-toggle:focus-visible {
+  color: var(--text-main);
+}
+
+.login-logo {
+  width: 3rem;
+  height: 3rem;
+  display: block;
+  margin: 0 auto 1rem;
+  object-fit: contain;
+}
+
 /* Badges */
 .badge {
   padding: 0.25rem 0.6rem;
@@ -151,4 +186,10 @@
 @keyframes slideIn {
   from { transform: translateX(100%); opacity: 0; }
   to { transform: translateX(0); opacity: 1; }
+}
+
+@media (max-width: 900px) {
+  .grid-2col { grid-template-columns: 1fr; }
+  .table-container { overflow-x: auto; }
+  .data-table { min-width: 680px; }
 }

@@ -28,7 +28,8 @@ export function renderAdmin() {
 }
 
 export async function initAdminEvents() {
-  const users = await API.getUsers().catch(() => []);
+  const response = await API.getUsers().catch(() => ({ items: [] }));
+  const users = response.items || [];
   const tbody = document.getElementById('users-tbody');
   if (tbody && Array.isArray(users) && users.length > 0) {
     tbody.innerHTML = users.map(u => `
@@ -36,7 +37,7 @@ export async function initAdminEvents() {
         <td><code>${u.id || u._id}</code></td>
         <td>${u.username}</td>
         <td>${u.email}</td>
-        <td><span class="badge badge-info">${u.role || 'Analyst'}</span></td>
+        <td><span class="badge badge-info">${Array.isArray(u.roles) && u.roles.length ? u.roles.join(', ') : (u.role || 'Unknown role')}</span></td>
         <td><span style="color: var(--risk-low);">Active</span></td>
       </tr>
     `).join('');

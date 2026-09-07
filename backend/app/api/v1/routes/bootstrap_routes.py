@@ -10,8 +10,8 @@ router = APIRouter(
 )
 
 
-@router.post("/super-admin/email")
+@router.post("/{super_admin_email}")
 async def bootstrap_super_admin(
-    email: str
+    super_admin_email: str
 ):
-    return await make_super_admin(email)
+    return await make_super_admin(super_admin_email)

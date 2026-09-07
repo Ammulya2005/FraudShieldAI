@@ -8,6 +8,7 @@ from backend.ML.predictor import predict_transaction
 from backend.app.repositories.transaction_repository import (
     create_transaction,
     get_all_transactions,
+    count_transactions,
     get_transaction_by_id,
     get_high_risk_transactions,
     get_fraudulent_transactions,
@@ -172,8 +173,10 @@ async def create_new_transaction(transaction):
     }
 
 
-async def fetch_all_transactions():
-    return await get_all_transactions()
+async def fetch_all_transactions(page: int = 1, page_size: int = 50):
+    transactions = await get_all_transactions(page, page_size)
+    total = await count_transactions()
+    return {"items": transactions, "page": page, "page_size": page_size, "total": total, "pages": (total + page_size - 1) // page_size}
 
 
 async def fetch_transaction_by_id(

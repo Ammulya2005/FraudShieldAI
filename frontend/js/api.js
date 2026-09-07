@@ -92,8 +92,8 @@ export const API = {
   },
 
   // Transactions
-  async getTransactions() {
-    return this.request('/api/v1/transactions');
+  async getTransactions(page = 1, pageSize = 50) {
+    return this.request(`/api/v1/transactions?page=${page}&page_size=${pageSize}`);
   },
 
   async createTransaction(payload) {
@@ -101,8 +101,8 @@ export const API = {
   },
 
   // Alerts
-  async getAlerts() {
-    return this.request('/api/v1/alerts');
+  async getAlerts(page = 1, pageSize = 50) {
+    return this.request(`/api/v1/alerts?page=${page}&page_size=${pageSize}`);
   },
 
   async resolveAlert(alertId, note) {
@@ -113,8 +113,8 @@ export const API = {
   },
 
   // Cases
-  async getFraudCases() {
-    return this.request('/api/v1/fraud-cases');
+  async getFraudCases(page = 1, pageSize = 50) {
+    return this.request(`/api/v1/fraud-cases?page=${page}&page_size=${pageSize}`);
   },
 
   async closeCase(caseId, resolution, review_notes) {
@@ -150,8 +150,8 @@ export const API = {
   },
 
   // Administration
-  async getUsers() {
-    return this.request('/api/v1/users/');
+  async getUsers(page = 1, pageSize = 50) {
+    return this.request(`/api/v1/users/?page=${page}&page_size=${pageSize}`);
   },
 
   async getAdminMetrics() {

@@ -20,7 +20,7 @@ async def update_settings(
 ):
     return {"updated": settings}
 
-@router.get("/setting_key")
+@router.get("/{setting_key}")
 async def get_setting(
     setting_key: str,
     current_user=Depends(require_roles(["admin", "super_admin"]))

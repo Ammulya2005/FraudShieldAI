@@ -20,14 +20,14 @@ async def list_notifications(
 ):
     return {"user_id": user_id, "notifications": []}
 
-@router.get("/notification_id")
+@router.get("/{notification_id}")
 async def get_notification(
     notification_id: str,
     current_user=Depends(require_roles(["analyst", "fraud_manager", "admin", "super_admin"]))
 ):
     return {"notification_id": notification_id, "notification": None}
 
-@router.delete("/notification_id")
+@router.delete("/{notification_id}")
 async def delete_notification(
     notification_id: str,
     current_user=Depends(require_roles(["admin", "super_admin"]))

@@ -14,27 +14,27 @@
   <div id="app" class="app-layout">
     <aside id="sidebar" class="sidebar hidden">
       <div class="brand">
-        <div class="shield-icon">🛡️</div>
+        <img class="brand-logo" src="assets/images/Fraud_logo.jpeg" alt="FraudShield AI logo" />
         <h2>FraudShield<span>AI</span></h2>
       </div>
       
       <nav class="nav-menu">
-        <a href="#/dashboard" class="nav-item" data-role="all">
+        <a href="#/dashboard" class="nav-item" data-role="analyst,fraud_manager,admin,super_admin">
           <span class="icon">📊</span> Overview
         </a>
-        <a href="#/transactions" class="nav-item" data-role="all">
+        <a href="#/transactions" class="nav-item" data-role="analyst,fraud_manager,admin,super_admin">
           <span class="icon">⚡</span> Transactions
         </a>
-        <a href="#/alerts" class="nav-item" data-role="analyst,manager,admin">
+        <a href="#/alerts" class="nav-item" data-role="analyst,fraud_manager,admin">
           <span class="icon">🚨</span> Alerts
         </a>
-        <a href="#/cases" class="nav-item" data-role="analyst,manager,admin">
+        <a href="#/cases" class="nav-item" data-role="analyst,fraud_manager,admin">
           <span class="icon">📁</span> Fraud Cases
         </a>
-        <a href="#/models" class="nav-item" data-role="manager,admin">
+        <a href="#/models" class="nav-item" data-role="fraud_manager,admin">
           <span class="icon">🧠</span> ML Models
         </a>
-        <a href="#/admin" class="nav-item" data-role="admin">
+        <a href="#/admin" class="nav-item" data-role="admin,super_admin">
           <span class="icon">⚙️</span> Administration
         </a>
       </nav>

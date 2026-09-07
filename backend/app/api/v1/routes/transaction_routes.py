@@ -5,6 +5,7 @@ from fastapi import (
     APIRouter,
     Depends
 )
+from fastapi import Query
 
 from backend.app.schemas.transaction_schema import (
     TransactionCreate
@@ -52,6 +53,8 @@ async def create_transaction_route(
 # Analyst, Fraud Manager, Admin, Superadmin
 @router.get("")
 async def get_transactions_route(
+    page: int = Query(1, ge=1),
+    page_size: int = Query(50, ge=1, le=50),
     current_user=Depends(
         require_roles(
             [
@@ -64,7 +67,7 @@ async def get_transactions_route(
     )
 ):
 
-    return await fetch_all_transactions()
+    return await fetch_all_transactions(page, page_size)
 
 
 # High Risk Transactions
@@ -122,7 +125,7 @@ async def get_legitimate_route(
 
 
 # Transaction By ID
-@router.get("/transaction_id")
+@router.get("/{transaction_id}")
 async def get_transaction_by_id_route(
     transaction_id: str,
     current_user=Depends(

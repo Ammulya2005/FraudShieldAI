@@ -2,15 +2,17 @@ from fastapi import HTTPException
 
 from backend.app.repositories.user_repository import (
     get_all_users,
+    count_users,
     get_user_by_id,
     update_user,
     delete_user
 )
 
 
-async def fetch_all_users():
-
-    return await get_all_users()
+async def fetch_all_users(page: int = 1, page_size: int = 50):
+    users = await get_all_users(page, page_size)
+    total = await count_users()
+    return {"items": users, "page": page, "page_size": page_size, "total": total, "pages": (total + page_size - 1) // page_size}
 
 
 async def fetch_user_by_id(

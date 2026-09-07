@@ -32,7 +32,8 @@ export function renderTransactions() {
 
 export async function initTransactionsEvents() {
   async function loadData() {
-    const data = await API.getTransactions().catch(() => []);
+    const response = await API.getTransactions().catch(() => ({ items: [] }));
+    const data = response.items || [];
     const tbody = document.getElementById('tx-full-tbody');
     if (!tbody) return;
 
