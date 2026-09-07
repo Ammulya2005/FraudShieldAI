@@ -360,3 +360,32 @@
 2026-09-07 14:11:46,680 | INFO | FraudShieldAI | Connected to MongoDB
 2026-09-07 14:14:35,735 | INFO | FraudShieldAI | Connected to MongoDB
 2026-09-07 14:18:43,851 | INFO | FraudShieldAI | Connected to MongoDB
+2026-09-07 15:15:52,971 | INFO | FraudShieldAI | Closed MongoDB connection
+2026-09-07 15:15:55,985 | INFO | FraudShieldAI | Closed MongoDB connection
+2026-09-07 15:16:02,529 | INFO | FraudShieldAI | Closed MongoDB connection
+2026-09-07 15:16:03,774 | INFO | FraudShieldAI | Connected to MongoDB
+2026-09-07 15:16:03,944 | INFO | FraudShieldAI | Connected to MongoDB
+2026-09-07 15:16:06,915 | INFO | FraudShieldAI | Connected to MongoDB
+2026-09-07 15:16:28,346 | INFO | FraudShieldAI | Streaming ingestion loop activated in [kafka] mode with interval=0.50s
+2026-09-07 15:16:29,707 | INFO | FraudShieldAI | Reached target limit of 3 transactions; stopping.
+2026-09-07 15:16:29,707 | INFO | FraudShieldAI | Streaming ingestion loop terminated. Processed 3 records.
+2026-09-07 15:16:40,933 | INFO | FraudShieldAI | Initiating batch ingestion of 5 rows from balanced_creditcard_new.csv
+2026-09-07 15:16:40,996 | ERROR | FraudShieldAI | Failed processing row 1: time data '01-01-2025 16:23' does not match format '%Y-%m-%d %H:%M:%S'
+2026-09-07 15:16:40,999 | ERROR | FraudShieldAI | Failed processing row 2: time data '01-01-2025 02:44' does not match format '%Y-%m-%d %H:%M:%S'
+2026-09-07 15:16:41,000 | ERROR | FraudShieldAI | Failed processing row 3: time data '02-01-2025 01:50' does not match format '%Y-%m-%d %H:%M:%S'
+2026-09-07 15:16:41,001 | ERROR | FraudShieldAI | Failed processing row 4: time data '01-01-2025 23:25' does not match format '%Y-%m-%d %H:%M:%S'
+2026-09-07 15:16:41,002 | ERROR | FraudShieldAI | Failed processing row 5: time data '01-01-2025 11:22' does not match format '%Y-%m-%d %H:%M:%S'
+2026-09-07 15:16:41,003 | INFO | FraudShieldAI | Batch ingestion finished: {'file': 'backend\\ML\\data\\processed\\balanced_creditcard_new.csv', 'total_rows': 5, 'succeeded': 0, 'failed': 5, 'frauds_flagged': 0, 'alerts_triggered': 0, 'duration_seconds': 0.07, 'rate_records_per_sec': 0.0, 'errors': ["Row 1 error: time data '01-01-2025 16:23' does not match format '%Y-%m-%d %H:%M:%S'", "Row 2 error: time data '01-01-2025 02:44' does not match format '%Y-%m-%d %H:%M:%S'", "Row 3 error: time data '02-01-2025 01:50' does not match format '%Y-%m-%d %H:%M:%S'", "Row 4 error: time data '01-01-2025 23:25' does not match format '%Y-%m-%d %H:%M:%S'", "Row 5 error: time data '01-01-2025 11:22' does not match format '%Y-%m-%d %H:%M:%S'"]}
+2026-09-07 15:16:49,183 | INFO | FraudShieldAI | Closed MongoDB connection
+2026-09-07 15:16:52,208 | INFO | FraudShieldAI | Connected to MongoDB
+2026-09-07 15:16:55,262 | INFO | FraudShieldAI | Closed MongoDB connection
+2026-09-07 15:16:56,826 | INFO | FraudShieldAI | Initiating batch ingestion of 5 rows from balanced_creditcard_new.csv
+2026-09-07 15:16:57,222 | INFO | FraudShieldAI | [5/5] Ingested successfully (Frauds: 4)
+2026-09-07 15:16:57,223 | INFO | FraudShieldAI | Batch ingestion finished: {'file': 'backend\\ML\\data\\processed\\balanced_creditcard_new.csv', 'total_rows': 5, 'succeeded': 5, 'failed': 0, 'frauds_flagged': 4, 'alerts_triggered': 4, 'duration_seconds': 0.4, 'rate_records_per_sec': 12.5, 'errors': []}
+2026-09-07 15:16:57,510 | INFO | FraudShieldAI | Closed MongoDB connection
+2026-09-07 15:16:58,322 | INFO | FraudShieldAI | Connected to MongoDB
+2026-09-07 15:17:00,230 | INFO | FraudShieldAI | Connected to MongoDB
+2026-09-07 15:23:20,664 | INFO | FraudShieldAI | Closed MongoDB connection
+2026-09-07 15:23:30,165 | INFO | FraudShieldAI | Connected to MongoDB
+2026-09-07 15:24:23,449 | INFO | FraudShieldAI | Streaming ingestion loop activated in [kafka] mode with interval=2.00s
+2026-09-07 15:31:13,704 | INFO | FraudShieldAI | Closed MongoDB connection
