@@ -76,9 +76,12 @@ export const API = {
   },
 
   async getLiveTransactions(limit = 10) {
-    return this.request(`/api/v1/dashboard/live-transactions?limit=${limit}`);
-  },
-
+  const response = await this.request(`/api/v1/stream/recent`);
+  return response.stream_records || [];
+},
+async getStreamMetrics() {
+  return this.request('/api/v1/stream/metrics');
+},
   async getLiveAlerts(limit = 10) {
     return this.request(`/api/v1/dashboard/live-alerts?limit=${limit}`);
   },
@@ -92,7 +95,7 @@ export const API = {
   },
 
   // Transactions
-  async getTransactions(page = 1, pageSize = 50) {
+  async getTransactions(page = 1, pageSize = 10) {
     return this.request(`/api/v1/transactions?page=${page}&page_size=${pageSize}`);
   },
 
@@ -101,7 +104,7 @@ export const API = {
   },
 
   // Alerts
-  async getAlerts(page = 1, pageSize = 50) {
+  async getAlerts(page = 1, pageSize = 10) {
     return this.request(`/api/v1/alerts?page=${page}&page_size=${pageSize}`);
   },
 
@@ -113,7 +116,7 @@ export const API = {
   },
 
   // Cases
-  async getFraudCases(page = 1, pageSize = 50) {
+  async getFraudCases(page = 1, pageSize = 10) {
     return this.request(`/api/v1/fraud-cases?page=${page}&page_size=${pageSize}`);
   },
 
@@ -150,7 +153,7 @@ export const API = {
   },
 
   // Administration
-  async getUsers(page = 1, pageSize = 50) {
+  async getUsers(page = 1, pageSize = 10) {
     return this.request(`/api/v1/users/?page=${page}&page_size=${pageSize}`);
   },
 

@@ -43,7 +43,7 @@ async def create_alert_route(
 @router.get("")
 async def get_all_alerts_route(
     page: int = Query(1, ge=1),
-    page_size: int = Query(50, ge=1, le=50),
+    page_size: int = Query(10, ge=1, le=5000),
     current_user=Depends(
         require_roles([
             "analyst",

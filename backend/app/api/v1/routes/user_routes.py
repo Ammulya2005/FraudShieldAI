@@ -33,7 +33,7 @@ router = APIRouter(
 @router.get("/")
 async def get_all_users(
     page: int = Query(1, ge=1),
-    page_size: int = Query(50, ge=1, le=50),
+    page_size: int = Query(10, ge=1, le=5000),
     current_user=Depends(
         require_roles(
             ["admin", "super_admin"]

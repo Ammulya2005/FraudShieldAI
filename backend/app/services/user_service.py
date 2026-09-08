@@ -8,11 +8,27 @@ from backend.app.repositories.user_repository import (
     delete_user
 )
 
+from backend.app.repositories.user_role_repository import (
+    get_user_roles
+)
+
 
 async def fetch_all_users(page: int = 1, page_size: int = 50):
     users = await get_all_users(page, page_size)
     total = await count_users()
-    return {"items": users, "page": page, "page_size": page_size, "total": total, "pages": (total + page_size - 1) // page_size}
+
+    # Add RBAC roles to every user
+    for user in users:
+        user_id = str(user["_id"])
+        user["roles"] = await get_user_roles(user_id)
+
+    return {
+        "items": users,
+        "page": page,
+        "page_size": page_size,
+        "total": total,
+        "pages": (total + page_size - 1) // page_size
+    }
 
 
 async def fetch_user_by_id(
@@ -28,6 +44,10 @@ async def fetch_user_by_id(
         )
 
     user["_id"] = str(user["_id"])
+
+    user["roles"] = await get_user_roles(
+        user_id
+    )
 
     return user
 
