@@ -324,5 +324,60 @@ window.addEventListener('hashchange', router);
 window.addEventListener('DOMContentLoaded', () => {
   router();
 });
+
+function initMobileSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const toggle = document.getElementById('mobile-menu-toggle');
+    const overlay = document.getElementById('mobile-sidebar-overlay');
+
+    if (!sidebar || !toggle || !overlay) {
+        return;
+    }
+
+    function openSidebar() {
+        sidebar.classList.add('mobile-open');
+        overlay.classList.add('active');
+
+        toggle.setAttribute('aria-expanded', 'true');
+        toggle.setAttribute('aria-label', 'Close navigation');
+        toggle.textContent = '✕';
+    }
+
+    function closeSidebar() {
+        sidebar.classList.remove('mobile-open');
+        overlay.classList.remove('active');
+
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.setAttribute('aria-label', 'Open navigation');
+        toggle.textContent = '☰';
+    }
+
+    toggle.addEventListener('click', () => {
+        if (sidebar.classList.contains('mobile-open')) {
+            closeSidebar();
+        } else {
+            openSidebar();
+        }
+    });
+
+    overlay.addEventListener('click', closeSidebar);
+
+    /* Close menu after selecting a navigation item */
+    sidebar.addEventListener('click', event => {
+        const link = event.target.closest('a');
+
+        if (link && window.innerWidth <= 768) {
+            closeSidebar();
+        }
+    });
+
+    /* Close sidebar when switching back to desktop */
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 768) {
+            closeSidebar();
+        }
+    });
+}
 initTheme();
 initGlobalSearch();
+initMobileSidebar();

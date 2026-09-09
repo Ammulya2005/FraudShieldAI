@@ -73,7 +73,7 @@ export function renderDashboard() {
         <h3>Live Incoming Stream Anomalies</h3>
 
         <div class="table-container">
-          <table class="data-table">
+          <table class="data-table live-stream-table">
 
             <thead>
               <tr>
@@ -213,39 +213,37 @@ export async function initDashboardEvents() {
             riskScore > 0.7
               ? '<span style="color:var(--risk-critical)">Suspicious</span>'
               : '<span style="color:var(--risk-low)">Cleared</span>';
+return `
+  <tr>
 
-          return `
-            <tr>
+    <td data-label="Tx ID">
+      <code>${tx.transaction_id || tx.id || '-'}</code>
+    </td>
 
-              <td>
-                <code>${tx.transaction_id || tx.id || '-'}</code>
-              </td>
+    <td data-label="User ID">
+      ${tx.user_id ?? '-'}
+    </td>
 
-              <td>
-                ${tx.user_id ?? '-'}
-              </td>
+    <td data-label="Amount">
+      $${Number(tx.transaction_amount || 0).toFixed(2)}
+    </td>
 
-              <td>
-                $${Number(tx.transaction_amount || 0).toFixed(2)}
-              </td>
+    <td data-label="Merchant">
+      ${tx.merchant_category || 'General'}
+    </td>
 
-              <td>
-                ${tx.merchant_category || 'General'}
-              </td>
+    <td data-label="Risk Score">
+      <span class="badge ${badgeClass}">
+        ${(riskScore * 100).toFixed(1)}%
+      </span>
+    </td>
 
-              <td>
-                <span class="badge ${badgeClass}">
-                  ${(riskScore * 100).toFixed(1)}%
-                </span>
-              </td>
+    <td data-label="Status">
+      ${status}
+    </td>
 
-              <td>
-                ${status}
-              </td>
-
-            </tr>
-          `;
-
+  </tr>
+`;
         }).join('');
 
       }

@@ -10,7 +10,7 @@ export function renderTransactions() {
       </div>
 
       <div class="card table-container">
-        <table class="data-table">
+        <table class="data-table transactions-table">
           <thead>
             <tr>
               <th>Timestamp</th>
@@ -75,41 +75,41 @@ export async function initTransactionsEvents() {
 
       if (Array.isArray(data) && data.length > 0) {
         tbody.innerHTML = data.map(tx => `
-          <tr>
-            <td>
-              ${new Date(tx.timestamp || Date.now()).toLocaleString()}
-            </td>
+       <tr>
+  <td data-label="Timestamp">
+    ${new Date(tx.timestamp || Date.now()).toLocaleString()}
+  </td>
 
-            <td>
-              <code>${tx.transaction_id || 'N/A'}</code>
-            </td>
+  <td data-label="Transaction ID">
+    <code>${tx.transaction_id || 'N/A'}</code>
+  </td>
 
-            <td>
-              ${tx.user_id ?? 'N/A'}
-            </td>
+  <td data-label="User ID">
+    ${tx.user_id ?? 'N/A'}
+  </td>
 
-            <td>
-              $${Number(tx.transaction_amount || 0).toFixed(2)}
-            </td>
+  <td data-label="Amount">
+    $${Number(tx.transaction_amount || 0).toFixed(2)}
+  </td>
 
-            <td>
-              ${tx.location || 'N/A'}
-            </td>
+  <td data-label="Location">
+    ${tx.location || 'N/A'}
+  </td>
 
-            <td>
-              ${tx.device_type || 'Unknown'}
-            </td>
+  <td data-label="Device">
+    ${tx.device_type || 'Unknown'}
+  </td>
 
-            <td>
-              <span class="badge ${
-                Number(tx.risk_score) > 0.7
-                  ? 'badge-critical'
-                  : 'badge-low'
-              }">
-                ${(Number(tx.risk_score || 0) * 100).toFixed(0)}
-              </span>
-            </td>
-          </tr>
+  <td data-label="Anomaly Score">
+    <span class="badge ${
+      Number(tx.risk_score) > 0.7
+        ? 'badge-critical'
+        : 'badge-low'
+    }">
+      ${(Number(tx.risk_score || 0) * 100).toFixed(0)}
+    </span>
+  </td>
+</tr>
         `).join('');
       } else {
         tbody.innerHTML = `

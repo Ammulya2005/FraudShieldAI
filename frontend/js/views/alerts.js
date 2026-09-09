@@ -10,7 +10,7 @@ export function renderAlerts() {
       </p>
 
       <div class="card table-container">
-        <table class="data-table">
+        <table class="data-table alerts-table">
           <thead>
             <tr>
               <th>Severity</th>
@@ -68,31 +68,31 @@ export async function initAlertsEvents() {
       if (Array.isArray(alerts) && alerts.length > 0) {
         tbody.innerHTML = alerts.map(a => `
           <tr>
-            <td>
-              <span class="badge badge-${a.severity || 'medium'}">
-                ${a.severity || 'Unknown'}
-              </span>
-            </td>
+          <td data-label="Severity">
+           <span class="badge badge-${a.severity || 'medium'}">
+             ${a.severity || 'Unknown'}
+           </span>
+          </td>
 
-            <td>
-              <code>${a.transaction_id || 'N/A'}</code>
-            </td>
+          <td data-label="Transaction ID">
+            <code>${a.transaction_id || 'N/A'}</code>
+          </td>
 
-            <td>
-              ${a.alert_type || 'N/A'}
-            </td>
+          <td data-label="Alert Type">
+           ${a.alert_type || 'N/A'}
+          </td>
 
-            <td>
-              <strong>
-                ${(Number(a.risk_score || 0) * 100).toFixed(1)}%
-              </strong>
-            </td>
+          <td data-label="Risk Score">
+           <strong>
+             ${(Number(a.risk_score || 0) * 100).toFixed(1)}%
+           </strong>
+        </td>
 
-            <td>
-              ${a.message || 'N/A'}
-            </td>
+        <td data-label="Message">
+          ${a.message || 'N/A'}
+        </td>
 
-           <td>
+        <td data-label="Action">
   ${
     AuthState.canAccess([
       'fraud_manager',
@@ -123,16 +123,21 @@ export async function initAlertsEvents() {
             btn.addEventListener('click', async (e) => {
               const id = e.target.getAttribute('data-id');
 
-              const note = prompt(
-                'Enter resolution notes:'
-              );
+             const confirmed = confirm(
+                 'Are you sure you want to resolve this alert?'
+                );
 
-              if (!note) return;
+                if (!confirmed) return;
 
-              try {
-                await API.resolveAlert(id, note);
+                try {
+                  await API.resolveAlert(
+                   id,
+                  'Alert resolved by authorized user via FraudShieldAI'
+               );
 
-                await loadData();
+               alert('Alert resolved successfully.');
+
+               await loadData();
 
               } catch (error) {
                 console.error(

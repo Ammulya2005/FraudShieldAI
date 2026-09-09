@@ -10,7 +10,7 @@ export function renderCases() {
       </p>
 
       <div class="card table-container">
-        <table class="data-table">
+        <table class="data-table fraud-cases-table">
           <thead>
             <tr>
               <th>Case ID</th>
@@ -66,34 +66,34 @@ export async function initCasesEvents() {
 
       if (Array.isArray(cases) && cases.length > 0) {
         tbody.innerHTML = cases.map(c => `
-          <tr>
-            <td>
-              <code>${c.id || c.case_id || 'N/A'}</code>
-            </td>
+        <tr>
+          <td data-label="Case ID">
+             <code>${c.id || c.case_id || 'N/A'}</code>
+          </td>
 
-            <td>
-              ${c.user_id ?? 'N/A'}
-            </td>
+         <td data-label="User ID">
+           ${c.user_id ?? 'N/A'}
+          </td>
 
-            <td>
-              <span class="badge badge-${c.priority || 'high'}">
-                ${c.priority || 'high'}
-              </span>
-            </td>
+         <td data-label="Priority">
+          <span class="badge badge-${c.priority || 'high'}">
+            ${c.priority || 'high'}
+           </span>
+          </td>
 
-            <td>
-              <strong>${c.final_prediction || 'N/A'}</strong>
-            </td>
+         <td data-label="Model Prediction">
+          <strong>${c.final_prediction || 'N/A'}</strong>
+         </td>
 
-            <td>
-              <button
-                class="btn btn-sm btn-outline-danger btn-close-case"
-                data-id="${c.id || c.case_id}"
-              >
-                Close Case
-              </button>
-            </td>
-          </tr>
+         <td data-label="Actions">
+           <button
+            class="btn btn-sm btn-outline-danger btn-close-case"
+            data-id="${c.id || c.case_id}"
+          >
+           Close Case
+           </button>
+         </td>
+        </tr>
         `).join('');
 
         document
