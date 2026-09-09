@@ -116,3 +116,45 @@ async def get_fraud_case_count():
     return await db[
         FRAUD_CASES_COLLECTION
     ].count_documents({})
+async def search_fraud_cases(search_term: str, limit: int = 20):
+    """
+    Search fraud cases by case ID, transaction ID, user ID,
+    prediction, priority, status, or assigned user.
+    """
+
+    search_term = search_term.strip()
+
+    if not search_term:
+        return []
+
+    regex = {
+        "$regex": search_term,
+        "$options": "i"
+    }
+
+    query = {
+        "$or": [
+            {"case_id": regex},
+            {"transaction_id": regex},
+            {"user_id": regex},
+            {"final_prediction": regex},
+            {"priority": regex},
+            {"status": regex},
+            {"assigned_to": regex}
+        ]
+    }
+
+    fraud_cases = []
+
+    cursor = (
+        db[FRAUD_CASES_COLLECTION]
+        .find(query)
+        .sort("created_at", -1)
+        .limit(limit)
+    )
+
+    async for fraud_case in cursor:
+        fraud_case["_id"] = str(fraud_case["_id"])
+        fraud_cases.append(fraud_case)
+
+    return fraud_cases

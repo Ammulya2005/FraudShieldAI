@@ -98,7 +98,11 @@ async getStreamMetrics() {
   async getTransactions(page = 1, pageSize = 10) {
     return this.request(`/api/v1/transactions?page=${page}&page_size=${pageSize}`);
   },
-
+  async globalSearch(query, limit = 20) {
+  return this.request(
+    `/api/v1/transactions/search?q=${encodeURIComponent(query)}&limit=${limit}`
+  );
+  },
   async createTransaction(payload) {
     return this.request('/api/v1/transactions', { method: 'POST', body: JSON.stringify(payload) });
   },

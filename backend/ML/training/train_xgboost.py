@@ -64,4 +64,10 @@ def train_xgboost_pipeline(dataset_path: str):
         os.path.join(model_dir, "feature_columns.pkl")
     )
     print("\nArtifacts Saved Successfully")
-    return model, X_test_scaled, y_test, validation_score
+    return (
+    model,
+    X_train_scaled,
+    X_test_scaled,
+    y_test,
+    validation_score
+    )

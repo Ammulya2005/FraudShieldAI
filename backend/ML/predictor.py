@@ -232,12 +232,10 @@ class FraudPredictor:
         )
 
         final_prediction = (
-            "fraud"
-            if xgb_prediction == 1
-            or isolation_prediction == -1
-            or final_risk_score >= 0.65
-            else "legitimate"
-        )
+         "fraud"
+          if final_risk_score >= 0.65
+          else "legitimate"
+       )
 
         return {
             "xgboost_prediction": xgb_prediction,

@@ -12,7 +12,8 @@ from backend.app.repositories.transaction_repository import (
     get_transaction_by_id,
     get_high_risk_transactions,
     get_fraudulent_transactions,
-    get_legitimate_transactions
+    get_legitimate_transactions,
+    search_transactions
 )
 
 from backend.app.services.fraud_case_service import (
@@ -23,7 +24,13 @@ from backend.app.services.alert_service import (
     create_new_alert
 )
 
+from backend.app.repositories.fraud_case_repository import (
+    search_fraud_cases
+)
 
+from backend.app.repositories.alert_repository import (
+    search_alerts
+)
 def build_case_priority(
     risk_score: float,
     final_prediction: str
@@ -205,3 +212,48 @@ async def fetch_fraudulent_transactions():
 
 async def fetch_legitimate_transactions():
     return await get_legitimate_transactions()
+async def fetch_global_search(
+    search_term: str,
+    limit: int = 20
+):
+    """
+    Search transactions, fraud cases, and alerts.
+    """
+
+    search_term = search_term.strip()
+
+    if not search_term:
+        return {
+            "query": search_term,
+            "transactions": [],
+            "fraud_cases": [],
+            "alerts": [],
+            "total": 0
+        }
+
+    transactions = await search_transactions(
+        search_term,
+        limit
+    )
+
+    fraud_cases = await search_fraud_cases(
+        search_term,
+        limit
+    )
+
+    alerts = await search_alerts(
+        search_term,
+        limit
+    )
+
+    return {
+        "query": search_term,
+        "transactions": transactions,
+        "fraud_cases": fraud_cases,
+        "alerts": alerts,
+        "total": (
+            len(transactions)
+            + len(fraud_cases)
+            + len(alerts)
+        )
+    }

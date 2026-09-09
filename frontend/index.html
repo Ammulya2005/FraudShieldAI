@@ -1,69 +1,307 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FraudShield AI — Real-Time Detection Hub</title>
-  <link rel="stylesheet" href="css/main.css" />
-  <link rel="stylesheet" href="css/components.css" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <title>
+    FraudShield AI — Real-Time Detection Hub
+  </title>
+
+  <!-- Main application styles -->
+  <link
+    rel="stylesheet"
+    href="css/main.css"
+  />
+
+  <!-- Component styles -->
+  <link
+    rel="stylesheet"
+    href="css/components.css"
+  />
+
+  <!-- Chart.js -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/chart.js"
+  ></script>
+
 </head>
-<body class="dark-theme">
+
+
+<body>
+
+  <!-- Toast notifications -->
   <div id="toast-container"></div>
 
-  <div id="app" class="app-layout">
-    <aside id="sidebar" class="sidebar hidden">
+
+  <!-- =====================================================
+       APPLICATION
+       ===================================================== -->
+
+  <div
+    id="app"
+    class="app-layout"
+  >
+
+
+    <!-- ===================================================
+         SIDEBAR
+         =================================================== -->
+
+    <aside
+      id="sidebar"
+      class="sidebar hidden"
+    >
+
+      <!-- Brand -->
+
       <div class="brand">
-        <img class="brand-logo" src="assets/images/Fraud_logo.jpeg" alt="FraudShield AI logo" />
-        <h2>FraudShield<span>AI</span></h2>
+
+       <img
+        class="brand-logo"
+        src="assets/images/FraudShield_dashboard_logo.jpeg"
+        alt="FraudShield AI logo"
+      />
+
+        <h2>
+          FraudShield<span>AI</span>
+        </h2>
+
       </div>
-      
+
+
+      <!-- Navigation -->
+
       <nav class="nav-menu">
-        <a href="#/dashboard" class="nav-item" data-role="analyst,fraud_manager,admin,super_admin">
-          <span class="icon">📊</span> Overview
+
+        <a
+          href="#/dashboard"
+          class="nav-item"
+          data-role="analyst,fraud_manager,admin,super_admin"
+        >
+          <span class="icon">📊</span>
+          Overview
         </a>
-        <a href="#/transactions" class="nav-item" data-role="analyst,fraud_manager,admin,super_admin">
-          <span class="icon">⚡</span> Transactions
+
+
+        <a
+          href="#/transactions"
+          class="nav-item"
+          data-role="analyst,fraud_manager,admin,super_admin"
+        >
+          <span class="icon">⚡</span>
+          Transactions
         </a>
-        <a href="#/alerts" class="nav-item" data-role="analyst,fraud_manager,admin">
-          <span class="icon">🚨</span> Alerts
+
+
+        <a
+          href="#/alerts"
+          class="nav-item"
+          data-role="analyst,fraud_manager,admin"
+        >
+          <span class="icon">🚨</span>
+          Alerts
         </a>
-        <a href="#/cases" class="nav-item" data-role="analyst,fraud_manager,admin">
-          <span class="icon">📁</span> Fraud Cases
+
+
+        <a
+          href="#/cases"
+          class="nav-item"
+          data-role="analyst,fraud_manager,admin"
+        >
+          <span class="icon">📁</span>
+          Fraud Cases
         </a>
-        <a href="#/models" class="nav-item" data-role="fraud_manager,admin">
-          <span class="icon">🧠</span> ML Models
+
+
+        <a
+          href="#/models"
+          class="nav-item"
+          data-role="fraud_manager,admin"
+        >
+          <span class="icon">🧠</span>
+          ML Models
         </a>
-        <a href="#/admin" class="nav-item" data-role="admin,super_admin">
-          <span class="icon">⚙️</span> Administration
+
+
+        <a
+          href="#/admin"
+          class="nav-item"
+          data-role="admin,super_admin"
+        >
+          <span class="icon">⚙️</span>
+          Administration
         </a>
+
       </nav>
 
+
+      <!-- User Profile -->
+
       <div class="user-profile-widget">
+
         <div class="user-meta">
-          <span id="user-display-name" class="user-name">Loading...</span>
-          <span id="user-display-role" class="user-role badge badge-info">Role</span>
+
+          <span
+            id="user-display-name"
+            class="user-name"
+          >
+            Loading...
+          </span>
+
+          <span
+            id="user-display-role"
+            class="user-role badge badge-info"
+          >
+            Role
+          </span>
+
         </div>
-        <button id="btn-logout" class="btn btn-outline-danger btn-sm">Sign Out</button>
+
+
+        <button
+          id="btn-logout"
+          class="btn btn-outline-danger btn-sm"
+        >
+          Sign Out
+        </button>
+
       </div>
+
     </aside>
 
+
+
+    <!-- ===================================================
+         MAIN VIEW
+         =================================================== -->
+
     <main class="main-viewport">
-      <header id="topbar" class="topbar hidden">
+
+
+      <!-- =================================================
+           TOPBAR
+           ================================================= -->
+
+      <header
+        id="topbar"
+        class="topbar hidden"
+      >
+
+        <!-- System status -->
+
         <div class="system-status">
+
           <span class="live-indicator"></span>
-          <span id="kafka-stream-status">Engine: Polling</span>
+
+          <span id="kafka-stream-status">
+            Engine: Polling
+          </span>
+
         </div>
+
+        <!-- Global Search -->
+
+        <div class="global-search">
+
+          <div class="global-search-input-wrapper">
+
+            <span class="global-search-icon">⌕</span>
+
+            <input
+              id="global-search-input"
+              class="global-search-input"
+              type="search"
+              placeholder="Search transactions, cases, alerts..."
+              autocomplete="off"
+              aria-label="Global search"
+            />
+
+            <span
+              id="global-search-loading"
+              class="global-search-loading hidden"
+            >
+              ...
+            </span>
+
+          </div>
+
+          <div
+            id="global-search-results"
+            class="global-search-results hidden"
+          >
+          </div>
+
+        </div>
+
+
+        <!-- Topbar actions -->
+
         <div class="topbar-actions">
-          <button id="btn-stream-toggle" class="btn btn-sm btn-primary">Start Stream Ingestion</button>
+        <!-- Topbar actions -->
+
+        <div class="topbar-actions">
+
+
+          <!-- Theme toggle -->
+
+          <button
+            id="btn-theme-toggle"
+            class="btn btn-sm btn-theme"
+            type="button"
+            aria-label="Toggle theme"
+            title="Toggle theme"
+          >
+            🌙 Dark
+          </button>
+
+
+          <!-- Stream toggle -->
+
+          <button
+            id="btn-stream-toggle"
+            class="btn btn-sm btn-primary"
+          >
+            Start Stream Ingestion
+          </button>
+
         </div>
+
       </header>
 
-      <section id="router-view" class="view-container">
-        </section>
+
+
+      <!-- =================================================
+           ROUTER VIEW
+           ================================================= -->
+
+      <section
+        id="router-view"
+        class="view-container"
+      >
+      </section>
+
+
     </main>
+
   </div>
 
-  <script type="module" src="js/router.js"></script>
+
+  <!-- =====================================================
+       APPLICATION JAVASCRIPT
+       ===================================================== -->
+
+  <script
+    type="module"
+    src="js/router.js"
+  ></script>
+
 </body>
+
 </html>

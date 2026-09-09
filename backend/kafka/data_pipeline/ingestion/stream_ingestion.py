@@ -1,22 +1,23 @@
 import asyncio
 import json
-import logging
 import time
 from datetime import datetime, timezone
 from typing import Any, Dict, Optional
 
 from backend.app.core.logger import logger
-from backend.app.schemas.transaction_schema import TransactionCreate
-from backend.app.services.transaction_service import create_new_transaction
 from backend.kafka.config import (
     KAFKA_BOOTSTRAP_SERVERS,
     KAFKA_TOPIC,
-    PRODUCER_INTERVAL_SECONDS
+    PRODUCER_INTERVAL_SECONDS,
 )
-from backend.kafka.data_pipeline.streaming.transaction_generator import generate_transaction
+from backend.kafka.data_pipeline.streaming.transaction_generator import (
+    generate_transaction,
+)
+from backend.kafka.consumers.fraud_consumer import fraud_consumer
 
 try:
     from kafka import KafkaAdminClient, KafkaProducer
+
     KAFKA_AVAILABLE = True
 except ImportError:
     KAFKA_AVAILABLE = False
@@ -24,14 +25,42 @@ except ImportError:
 
 class StreamIngestionManager:
     """
-    Unified real-time streaming ingestion manager for FraudShield AI.
-    Coordinates transaction generation, optional Kafka stream broadcasting,
-    ML pipeline evaluation, and database persistence.
+    Dashboard-controlled Kafka streaming manager.
+
+    Architecture:
+
+        Transaction Generator
+                |
+                v
+        Kafka Producer
+                |
+                v
+        Kafka Topic
+                |
+                v
+        Fraud Kafka Consumer
+                |
+                v
+        ML Prediction
+                |
+                v
+        MongoDB
+                |
+                v
+        Alerts / Cases
+                |
+                v
+        Dashboard
+
+    IMPORTANT:
+    This manager does NOT directly call create_new_transaction().
+    Database ingestion happens only through the Kafka consumer.
     """
 
     def __init__(self):
         self.is_running: bool = False
-        self.mode: str = "idle"  # 'kafka', 'direct_simulation', 'idle'
+        self.mode: str = "idle"
+
         self._task: Optional[asyncio.Task] = None
         self._producer = None
 
@@ -44,243 +73,616 @@ class StreamIngestionManager:
             "last_ingested_at": None,
             "messages_per_second": 0.0,
             "recent_latency_ms": 0.0,
-            "active_mode": "idle"
+            "active_mode": "idle",
         }
 
+        self._produced_count = 0
+        self._loop_start_time: Optional[float] = None
+
+    # ---------------------------------------------------------
+    # Kafka availability
+    # ---------------------------------------------------------
+
     def is_kafka_reachable(self, timeout_ms: int = 1500) -> bool:
-        """Check if Kafka cluster is accessible."""
+        """Check whether Kafka is reachable."""
+
         if not KAFKA_AVAILABLE:
             return False
+
+        admin = None
+
         try:
             admin = KafkaAdminClient(
                 bootstrap_servers=KAFKA_BOOTSTRAP_SERVERS,
-                request_timeout_ms=timeout_ms
+                request_timeout_ms=timeout_ms,
             )
-            admin.close()
+
             return True
-        except Exception:
-            return False
-
-    def _get_kafka_producer(self):
-        """Lazy initializer for Kafka producer."""
-        if self._producer is None and KAFKA_AVAILABLE:
-            try:
-                self._producer = KafkaProducer(
-                    bootstrap_servers=KAFKA_BOOTSTRAP_SERVERS,
-                    value_serializer=lambda data: json.dumps(data).encode("utf-8"),
-                    request_timeout_ms=2000,
-                    retries=1
-                )
-            except Exception as exc:
-                logger.warning("Failed to initialize KafkaProducer: %s", exc)
-                self._producer = None
-        return self._producer
-
-    async def ingest_transaction_record(self, raw_tx: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Process a single transaction through schema validation,
-        ML inference scoring, and database storage.
-        """
-        start_ts = time.time()
-        try:
-            # Ensure timestamp exists and is ISO formatted
-            if "timestamp" not in raw_tx or not raw_tx["timestamp"]:
-                raw_tx["timestamp"] = datetime.now(timezone.utc).isoformat()
-
-            # Validate against Pydantic schema
-            tx_model = TransactionCreate(**raw_tx)
-
-            # Ingest into backend transaction service (executes ML inference + DB persistence + alert/case trigger)
-            result = await create_new_transaction(tx_model)
-
-            # Update live telemetry
-            latency_ms = (time.time() - start_ts) * 1000
-            self.metrics["total_ingested"] += 1
-            self.metrics["recent_latency_ms"] = round(latency_ms, 2)
-            self.metrics["last_ingested_at"] = datetime.now(timezone.utc).isoformat()
-
-            prediction = result.get("prediction", {})
-            if prediction.get("final_prediction") == "fraud":
-                self.metrics["fraud_detected"] += 1
-
-            if result.get("alert"):
-                self.metrics["alerts_generated"] += 1
-
-            return {
-                "success": True,
-                "transaction_id": raw_tx.get("transaction_id"),
-                "result": result
-            }
 
         except Exception as exc:
-            self.metrics["errors_count"] += 1
-            logger.error("Ingestion failed for transaction %s: %s", raw_tx.get("transaction_id"), exc)
-            return {
-                "success": False,
-                "transaction_id": raw_tx.get("transaction_id"),
-                "error": str(exc)
-            }
+            logger.warning(
+                "Kafka is not reachable: %s",
+                exc,
+            )
+            return False
+
+        finally:
+            if admin:
+                try:
+                    admin.close()
+                except Exception:
+                    pass
+
+    # ---------------------------------------------------------
+    # Kafka producer
+    # ---------------------------------------------------------
+
+    def _get_kafka_producer(self):
+        """Create the Kafka producer lazily."""
+
+        if self._producer is not None:
+            return self._producer
+
+        if not KAFKA_AVAILABLE:
+            return None
+
+        try:
+            self._producer = KafkaProducer(
+                bootstrap_servers=KAFKA_BOOTSTRAP_SERVERS,
+                value_serializer=lambda data: json.dumps(
+                    data
+                ).encode("utf-8"),
+                request_timeout_ms=2000,
+                retries=1,
+            )
+
+            logger.info(
+                "Kafka producer initialized successfully."
+            )
+
+            return self._producer
+
+        except Exception as exc:
+            logger.error(
+                "Failed to initialize Kafka producer: %s",
+                exc,
+            )
+
+            self._producer = None
+
+            return None
+
+    # ---------------------------------------------------------
+    # Metrics synchronization
+    # ---------------------------------------------------------
+
+    def _sync_consumer_metrics(self):
+        """
+        Synchronize Dashboard metrics with the actual Kafka
+        consumer.
+
+        total_ingested = successfully processed Kafka messages
+        fraud_detected = fraud predictions from consumer
+        errors_count   = consumer errors
+        """
+
+        consumer_status = fraud_consumer.get_status()
+
+        self.metrics["total_ingested"] = (
+            consumer_status.get(
+                "processed_count",
+                0,
+            )
+        )
+
+        self.metrics["fraud_detected"] = (
+            consumer_status.get(
+                "fraud_count",
+                0,
+            )
+        )
+
+        self.metrics["errors_count"] = (
+            consumer_status.get(
+                "error_count",
+                0,
+            )
+        )
+
+        # Consumer can expose these fields if available.
+        if "alerts_count" in consumer_status:
+            self.metrics["alerts_generated"] = (
+                consumer_status["alerts_count"]
+            )
+
+        if "last_latency_ms" in consumer_status:
+            self.metrics["recent_latency_ms"] = (
+                consumer_status["last_latency_ms"]
+            )
+
+        if "last_processed_at" in consumer_status:
+            self.metrics["last_ingested_at"] = (
+                consumer_status["last_processed_at"]
+            )
+
+    # ---------------------------------------------------------
+    # Producer loop
+    # ---------------------------------------------------------
 
     async def _streaming_loop(
         self,
         interval_seconds: float = 1.0,
-        max_transactions: Optional[int] = None
+        max_transactions: Optional[int] = None,
     ):
-        """Background loop continuously ingesting streaming transactions."""
-        count = 0
-        producer = None
+        """
+        Generate transactions and publish them to Kafka.
 
-        if self.mode == "kafka":
-            producer = self._get_kafka_producer()
+        IMPORTANT:
+        This method ONLY produces Kafka messages.
+
+        It does NOT directly perform ML inference or MongoDB
+        persistence.
+        """
+
+        producer = self._get_kafka_producer()
+
+        if producer is None:
+            logger.error(
+                "Kafka producer could not be initialized."
+            )
+
+            self.metrics["errors_count"] += 1
+
+            self.is_running = False
+
+            return
+
+        self._produced_count = 0
+        self._loop_start_time = time.time()
 
         logger.info(
-            "Streaming ingestion loop activated in [%s] mode with interval=%.2fs",
-            self.mode, interval_seconds
+            "Kafka producer loop started. "
+            "interval=%.2fs max_transactions=%s",
+            interval_seconds,
+            max_transactions,
         )
-
-        loop_start_time = time.time()
 
         try:
             while self.is_running:
-                # 1. Generate realistic transaction packet
+
+                # -------------------------------------------------
+                # 1. Generate transaction
+                # -------------------------------------------------
+
                 transaction = generate_transaction()
 
-                # 2. If Kafka mode is active, broadcast to Kafka topic
-                if producer:
-                    try:
-                        producer.send(KAFKA_TOPIC, transaction)
-                        producer.flush()
-                    except Exception as kafka_err:
-                        logger.warning("Kafka broadcast failed; falling back to direct ingestion: %s", kafka_err)
+                # Ensure timestamp exists.
+                if (
+                    "timestamp" not in transaction
+                    or not transaction["timestamp"]
+                ):
+                    transaction["timestamp"] = (
+                        datetime.now(
+                            timezone.utc
+                        ).isoformat()
+                    )
 
-                # 3. Ingest and score transaction through ML pipeline and DB
-                await self.ingest_transaction_record(transaction)
+                transaction_id = transaction.get(
+                    "transaction_id"
+                )
 
-                count += 1
+                # -------------------------------------------------
+                # 2. Send ONLY to Kafka
+                # -------------------------------------------------
 
-                # 4. Calculate rolling throughput
-                elapsed = time.time() - loop_start_time
+                try:
+                    future = producer.send(
+                        KAFKA_TOPIC,
+                        transaction,
+                    )
+
+                    # Wait for Kafka acknowledgement.
+                    await asyncio.to_thread(
+                        future.get,
+                        5,
+                    )
+
+                    self._produced_count += 1
+
+                    logger.info(
+                        "Produced transaction %s to Kafka "
+                        "(%d)",
+                        transaction_id,
+                        self._produced_count,
+                    )
+
+                except Exception as exc:
+
+                    self.metrics["errors_count"] += 1
+
+                    logger.error(
+                        "Kafka publish failed for %s: %s",
+                        transaction_id,
+                        exc,
+                    )
+
+                # -------------------------------------------------
+                # 3. Update producer throughput
+                # -------------------------------------------------
+
+                elapsed = (
+                    time.time()
+                    - self._loop_start_time
+                )
+
                 if elapsed > 0:
-                    self.metrics["messages_per_second"] = round(count / elapsed, 2)
+                    self.metrics[
+                        "messages_per_second"
+                    ] = round(
+                        self._produced_count
+                        / elapsed,
+                        2,
+                    )
 
-                # Check max limit if defined
-                if max_transactions and count >= max_transactions:
-                    logger.info("Reached target limit of %d transactions; stopping.", max_transactions)
-                    break
+                # -------------------------------------------------
+                # 4. Synchronize consumer metrics
+                # -------------------------------------------------
 
-                # 5. Delay before next packet
-                await asyncio.sleep(interval_seconds)
+                self._sync_consumer_metrics()
+
+                # -------------------------------------------------
+                # 5. Producer limit
+                # -------------------------------------------------
+
+                if (
+                    max_transactions is not None
+                    and max_transactions > 0
+                    and self._produced_count >= max_transactions
+               ):
+                 logger.info(
+                  "Producer reached configured limit of %d transactions.",
+                   max_transactions
+                 )
+
+                 self.is_running = False
+                 break
+
+                # -------------------------------------------------
+                # 6. Wait before next transaction
+                # -------------------------------------------------
+
+                await asyncio.sleep(
+                    interval_seconds
+                )
 
         except asyncio.CancelledError:
-            logger.info("Streaming ingestion loop received cancellation signal.")
-        except Exception as err:
-            logger.exception("Unexpected exception in streaming ingestion loop: %s", err)
+
+            logger.info(
+                "Kafka producer loop cancelled."
+            )
+
+            raise
+
+        except Exception as exc:
+
+            logger.exception(
+                "Unexpected producer loop error: %s",
+                exc,
+            )
+
             self.metrics["errors_count"] += 1
+
         finally:
-            self.is_running = False
-            self.mode = "idle"
-            self.metrics["active_mode"] = "idle"
-            logger.info("Streaming ingestion loop terminated. Processed %d records.", count)
+
+            # Get the latest consumer statistics.
+            self._sync_consumer_metrics()
+
+            logger.info(
+                "Kafka producer loop terminated. "
+                "Produced=%d",
+                self._produced_count,
+            )
+
+    # ---------------------------------------------------------
+    # Start
+    # ---------------------------------------------------------
 
     async def start(
         self,
         interval_seconds: float = PRODUCER_INTERVAL_SECONDS,
         max_transactions: Optional[int] = None,
-        force_mode: Optional[str] = None
+        force_mode: Optional[str] = None,
     ) -> Dict[str, Any]:
         """
-        Start streaming ingestion in the background.
-        Auto-detects Kafka availability or falls back to direct simulation.
+        Start the Kafka streaming pipeline.
+
+        Consumer starts BEFORE producer so messages are consumed
+        immediately after publication.
         """
+
         if self.is_running:
             return {
                 "started": False,
-                "message": "Streaming ingestion is already running.",
-                "status": self.get_status()
+                "message": (
+                    "Streaming ingestion is already running."
+                ),
+                "status": self.get_status(),
             }
 
-        # Determine streaming mode
+        # ---------------------------------------------------------
+        # Determine mode
+        # ---------------------------------------------------------
+
         if force_mode:
             selected_mode = force_mode
         else:
-            selected_mode = "kafka" if self.is_kafka_reachable() else "direct_simulation"
+            selected_mode = (
+                "kafka"
+                if self.is_kafka_reachable()
+                else "direct_simulation"
+            )
 
-        self.mode = selected_mode
+        # ---------------------------------------------------------
+        # Direct simulation is intentionally disabled for the
+        # new architecture.
+        # ---------------------------------------------------------
+
+        if selected_mode != "kafka":
+
+            return {
+                "started": False,
+                "mode": "idle",
+                "message": (
+                    "Kafka is unavailable. "
+                    "Direct ingestion fallback is disabled "
+                    "to prevent duplicate processing."
+                ),
+            }
+
+        # ---------------------------------------------------------
+        # Start state
+        # ---------------------------------------------------------
+
+        self.mode = "kafka"
         self.is_running = True
-        self.metrics["active_mode"] = selected_mode
-        self.metrics["start_time"] = datetime.now(timezone.utc).isoformat()
 
-        # Launch background async task on the current running event loop
+        self.metrics["active_mode"] = "kafka"
+        self.metrics["start_time"] = (
+            datetime.now(
+                timezone.utc
+            ).isoformat()
+        )
+
+        self.metrics["last_ingested_at"] = None
+        self.metrics["messages_per_second"] = 0.0
+        self.metrics["recent_latency_ms"] = 0.0
+
+        # ---------------------------------------------------------
+        # Start Kafka consumer FIRST
+        # ---------------------------------------------------------
+
+        try:
+
+            consumer_result = fraud_consumer.start()
+
+            logger.info(
+                "Kafka consumer start result: %s",
+                consumer_result,
+            )
+
+        except Exception as exc:
+
+            self.is_running = False
+            self.mode = "idle"
+            self.metrics["active_mode"] = "idle"
+
+            self.metrics["errors_count"] += 1
+
+            logger.exception(
+                "Failed to start Kafka consumer: %s",
+                exc,
+            )
+
+            return {
+                "started": False,
+                "mode": "kafka",
+                "message": (
+                    "Failed to start Kafka consumer."
+                ),
+                "error": str(exc),
+            }
+
+        # ---------------------------------------------------------
+        # Start producer loop
+        # ---------------------------------------------------------
+
         loop = asyncio.get_running_loop()
+
         self._task = loop.create_task(
-            self._streaming_loop(interval_seconds, max_transactions)
+            self._streaming_loop(
+                interval_seconds,
+                max_transactions,
+            )
+        )
+
+        logger.info(
+            "Kafka streaming pipeline started."
         )
 
         return {
             "started": True,
-            "mode": self.mode,
+            "mode": "kafka",
             "interval_seconds": interval_seconds,
             "max_transactions": max_transactions,
-            "message": f"Streaming ingestion started in {self.mode} mode."
+            "message": (
+                "Kafka streaming pipeline started "
+                "successfully."
+            ),
         }
 
+    # ---------------------------------------------------------
+    # Stop
+    # ---------------------------------------------------------
+
     async def stop(self) -> Dict[str, Any]:
-        """Stop the streaming ingestion background process."""
+        """Stop producer and consumer cleanly."""
+
         if not self.is_running:
             return {
                 "stopped": False,
-                "message": "Streaming ingestion is not currently active."
+                "message": (
+                    "Streaming ingestion is not "
+                    "currently active."
+                ),
             }
 
+        logger.info(
+            "Stopping Kafka streaming pipeline..."
+        )
+
+        # Stop producer loop first.
         self.is_running = False
+
         if self._task and not self._task.done():
+
             self._task.cancel()
+
             try:
-                await asyncio.wait_for(self._task, timeout=2.0)
-            except (asyncio.CancelledError, asyncio.TimeoutError):
+                await asyncio.wait_for(
+                    self._task,
+                    timeout=3.0,
+                )
+
+            except (
+                asyncio.CancelledError,
+                asyncio.TimeoutError,
+            ):
                 pass
 
+        self._task = None
+
+        # Close producer.
         if self._producer:
+
             try:
-                self._producer.close(timeout=2.0)
-            except Exception:
-                pass
+                self._producer.close(
+                    timeout=2.0
+                )
+
+            except Exception as exc:
+                logger.warning(
+                    "Kafka producer close failed: %s",
+                    exc,
+                )
+
             self._producer = None
+
+        # Stop consumer.
+        try:
+
+            if fraud_consumer.is_running:
+
+                await asyncio.to_thread(
+                    fraud_consumer.stop
+                )
+
+        except Exception as exc:
+
+            logger.warning(
+                "Kafka consumer stop failed: %s",
+                exc,
+            )
+
+            self.metrics["errors_count"] += 1
+
+        # Final metrics synchronization.
+        self._sync_consumer_metrics()
 
         self.mode = "idle"
         self.metrics["active_mode"] = "idle"
 
+        logger.info(
+            "Kafka streaming pipeline stopped."
+        )
+
         return {
             "stopped": True,
-            "message": "Streaming ingestion stopped successfully.",
-            "metrics": self.get_metrics()
+            "message": (
+                "Kafka streaming pipeline "
+                "stopped successfully."
+            ),
+            "metrics": self.get_metrics(),
         }
 
+    # ---------------------------------------------------------
+    # Status
+    # ---------------------------------------------------------
+
     def get_status(self) -> Dict[str, Any]:
-        """Return current status of the streaming ingestion engine."""
-        kafka_connected = self.is_kafka_reachable(timeout_ms=1000)
+        """Return streaming status."""
+
+        kafka_connected = self.is_kafka_reachable(
+            timeout_ms=1000
+        )
+
+        self._sync_consumer_metrics()
+
         return {
             "is_running": self.is_running,
             "mode": self.mode,
             "kafka_connected": kafka_connected,
-            "stream": "available" if (self.is_running or kafka_connected) else "standby",
-            "metrics": self.get_metrics()
+            "stream": (
+                "available"
+                if (
+                    self.is_running
+                    or kafka_connected
+                )
+                else "standby"
+            ),
+            "metrics": self.get_metrics(),
         }
+
+    # ---------------------------------------------------------
+    # Metrics
+    # ---------------------------------------------------------
 
     def get_metrics(self) -> Dict[str, Any]:
-        """Return current telemetry and throughput counters."""
+        """Return Dashboard telemetry."""
+
+        self._sync_consumer_metrics()
+
         return {
-            "total_ingested": self.metrics["total_ingested"],
-            "fraud_detected": self.metrics["fraud_detected"],
-            "alerts_generated": self.metrics["alerts_generated"],
-            "errors_count": self.metrics["errors_count"],
-            "messages_per_second": self.metrics["messages_per_second"],
-            "recent_latency_ms": self.metrics["recent_latency_ms"],
-            "start_time": self.metrics["start_time"],
-            "last_ingested_at": self.metrics["last_ingested_at"],
-            "active_mode": self.metrics["active_mode"]
+            "total_ingested": self.metrics[
+                "total_ingested"
+            ],
+            "fraud_detected": self.metrics[
+                "fraud_detected"
+            ],
+            "alerts_generated": self.metrics[
+                "alerts_generated"
+            ],
+            "errors_count": self.metrics[
+                "errors_count"
+            ],
+            "messages_per_second": self.metrics[
+                "messages_per_second"
+            ],
+            "recent_latency_ms": self.metrics[
+                "recent_latency_ms"
+            ],
+            "start_time": self.metrics[
+                "start_time"
+            ],
+            "last_ingested_at": self.metrics[
+                "last_ingested_at"
+            ],
+            "active_mode": self.metrics[
+                "active_mode"
+            ],
         }
 
 
-# Global singleton instance
-stream_ingestion_manager = StreamIngestionManager()
+# Global singleton
+stream_ingestion_manager = (
+    StreamIngestionManager()
+)

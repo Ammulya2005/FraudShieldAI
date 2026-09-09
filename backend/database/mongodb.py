@@ -5,7 +5,10 @@ from backend.app.core.config import (
     DATABASE_NAME
 )
 
-client = AsyncIOMotorClient(MONGO_URI)
+
+client = AsyncIOMotorClient(
+    MONGO_URI
+)
 
 db = client[DATABASE_NAME]
 

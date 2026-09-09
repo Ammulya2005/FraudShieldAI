@@ -1,5 +1,7 @@
-import { AuthState } from './auth.js';
 import { API } from './api.js';
+import { initTheme } from './theme.js';
+import { AuthState } from './auth.js';
+import { initGlobalSearch } from './global-search.js';
 import { renderLogin, initLoginEvents } from './views/login.js';
 import { renderDashboard, initDashboardEvents } from './views/dashboard.js';
 import { renderTransactions, initTransactionsEvents } from './views/transactions.js';
@@ -74,7 +76,7 @@ export async function router() {
     return;
   }
 
-  const route = routes[path] || routes['/dashboard'];
+  const route = routes[path] || routes['/home'];
 
   // RBAC
   if (authenticated && !AuthState.canAccess(route.roles)) {
@@ -83,20 +85,44 @@ export async function router() {
     return;
   }
 
-  // Sidebar / topbar
-  const sidebar = document.getElementById('sidebar');
-  const topbar = document.getElementById('topbar');
+  // =========================================================
+// SIDEBAR / TOPBAR VISIBILITY
+// =========================================================
 
-  if (path === '/login') {
-    sidebar?.classList.add('hidden');
-    topbar?.classList.add('hidden');
-  } else {
-    sidebar?.classList.remove('hidden');
-    topbar?.classList.remove('hidden');
+const sidebar =
+  document.getElementById('sidebar');
 
-    updateNavRBAC();
-    setupUserWidget();
-  }
+const topbar =
+  document.getElementById('topbar');
+
+const publicPage =
+  path === '/home' ||
+  path === '/login';
+
+if (publicPage) {
+
+  sidebar?.classList.add('hidden');
+
+  topbar?.classList.add('hidden');
+
+  document
+    .getElementById('app')
+    ?.classList.add('public-layout');
+
+} else {
+
+  sidebar?.classList.remove('hidden');
+
+  topbar?.classList.remove('hidden');
+
+  document
+    .getElementById('app')
+    ?.classList.remove('public-layout');
+
+  updateNavRBAC();
+
+  setupUserWidget();
+}
 
   // Render current page
   const container = document.getElementById('router-view');
@@ -298,3 +324,5 @@ window.addEventListener('hashchange', router);
 window.addEventListener('DOMContentLoaded', () => {
   router();
 });
+initTheme();
+initGlobalSearch();

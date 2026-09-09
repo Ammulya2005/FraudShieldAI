@@ -108,3 +108,44 @@ async def get_legitimate_transactions():
 
 async def count_transactions():
     return await db[TRANSACTIONS_COLLECTION].count_documents({})
+async def search_transactions(search_term: str, limit: int = 20):
+    """
+    Search transactions across commonly used fields.
+    """
+
+    search_term = search_term.strip()
+
+    if not search_term:
+        return []
+
+    regex = {
+        "$regex": search_term,
+        "$options": "i"
+    }
+
+    query = {
+        "$or": [
+            {"transaction_id": regex},
+            {"user_id": regex},
+            {"merchant_category": regex},
+            {"transaction_type": regex},
+            {"location": regex},
+            {"final_prediction": regex},
+            {"status": regex},
+        ]
+    }
+
+    transactions = []
+
+    cursor = (
+        db[TRANSACTIONS_COLLECTION]
+        .find(query)
+        .sort("_id", -1)
+        .limit(limit)
+    )
+
+    async for transaction in cursor:
+        transaction["_id"] = str(transaction["_id"])
+        transactions.append(transaction)
+
+    return transactions

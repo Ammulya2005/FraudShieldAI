@@ -14,10 +14,12 @@ from backend.app.schemas.transaction_schema import (
 from backend.app.services.transaction_service import (
     create_new_transaction,
     fetch_all_transactions,
+    fetch_global_search,
     fetch_transaction_by_id,
     fetch_high_risk_transactions,
     fetch_fraudulent_transactions,
-    fetch_legitimate_transactions
+    fetch_legitimate_transactions,
+    fetch_global_search
 )
 
 from backend.app.core.rbac import (
@@ -122,7 +124,31 @@ async def get_legitimate_route(
 ):
 
     return await fetch_legitimate_transactions()
+# Search Transactions
+# Analyst, Fraud Manager, Admin, Superadmin
 
+# Global Search
+# Searches transactions, fraud cases, and alerts
+@router.get("/search")
+async def global_search_route(
+    q: str = Query(..., min_length=1),
+    limit: int = Query(20, ge=1, le=100),
+    current_user=Depends(
+        require_roles(
+            [
+                "analyst",
+                "fraud_manager",
+                "admin",
+                "super_admin"
+            ]
+        )
+    )
+):
+
+    return await fetch_global_search(
+        q,
+        limit
+    )
 
 # Transaction By ID
 @router.get("/{transaction_id}")

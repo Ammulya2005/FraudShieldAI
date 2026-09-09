@@ -122,3 +122,88 @@ async def resolve_alert(
     )
 
     return result.modified_count
+async def search_fraud_cases(search_term: str, limit: int = 20):
+    """
+    Search fraud cases by case ID, transaction ID, user ID,
+    prediction, priority, status, or assigned user.
+    """
+
+    search_term = search_term.strip()
+
+    if not search_term:
+        return []
+
+    regex = {
+        "$regex": search_term,
+        "$options": "i"
+    }
+
+    query = {
+        "$or": [
+            {"case_id": regex},
+            {"transaction_id": regex},
+            {"user_id": regex},
+            {"final_prediction": regex},
+            {"priority": regex},
+            {"status": regex},
+            {"assigned_to": regex}
+        ]
+    }
+
+    fraud_cases = []
+
+    cursor = (
+        db[FRAUD_CASES_COLLECTION]
+        .find(query)
+        .sort("created_at", -1)
+        .limit(limit)
+    )
+
+    async for fraud_case in cursor:
+        fraud_case["_id"] = str(fraud_case["_id"])
+        fraud_cases.append(fraud_case)
+
+    return fraud_cases
+async def search_alerts(search_term: str, limit: int = 20):
+    """
+    Search alerts by alert ID, transaction ID, user ID,
+    alert type, severity, status, assigned user, or message.
+    """
+
+    search_term = search_term.strip()
+
+    if not search_term:
+        return []
+
+    regex = {
+        "$regex": search_term,
+        "$options": "i"
+    }
+
+    query = {
+        "$or": [
+            {"alert_id": regex},
+            {"transaction_id": regex},
+            {"user_id": regex},
+            {"alert_type": regex},
+            {"severity": regex},
+            {"status": regex},
+            {"assigned_to": regex},
+            {"message": regex}
+        ]
+    }
+
+    alerts = []
+
+    cursor = (
+        db[ALERTS_COLLECTION]
+        .find(query)
+        .sort("created_at", -1)
+        .limit(limit)
+    )
+
+    async for alert in cursor:
+        alert["_id"] = str(alert["_id"])
+        alerts.append(alert)
+
+    return alerts

@@ -364,6 +364,61 @@ export async function initDashboardEvents() {
       'riskDistributionCanvas',
       [1, 0, 0, 0]
     );
+    /* -----------------------------------------
+     Update charts when theme changes
+     ----------------------------------------- */
+
+  window.addEventListener(
+    'fraudshield-theme-changed',
+    () => {
+
+      /*
+       * Destroy existing charts.
+       */
+
+      if (fraudTrendChart) {
+
+        fraudTrendChart.destroy();
+
+        fraudTrendChart = null;
+
+      }
+
+
+      if (riskDistributionChart) {
+
+        riskDistributionChart.destroy();
+
+        riskDistributionChart = null;
+
+      }
+
+
+      /*
+       * Recreate charts using the
+       * currently active theme.
+       */
+
+      fraudTrendChart =
+        renderFraudTrendsChart(
+          'fraudTrendCanvas',
+          fraudHistory.map(
+            point => point.time
+          ),
+          fraudHistory.map(
+            point => point.fraud
+          )
+        );
+
+
+      riskDistributionChart =
+        renderRiskDistributionChart(
+          'riskDistributionCanvas',
+          riskData
+        );
+
+    }
+  );
 
 
   // First update immediately
