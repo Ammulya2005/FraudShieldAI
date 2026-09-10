@@ -25,7 +25,13 @@
     rel="stylesheet"
     href="css/components.css"
   />
-  <link rel="stylesheet" href="css/responsive.css">
+
+  <!-- Responsive styles -->
+  <link
+    rel="stylesheet"
+    href="css/responsive.css"
+  />
+
   <!-- Chart.js -->
   <script
     src="https://cdn.jsdelivr.net/npm/chart.js"
@@ -36,7 +42,10 @@
 
 <body>
 
-  <!-- Toast notifications -->
+  <!-- =====================================================
+       TOAST NOTIFICATIONS
+       ===================================================== -->
+
   <div id="toast-container"></div>
 
 
@@ -49,11 +58,17 @@
     class="app-layout"
   >
 
-  <div
-    id="mobile-sidebar-overlay"
-    class="mobile-sidebar-overlay"
->
-</div>
+
+    <!-- ===================================================
+         MOBILE SIDEBAR OVERLAY
+         =================================================== -->
+
+    <div
+      id="mobile-sidebar-overlay"
+      class="mobile-sidebar-overlay"
+    ></div>
+
+
     <!-- ===================================================
          SIDEBAR
          =================================================== -->
@@ -67,11 +82,11 @@
 
       <div class="brand">
 
-       <img
-        class="brand-logo"
-        src="assets/images/FraudShield_dashboard_logo.jpeg"
-        alt="FraudShield AI logo"
-      />
+        <img
+          class="brand-logo"
+          src="assets/images/FraudShield_dashboard_logo.jpeg"
+          alt="FraudShield AI logo"
+        />
 
         <h2>
           FraudShield<span>AI</span>
@@ -143,10 +158,22 @@
           Administration
         </a>
 
+
+        <a
+          href="#/requests"
+          class="nav-item"
+          data-role="admin,super_admin"
+        >
+          <span class="icon">📋</span>
+          Requests
+        </a>
+
       </nav>
 
 
-      <!-- User Profile -->
+      <!-- ===================================================
+           USER PROFILE
+           =================================================== -->
 
       <div class="user-profile-widget">
 
@@ -172,6 +199,7 @@
         <button
           id="btn-logout"
           class="btn btn-outline-danger btn-sm"
+          type="button"
         >
           Sign Out
         </button>
@@ -179,7 +207,6 @@
       </div>
 
     </aside>
-
 
 
     <!-- ===================================================
@@ -190,22 +217,28 @@
 
 
       <!-- =================================================
-           TOPBAR
+           SINGLE TOPBAR
+           IMPORTANT: THERE MUST BE ONLY ONE #topbar
            ================================================= -->
 
       <header
         id="topbar"
         class="topbar hidden"
       >
-      <button
-       id="mobile-menu-toggle"
-       class="mobile-menu-toggle"
-       type="button"
-      aria-label="Open navigation"
-      aria-expanded="false"
->
-    ☰
-  </button>
+
+        <!-- Mobile menu -->
+
+        <button
+          id="mobile-menu-toggle"
+          class="mobile-menu-toggle"
+          type="button"
+          aria-label="Open navigation"
+          aria-expanded="false"
+        >
+          ☰
+        </button>
+
+
         <!-- System status -->
 
         <div class="system-status">
@@ -218,13 +251,16 @@
 
         </div>
 
+
         <!-- Global Search -->
 
         <div class="global-search">
 
           <div class="global-search-input-wrapper">
 
-            <span class="global-search-icon">⌕</span>
+            <span class="global-search-icon">
+              ⌕
+            </span>
 
             <input
               id="global-search-input"
@@ -244,19 +280,18 @@
 
           </div>
 
+
           <div
             id="global-search-results"
             class="global-search-results hidden"
-          >
-          </div>
+          ></div>
 
         </div>
 
 
-        <!-- Topbar actions -->
-
-        <div class="topbar-actions">
-        <!-- Topbar actions -->
+        <!-- =================================================
+             TOPBAR ACTIONS
+             ================================================= -->
 
         <div class="topbar-actions">
 
@@ -278,15 +313,17 @@
 
           <button
             id="btn-stream-toggle"
-            class="btn btn-sm btn-primary"
+            class="btn btn-sm btn-primary stream-toggle-btn"
+            type="button"
           >
-            Start Stream Ingestion
+            <span class="stream-label">
+              Start Stream Ingestion
+            </span>
           </button>
 
         </div>
 
       </header>
-
 
 
       <!-- =================================================
@@ -296,8 +333,7 @@
       <section
         id="router-view"
         class="view-container"
-      >
-      </section>
+      ></section>
 
 
     </main>

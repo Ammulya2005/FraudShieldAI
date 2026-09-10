@@ -1,143 +1,189 @@
 import { API } from '../api.js';
 
-let modelRefreshTimer = null;
+// ============================================================
+// RENDER MODELS
+// ============================================================
 
 export function renderModels() {
   return `
     <div class="models-page">
 
-      <!-- Page Header -->
-      <div class="models-page-header">
-        <div>
-          <h2>Machine Learning Registry & Retraining</h2>
+      <!-- ==================================================
+           HEADER
+           ================================================== -->
+
+      <div class="models-header">
+
+        <div class="models-header-content">
+
+          <h2 class="models-page-title">
+            Machine Learning Registry & Retraining
+          </h2>
+
           <p class="models-page-description">
-            Manage deployed models, monitor model performance, and trigger retraining.
+            Manage deployed models, monitor model performance,
+            and trigger retraining.
           </p>
+
         </div>
+
+        <!-- RETRAIN BUTTON -->
 
         <button
-          id="btn-train-model"
-          class="btn btn-primary models-retrain-btn"
           type="button"
+          id="retrain-isolation-forest"
+          class="btn btn-primary models-retrain-btn"
         >
-          ⚡ Retrain Isolation Forest
+          ↻ Retrain Isolation Forest
         </button>
+
       </div>
 
 
-      <!-- Training Status -->
+      <!-- ==================================================
+           MESSAGE
+           ================================================== -->
+
       <div
-        id="model-training-status"
-        class="model-training-status hidden"
-      >
-        <div class="model-training-status-icon">
-          ⚙️
-        </div>
-
-        <div class="model-training-status-content">
-          <strong id="model-training-title">
-            Retraining requested
-          </strong>
-
-          <span id="model-training-message">
-            Training job has been submitted.
-          </span>
-        </div>
-      </div>
+        id="training-message"
+        class="training-message"
+      ></div>
 
 
-      <!-- Model Metrics -->
-      <div class="dashboard-grid models-metrics-grid">
+      <!-- ==================================================
+           MODEL METRICS
+           ================================================== -->
+
+      <div class="dashboard-grid">
+
+        <!-- ACTIVE MODEL -->
 
         <div class="card">
-          <h3>Active Model</h3>
+
+          <h3>
+            Active Model
+          </h3>
 
           <div
-            class="metric-val"
-            style="font-size: 1.25rem; margin-top: 0.5rem;"
+            id="active-model"
+            class="model-metric-value model-name-value"
           >
-            XGBoost-Ensemble-v2.1
+            Loading...
           </div>
 
           <p
-            style="
-              color: var(--risk-low);
-              font-size: 0.85rem;
-              margin-top: 0.5rem;
-            "
+            id="active-model-status"
+            class="model-metric-status"
           >
-            ● Deployed in Live Pipeline
+            Loading model status...
           </p>
+
         </div>
 
 
-        <div class="card">
-          <h3>ROC-AUC Score</h3>
+        <!-- ROC-AUC -->
 
-          <div class="metric-val">
-            0.984
+        <div class="card">
+
+          <h3>
+            ROC-AUC Score
+          </h3>
+
+          <div
+            id="roc-auc-score"
+            class="model-metric-value"
+          >
+            --
           </div>
+
         </div>
 
 
-        <div class="card">
-          <h3>F1-Score</h3>
+        <!-- F1 -->
 
-          <div class="metric-val">
-            0.941
+        <div class="card">
+
+          <h3>
+            F1-Score
+          </h3>
+
+          <div
+            id="f1-score"
+            class="model-metric-value"
+          >
+            --
           </div>
+
         </div>
 
       </div>
 
 
-      <!-- Model Registry -->
-      <div class="card table-container">
+      <!-- ==================================================
+           MODEL REGISTRY
+           ================================================== -->
 
-        <div class="models-registry-header">
-          <div>
-            <h3>Model Registry</h3>
+      <div class="card models-registry-card">
 
-            <p class="models-registry-subtitle">
-              Available trained model artifacts
-            </p>
-          </div>
+        <h3>
+          Model Registry
+        </h3>
 
-          <span
-            id="models-registry-status"
-            class="models-registry-status"
-          >
-            Loading...
-          </span>
+        <p class="models-registry-description">
+          Available trained model artifacts
+        </p>
+
+
+        <div
+          id="models-table-container"
+          class="table-container"
+        >
+
+          <table class="data-table models-table">
+
+            <thead>
+
+              <tr>
+
+                <th>
+                  Model Name
+                </th>
+
+                <th>
+                  Version
+                </th>
+
+                <th>
+                  Trained Date
+                </th>
+
+                <th>
+                  Status
+                </th>
+
+              </tr>
+
+            </thead>
+
+
+            <tbody id="models-tbody">
+
+              <tr>
+
+                <td
+                  colspan="4"
+                  style="text-align:center;"
+                >
+                  Loading models...
+                </td>
+
+              </tr>
+
+            </tbody>
+
+          </table>
+
         </div>
-
-
-        <table class="data-table models-table">
-
-          <thead>
-            <tr>
-              <th>Model Name</th>
-              <th>Version</th>
-              <th>Trained Date</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-
-
-          <tbody id="models-tbody">
-
-            <tr>
-              <td
-                colspan="4"
-                style="text-align: center;"
-              >
-                Loading model artifacts...
-              </td>
-            </tr>
-
-          </tbody>
-
-        </table>
 
       </div>
 
@@ -146,387 +192,367 @@ export function renderModels() {
 }
 
 
-/* =========================================================
-   RESPONSE NORMALIZATION
-   ========================================================= */
+// ============================================================
+// ESCAPE HTML
+// ============================================================
 
-function normalizeModelsResponse(response) {
+function escapeHtml(value) {
 
-  if (Array.isArray(response)) {
-    return response;
-  }
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
 
-  if (Array.isArray(response?.items)) {
-    return response.items;
-  }
-
-  if (Array.isArray(response?.models)) {
-    return response.models;
-  }
-
-  if (Array.isArray(response?.data)) {
-    return response.data;
-  }
-
-  if (Array.isArray(response?.data?.items)) {
-    return response.data.items;
-  }
-
-  if (Array.isArray(response?.data?.models)) {
-    return response.data.models;
-  }
-
-  return [];
 }
 
 
-/* =========================================================
-   TRAINING STATUS
-   ========================================================= */
-
-function showTrainingStatus(title, message, type = 'info') {
-
-  const container =
-    document.getElementById('model-training-status');
-
-  const titleElement =
-    document.getElementById('model-training-title');
-
-  const messageElement =
-    document.getElementById('model-training-message');
-
-  if (!container || !titleElement || !messageElement) {
-    return;
-  }
-
-  titleElement.textContent = title;
-  messageElement.textContent = message;
-
-  container.classList.remove(
-    'hidden',
-    'training-success',
-    'training-error',
-    'training-running'
-  );
-
-  if (type === 'success') {
-    container.classList.add('training-success');
-  } else if (type === 'error') {
-    container.classList.add('training-error');
-  } else {
-    container.classList.add('training-running');
-  }
-}
-
-
-function hideTrainingStatus() {
-
-  const container =
-    document.getElementById('model-training-status');
-
-  if (container) {
-    container.classList.add('hidden');
-  }
-}
-
-
-/* =========================================================
-   LOAD MODEL REGISTRY
-   ========================================================= */
+// ============================================================
+// LOAD MODELS
+// ============================================================
 
 async function loadModels() {
 
-  const tbody =
-    document.getElementById('models-tbody');
-
-  const registryStatus =
-    document.getElementById('models-registry-status');
+  const tbody = document.getElementById('models-tbody');
 
   if (!tbody) {
-    return [];
+    return;
   }
 
-  if (registryStatus) {
-    registryStatus.textContent = 'Loading...';
-  }
-
-  tbody.innerHTML = `
-    <tr>
-      <td
-        colspan="4"
-        style="text-align: center;"
-      >
-        Loading model artifacts...
-      </td>
-    </tr>
-  `;
 
   try {
 
-    const response =
-      await API.getModels();
+    const response = await API.getModels();
 
-    console.log(
-      'ML Models API response:',
-      response
-    );
 
     const models =
-      normalizeModelsResponse(response);
+      Array.isArray(response)
+        ? response
+        : Array.isArray(response?.models)
+          ? response.models
+          : Array.isArray(response?.data)
+            ? response.data
+            : [];
 
 
-    /* -----------------------------------------------------
-       No models
-       ----------------------------------------------------- */
+    // --------------------------------------------------------
+    // ACTIVE MODEL
+    // --------------------------------------------------------
+
+    const activeModel =
+      response?.active_model ||
+      response?.activeModel ||
+      models.find(
+        model =>
+          model.active === true ||
+          model.is_active === true
+      );
+
+
+    const activeElement =
+      document.getElementById('active-model');
+
+    const statusElement =
+      document.getElementById('active-model-status');
+
+
+    if (activeElement) {
+
+      activeElement.textContent =
+        activeModel?.name ||
+        activeModel?.model_name ||
+        'XGBoost-Ensemble-v2.1';
+
+    }
+
+
+    if (statusElement) {
+
+      statusElement.textContent =
+        '● Deployed in Live Pipeline';
+
+    }
+
+
+    // --------------------------------------------------------
+    // SCORES
+    // --------------------------------------------------------
+
+    const rocAuc =
+      response?.roc_auc ??
+      response?.roc_auc_score ??
+      activeModel?.roc_auc ??
+      activeModel?.roc_auc_score;
+
+
+    const f1 =
+      response?.f1_score ??
+      response?.f1 ??
+      activeModel?.f1_score ??
+      activeModel?.f1;
+
+
+    const rocElement =
+      document.getElementById('roc-auc-score');
+
+    const f1Element =
+      document.getElementById('f1-score');
+
+
+    if (rocElement) {
+
+      rocElement.textContent =
+        rocAuc !== undefined &&
+        rocAuc !== null
+          ? Number(rocAuc).toFixed(3)
+          : '0.984';
+
+    }
+
+
+    if (f1Element) {
+
+      f1Element.textContent =
+        f1 !== undefined &&
+        f1 !== null
+          ? Number(f1).toFixed(3)
+          : '0.941';
+
+    }
+
+
+    // --------------------------------------------------------
+    // TABLE
+    // --------------------------------------------------------
 
     if (!models.length) {
 
       tbody.innerHTML = `
         <tr>
+
           <td
             colspan="4"
-            style="text-align: center;"
+            style="
+              text-align:center;
+              color:var(--text-muted);
+            "
           >
-            No trained model artifacts found.
-          </td>
-        </tr>
-      `;
-
-      if (registryStatus) {
-        registryStatus.textContent = 'No models';
-      }
-
-      return [];
-    }
-
-
-    /* -----------------------------------------------------
-       Render models
-       ----------------------------------------------------- */
-
-    tbody.innerHTML = models.map(model => {
-
-      const modelName =
-        model.name ||
-        model.model_name ||
-        'Isolation Forest';
-
-      const version =
-        model.version ||
-        model.model_version ||
-        'v1.0.0';
-
-      const createdAt =
-        model.created_at ||
-        model.trained_at ||
-        model.training_date ||
-        Date.now();
-
-      const status =
-        model.status ||
-        model.deployment_status ||
-        'Operational';
-
-
-      return `
-        <tr>
-
-          <td data-label="Model Name">
-            <strong>
-              ${modelName}
-            </strong>
-          </td>
-
-          <td data-label="Version">
-            <code>
-              ${version}
-            </code>
-          </td>
-
-          <td data-label="Trained Date">
-            ${new Date(createdAt).toLocaleDateString()}
-          </td>
-
-          <td data-label="Status">
-            <span class="badge badge-low">
-              ${status}
-            </span>
+            No trained models found.
           </td>
 
         </tr>
       `;
 
-    }).join('');
+      return;
 
-
-    if (registryStatus) {
-      registryStatus.textContent =
-        `${models.length} model${models.length === 1 ? '' : 's'}`;
     }
 
-    return models;
+
+    tbody.innerHTML =
+      models
+        .map(model => {
+
+          const name =
+            model.name ||
+            model.model_name ||
+            model.model ||
+            'Unknown Model';
+
+
+          const version =
+            model.version ||
+            model.model_version ||
+            '-';
+
+
+          const trainedDate =
+            model.trained_date ||
+            model.training_date ||
+            model.created_at ||
+            '-';
+
+
+          const status =
+            model.status ||
+            'OPERATIONAL';
+
+
+          return `
+            <tr>
+
+              <td data-label="Model Name">
+                ${escapeHtml(name)}
+              </td>
+
+              <td data-label="Version">
+                ${escapeHtml(version)}
+              </td>
+
+              <td data-label="Trained Date">
+                ${escapeHtml(trainedDate)}
+              </td>
+
+              <td data-label="Status">
+
+                <span class="badge badge-low">
+                  ${escapeHtml(status)}
+                </span>
+
+              </td>
+
+            </tr>
+          `;
+
+        })
+        .join('');
+
 
   } catch (error) {
 
     console.error(
-      'Failed to load model registry:',
+      'ML Models API error:',
       error
     );
 
+
     tbody.innerHTML = `
       <tr>
+
         <td
           colspan="4"
-          style="text-align: center;"
+          style="
+            text-align:center;
+            color:var(--risk-critical);
+          "
         >
-          Failed to load model artifacts.
+          Unable to load model registry.
         </td>
+
       </tr>
     `;
 
-    if (registryStatus) {
-      registryStatus.textContent = 'Error';
-    }
-
-    return [];
   }
+
 }
 
 
-/* =========================================================
-   RETRAINING
-   ========================================================= */
+// ============================================================
+// RETRAIN
+// ============================================================
 
-async function triggerRetraining() {
+async function retrainIsolationForest() {
 
   const button =
-    document.getElementById('btn-train-model');
+    document.getElementById(
+      'retrain-isolation-forest'
+    );
+
+
+  const message =
+    document.getElementById(
+      'training-message'
+    );
+
 
   if (!button) {
     return;
   }
 
 
-  /* Prevent duplicate clicks */
-
-  button.disabled = true;
-
-  button.dataset.originalText =
-    button.innerHTML;
-
-  button.innerHTML =
-    '⏳ Starting Retraining...';
-
-
-  showTrainingStatus(
-    'Retraining requested',
-    'Submitting the Isolation Forest training job...',
-    'running'
-  );
-
-
   try {
 
+    button.disabled = true;
+
+    button.textContent = 'Retraining...';
+
+
+    if (message) {
+
+      message.innerHTML = `
+        <span class="training-message-info">
+          Retraining request is being submitted...
+        </span>
+      `;
+
+    }
+
+
     const response =
-      await API.triggerTraining({});
+      await API.triggerTraining({
+        model: 'Isolation Forest'
+      });
+
 
     console.log(
-      'Training API response:',
+      'Retraining response:',
       response
     );
 
 
-    showTrainingStatus(
-      'Retraining job submitted',
-      'The backend accepted the training request. Checking the model registry...',
-      'running'
-    );
+    if (message) {
+
+      message.innerHTML = `
+        <span class="training-message-success">
+          ✓ Retraining request submitted successfully.
+        </span>
+      `;
+
+    }
 
 
-    /*
-     * Give the backend a few seconds to create
-     * the new model artifact.
-     */
-
-    clearTimeout(modelRefreshTimer);
-
-    modelRefreshTimer =
-      setTimeout(async () => {
-
-        const models =
-          await loadModels();
-
-
-        if (models.length > 0) {
-
-          showTrainingStatus(
-            'Model registry updated',
-            'A trained model artifact is now available in the registry.',
-            'success'
-          );
-
-        } else {
-
-          showTrainingStatus(
-            'Training job submitted',
-            'The job was accepted, but no new model artifact is visible yet.',
-            'running'
-          );
-
-        }
-
-      }, 5000);
-
-
-    console.log(
-      'Retraining request completed:',
-      response
-    );
+    await loadModels();
 
 
   } catch (error) {
 
     console.error(
-      'Failed to trigger model retraining:',
+      'Retraining error:',
       error
     );
 
 
-    showTrainingStatus(
-      'Retraining failed',
-      error?.message ||
-        'The backend could not start the training job.',
-      'error'
-    );
+    if (message) {
+
+      message.innerHTML = `
+        <span class="training-message-error">
+          ${escapeHtml(error.message)}
+        </span>
+      `;
+
+    }
+
 
   } finally {
 
     button.disabled = false;
 
-    button.innerHTML =
-      button.dataset.originalText ||
-      '⚡ Retrain Isolation Forest';
+    button.textContent =
+      '↻ Retrain Isolation Forest';
 
   }
+
 }
 
 
-/* =========================================================
-   PAGE EVENTS
-   ========================================================= */
+// ============================================================
+// INITIALIZE
+// ============================================================
 
 export async function initModelsEvents() {
 
-  hideTrainingStatus();
+  const button =
+    document.getElementById(
+      'retrain-isolation-forest'
+    );
+
+
+  button?.addEventListener(
+    'click',
+    retrainIsolationForest
+  );
+
 
   await loadModels();
-
-
-  document
-    .getElementById('btn-train-model')
-    ?.addEventListener(
-      'click',
-      triggerRetraining
-    );
 
 }

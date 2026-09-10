@@ -198,4 +198,5 @@ export async function initCasesEvents() {
   }
 
   await loadData();
+  
 }

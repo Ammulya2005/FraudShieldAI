@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "name": "Test User",
+    "email": "test@gmail.com",
+    "requested_at": "2026-09-09T10:28:58.562021+00:00",
+    "status": "Pending"
+  },
+  {
+    "id": 2,
+    "name": "dharmika",
+    "email": "dhar@gmail.com",
+    "requested_at": "2026-09-09T11:40:27.268455+00:00",
+    "status": "Pending"
+  },
+  {
+    "id": 3,
+    "name": "jaya",
+    "email": "jaya@gmail.com",
+    "requested_at": "2026-09-09T11:42:54.879523+00:00",
+    "status": "Approved"
+  },
+  {
+    "id": 4,
+    "name": "Pooji",
+    "email": "pooji@gmail.com",
+    "requested_at": "2026-09-09T20:10:58.775087+00:00",
+    "status": "Pending"
+  }
+]

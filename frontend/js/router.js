@@ -10,7 +10,7 @@ import { renderCases, initCasesEvents } from './views/cases.js';
 import { renderModels, initModelsEvents } from './views/models.js';
 import { renderAdmin, initAdminEvents } from './views/admin.js';
 import { renderHome, initHomeEvents } from './views/home.js';
-
+import {renderRequests,initRequestsEvents} from './views/requests.js';
 const routes = {
   '/home': {
     render: renderHome,
@@ -51,7 +51,12 @@ const routes = {
     render: renderAdmin,
     init: initAdminEvents,
     roles: ['admin']
-  }
+  },
+  '/requests': {
+  render: renderRequests,
+  init: initRequestsEvents,
+  roles: ['admin', 'super_admin']
+ },
 };
 
 export async function router() {
@@ -102,8 +107,10 @@ const publicPage =
 if (publicPage) {
 
   sidebar?.classList.add('hidden');
-
   topbar?.classList.add('hidden');
+
+  sidebar?.setAttribute('aria-hidden', 'true');
+  topbar?.setAttribute('aria-hidden', 'true');
 
   document
     .getElementById('app')
@@ -112,16 +119,18 @@ if (publicPage) {
 } else {
 
   sidebar?.classList.remove('hidden');
-
   topbar?.classList.remove('hidden');
+
+  sidebar?.removeAttribute('aria-hidden');
+  topbar?.removeAttribute('aria-hidden');
 
   document
     .getElementById('app')
     ?.classList.remove('public-layout');
 
   updateNavRBAC();
-
   setupUserWidget();
+
 }
 
   // Render current page
@@ -158,16 +167,19 @@ function setupStreamButton() {
     return;
   }
 
-  // Prevent attaching duplicate listeners
+  // Prevent duplicate listeners
   if (btn.dataset.streamListenerAttached === 'true') {
     return;
   }
 
   btn.dataset.streamListenerAttached = 'true';
 
+  // Add a dedicated class so responsive.css can control this button
+  btn.classList.add('stream-ingestion-btn');
+
   let isStreaming = false;
 
-  // Check current backend status when dashboard loads
+  // Check current backend status
   API.getStreamStatus()
     .then(status => {
 
@@ -176,15 +188,18 @@ function setupStreamButton() {
       isStreaming = status.status === 'streaming';
 
       if (isStreaming) {
+
         btn.innerText = 'Stop Ingestion';
-        btn.className = 'btn btn-sm btn-outline-danger';
+        btn.className = 'btn btn-sm btn-outline-danger stream-ingestion-btn';
 
         if (label) {
           label.innerText = 'Engine: Streaming Live';
         }
+
       } else {
+
         btn.innerText = 'Start Stream Ingestion';
-        btn.className = 'btn btn-sm btn-primary';
+        btn.className = 'btn btn-sm btn-primary stream-ingestion-btn';
 
         if (label) {
           label.innerText = 'Engine: Polling';
@@ -193,12 +208,16 @@ function setupStreamButton() {
 
     })
     .catch(error => {
-      console.error('Could not get stream status:', error);
+
+      console.error(
+        'Could not get stream status:',
+        error
+      );
+
     });
 
   btn.addEventListener('click', async () => {
 
-    // Disable button while request is running
     btn.disabled = true;
 
     try {
@@ -209,12 +228,16 @@ function setupStreamButton() {
 
         const result = await API.startStream();
 
-        console.log('Start ingestion response:', result);
+        console.log(
+          'Start ingestion response:',
+          result
+        );
 
         isStreaming = true;
 
         btn.innerText = 'Stop Ingestion';
-        btn.className = 'btn btn-sm btn-outline-danger';
+        btn.className =
+          'btn btn-sm btn-outline-danger stream-ingestion-btn';
 
         if (label) {
           label.innerText = 'Engine: Streaming Live';
@@ -226,12 +249,16 @@ function setupStreamButton() {
 
         const result = await API.stopStream();
 
-        console.log('Stop ingestion response:', result);
+        console.log(
+          'Stop ingestion response:',
+          result
+        );
 
         isStreaming = false;
 
         btn.innerText = 'Start Stream Ingestion';
-        btn.className = 'btn btn-sm btn-primary';
+        btn.className =
+          'btn btn-sm btn-primary stream-ingestion-btn';
 
         if (label) {
           label.innerText = 'Engine: Polling';
@@ -240,7 +267,10 @@ function setupStreamButton() {
 
     } catch (error) {
 
-      console.error('Stream ingestion error:', error);
+      console.error(
+        'Stream ingestion error:',
+        error
+      );
 
       alert(
         'Unable to change stream status.\n\n' +

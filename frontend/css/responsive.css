@@ -1,51 +1,4258 @@
-/* =========================================================
-   FRAUDSHIELD AI - RESPONSIVE DESIGN
-   ========================================================= */
+/* ============================================================
+   FRAUDSHIELD AI
+   RESPONSIVE.CSS
+   COMPLETE MOBILE / TABLET RESPONSIVE LAYOUT
 
-/* ---------- Global safety ---------- */
-
-html,
-body {
-    max-width: 100%;
-    overflow-x: hidden;
-}
-
-img,
-svg,
-canvas {
-    max-width: 100%;
-}
-
-button,
-input,
-select,
-textarea {
-    max-width: 100%;
-}
+   IMPORTANT:
+   - Desktop/laptop layout remains unchanged
+   - Mobile menu button appears ONLY below 768px
+   - Tables remain complete and horizontally scrollable
+   - No dashboard-wide horizontal overflow
+   ============================================================ */
 
 
-/* =========================================================
-   TABLET
-   ========================================================= */
+/* ============================================================
+   GLOBAL TABLET / SMALL SCREEN SAFETY
+   ============================================================ */
 
 @media (max-width: 1024px) {
 
-    .topbar {
-        gap: 12px;
+  html,
+  body {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+  }
+
+  #app,
+  .app-layout,
+  .main-viewport,
+  .view-container,
+  #router-view {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .main-viewport {
+    margin-left: 0;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  #router-view > * {
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+}
+
+
+/* ============================================================
+   DESKTOP / LAPTOP
+   MENU BUTTON MUST NOT APPEAR
+   ============================================================ */
+
+.mobile-menu-toggle {
+  display: none !important;
+}
+
+
+/* ============================================================
+   MOBILE
+   ============================================================ */
+
+@media (max-width: 768px) {
+
+  /* ==========================================================
+     ROOT
+     ========================================================== */
+
+  html,
+  body {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+
+    overflow-x: hidden;
+
+    box-sizing: border-box;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+
+  /* ==========================================================
+     APPLICATION
+     ========================================================== */
+
+  #app,
+  .app-layout {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    margin: 0;
+    padding: 0;
+
+    overflow-x: hidden;
+  }
+
+  .app-layout {
+    display: block;
+  }
+
+
+  /* ==========================================================
+     SIDEBAR
+     ========================================================== */
+
+  .sidebar {
+    position: fixed;
+
+    top: 0;
+    left: 0;
+    bottom: 0;
+
+    width: min(280px, 85vw);
+    max-width: 85vw;
+
+    height: 100vh;
+    height: 100dvh;
+
+    margin: 0;
+
+    z-index: 2000;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    transform: translateX(-110%);
+
+    transition:
+      transform 0.25s ease,
+      box-shadow 0.25s ease;
+  }
+
+
+  /* OPEN SIDEBAR */
+
+  .sidebar.mobile-open {
+    transform: translateX(0);
+
+    box-shadow:
+      10px 0 35px rgba(0, 0, 0, 0.18);
+  }
+
+
+  /*
+     Keep hidden sidebar hidden on public pages.
+  */
+
+  .sidebar.hidden {
+    display: none;
+  }
+
+  .sidebar.hidden.mobile-open {
+    display: flex;
+  }
+
+
+  /* ==========================================================
+     SIDEBAR CONTENT
+     ========================================================== */
+
+  .brand {
+    min-width: 0;
+  }
+
+  .brand-logo {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .brand h2 {
+    font-size: 18px;
+  }
+
+  .nav-menu {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .nav-item {
+    width: 100%;
+    min-width: 0;
+
+    box-sizing: border-box;
+  }
+
+  .user-profile-widget {
+    width: calc(100% - 20px);
+
+    margin:
+      auto
+      10px
+      15px;
+
+    box-sizing: border-box;
+
+    flex-shrink: 0;
+  }
+
+  .user-meta {
+    min-width: 0;
+  }
+
+  .user-name {
+    min-width: 0;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+
+  /* ==========================================================
+     MOBILE SIDEBAR OVERLAY
+     ========================================================== */
+
+  .mobile-sidebar-overlay {
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 1900;
+
+    background:
+      rgba(15, 23, 42, 0.45);
+
+    opacity: 0;
+
+    visibility: hidden;
+
+    pointer-events: none;
+
+    transition:
+      opacity 0.25s ease,
+      visibility 0.25s ease;
+  }
+
+  .mobile-sidebar-overlay.active {
+    opacity: 1;
+
+    visibility: visible;
+
+    pointer-events: auto;
+  }
+
+
+  /* ==========================================================
+     MAIN VIEWPORT
+     ========================================================== */
+
+  .main-viewport {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    margin: 0;
+
+    padding-left: 0;
+    padding-right: 0;
+
+    overflow-x: hidden;
+  }
+
+  .view-container,
+  #router-view {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    margin: 0;
+
+    padding: 0;
+
+    overflow-x: hidden;
+  }
+
+
+  /* ==========================================================
+     MOBILE TOPBAR
+     ========================================================== */
+
+  .topbar {
+    position: sticky;
+
+    top: 0;
+
+    z-index: 1000;
+
+    width: 100%;
+    max-width: 100%;
+
+    min-height: 58px;
+
+    margin: 0;
+
+    padding:
+      8px
+      10px;
+
+    display: grid;
+
+    grid-template-columns:
+      38px
+      minmax(0, 1fr)
+      auto;
+
+    grid-template-areas:
+      "menu status actions"
+      "search search search";
+
+    align-items: center;
+
+    gap: 8px;
+
+    box-sizing: border-box;
+
+    overflow: visible;
+  }
+
+
+  /*
+     IMPORTANT:
+     Do NOT create a .topbar.hidden override.
+     Login/home must remain without the topbar.
+  */
+
+
+  /* ==========================================================
+     MOBILE MENU BUTTON
+     ONLY MOBILE
+     ========================================================== */
+
+  .mobile-menu-toggle {
+    grid-area: menu;
+
+    display: flex !important;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 38px;
+    height: 38px;
+
+    min-width: 38px;
+
+    padding: 0;
+
+    border:
+      1px solid
+      var(--border, #dfe7f2);
+
+    border-radius: 9px;
+
+    background:
+      var(--card, #ffffff);
+
+    color:
+      var(--text-primary, #14213d);
+
+    font-size: 19px;
+
+    line-height: 1;
+
+    cursor: pointer;
+  }
+
+  .mobile-menu-toggle:hover {
+    background:
+      var(--hover, #f4f7fb);
+  }
+
+
+  /* ==========================================================
+     SYSTEM STATUS
+     ========================================================== */
+
+  .system-status {
+    grid-area: status;
+
+    min-width: 0;
+
+    max-width: 100%;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    font-size: 10px;
+  }
+
+
+  /* ==========================================================
+     GLOBAL SEARCH
+     ========================================================== */
+
+  .global-search {
+    grid-area: search;
+
+    width: 100%;
+    max-width: 100%;
+
+    min-width: 0;
+
+    margin: 0;
+  }
+
+  .global-search-input-wrapper {
+    width: 100%;
+    max-width: 100%;
+
+    min-width: 0;
+  }
+
+  .global-search-input {
+    width: 100%;
+    max-width: 100%;
+
+    min-width: 0;
+
+    box-sizing: border-box;
+  }
+
+  .global-search-results {
+    max-width: 100%;
+
+    overflow-x: hidden;
+  }
+
+
+  /* ==========================================================
+     TOPBAR ACTIONS
+     ========================================================== */
+
+  .topbar-actions {
+    grid-area: actions;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: flex-end;
+
+    gap: 6px;
+
+    min-width: 0;
+
+    max-width: 100%;
+  }
+
+  .topbar-actions .btn {
+    flex-shrink: 1;
+
+    white-space: nowrap;
+  }
+
+
+  /* ==========================================================
+     THEME BUTTON
+     ========================================================== */
+
+  #btn-theme-toggle {
+    flex-shrink: 1;
+
+    white-space: nowrap;
+
+    font-size: 10px;
+
+    padding:
+      7px
+      9px;
+  }
+
+
+  /* ==========================================================
+     START STREAM INGESTION
+     NEVER HIDE THIS BUTTON
+     ========================================================== */
+
+  #btn-stream-toggle {
+    display: inline-flex !important;
+
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 1;
+
+    min-width: 0;
+
+    max-width: 170px;
+
+    padding:
+      7px
+      10px;
+
+    font-size: 10px;
+
+    line-height: 1.2;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+  }
+
+
+  /* ==========================================================
+     GENERIC PAGE CONTAINERS
+     ========================================================== */
+
+  .dashboard-container,
+  .dashboard-page,
+  .transactions-page,
+  .alerts-page,
+  .cases-page,
+  .models-page,
+  .admin-page,
+  .requests-page,
+  .overview-page {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    margin-left: 0;
+    margin-right: 0;
+
+    box-sizing: border-box;
+  }
+
+
+  /* ==========================================================
+     GENERIC PAGE PADDING
+     ========================================================== */
+
+  .dashboard-page,
+  .transactions-page,
+  .alerts-page,
+  .cases-page,
+  .models-page,
+  .admin-page,
+  .overview-page {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+
+  /* ==========================================================
+     COMMON HEADERS
+     ========================================================== */
+
+  .dashboard-header,
+  .transactions-header,
+  .alerts-header,
+  .cases-header,
+  .models-header,
+  .admin-header {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    overflow-wrap: anywhere;
+  }
+
+  .dashboard-header h1,
+  .transactions-header h1,
+  .alerts-header h1,
+  .cases-header h1,
+  .models-header h1,
+  .admin-header h1 {
+    font-size: 24px;
+
+    line-height: 1.15;
+
+    max-width: 100%;
+
+    overflow-wrap: anywhere;
+  }
+
+  .dashboard-header p,
+  .transactions-header p,
+  .alerts-header p,
+  .cases-header p,
+  .models-header p,
+  .admin-header p {
+    font-size: 12px;
+
+    line-height: 1.5;
+
+    max-width: 100%;
+
+    overflow-wrap: anywhere;
+  }
+
+
+  /* ==========================================================
+     COMMON GRIDS
+     ========================================================== */
+
+  .dashboard-grid,
+  .stats-grid,
+  .cards-grid,
+  .metrics-grid,
+  .analytics-grid,
+  .charts-grid,
+  .models-grid,
+  .cases-grid,
+  .alerts-grid,
+  .dashboard-chart-grid {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    box-sizing: border-box;
+  }
+
+
+  /* ==========================================================
+     FORCE MOBILE CARD GRIDS
+     ========================================================== */
+
+  .stats-grid,
+  .metrics-grid,
+  .cards-grid {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      ) !important;
+
+    width: 100%;
+  }
+
+
+  /* ==========================================================
+     CHART GRID
+     ========================================================== */
+
+  .dashboard-chart-grid,
+  .charts-grid,
+  .analytics-grid {
+    grid-template-columns:
+      minmax(0, 1fr) !important;
+
+    gap: 12px;
+
+    width: 100%;
+
+    max-width: 100%;
+  }
+
+
+  /* ==========================================================
+     CHART CARDS
+     ========================================================== */
+
+  .chart-card {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    overflow: hidden;
+
+    box-sizing: border-box;
+  }
+
+  .chart-card-header {
+    width: 100%;
+    max-width: 100%;
+
+    min-width: 0;
+
+    gap: 8px;
+  }
+
+  .chart-card-header h3 {
+    font-size: 14px;
+
+    line-height: 1.3;
+  }
+
+  .chart-card-header p {
+    font-size: 10px;
+
+    line-height: 1.4;
+  }
+
+
+  /* ==========================================================
+     CHART WRAPPERS
+     ========================================================== */
+
+  .chart-wrapper,
+  .chart-wrapper-wide,
+  .chart-wrapper-risk {
+    position: relative;
+
+    width: 100%;
+    max-width: 100%;
+
+    min-width: 0;
+
+    height: 260px;
+
+    min-height: 260px;
+
+    box-sizing: border-box;
+
+    overflow: hidden;
+  }
+
+  .chart-wrapper canvas,
+  .chart-wrapper-wide canvas,
+  .chart-wrapper-risk canvas {
+    display: block !important;
+
+    width: 100% !important;
+
+    max-width: 100% !important;
+
+    height: 100% !important;
+  }
+
+
+  /* ==========================================================
+     LIVE STREAM CARD
+     ========================================================== */
+
+  .live-stream-card {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    box-sizing: border-box;
+  }
+
+
+  /* ==========================================================
+     IMPORTANT:
+     UNIVERSAL TABLE CONTAINER
+
+     Every dashboard table should be allowed to scroll
+     horizontally inside its OWN container.
+
+     The whole dashboard must NOT scroll sideways.
+     ========================================================== */
+
+  .table-wrapper,
+  .table-container,
+  .data-table-wrapper,
+  .data-table-container,
+  .table-responsive,
+  .transactions-table-wrapper,
+  .alerts-table-wrapper,
+  .cases-table-wrapper,
+  .models-table-wrapper,
+  .admin-table-wrapper,
+  .users-table-wrapper,
+  .live-stream-table-wrapper,
+  .stream-table-wrapper,
+  .overview-table-wrapper,
+  .dashboard-table-wrapper,
+  .requests-table-wrapper {
+    width: 100%;
+    max-width: 100%;
+
+    min-width: 0;
+
+    overflow-x: auto;
+    overflow-y: visible;
+
+    -webkit-overflow-scrolling: touch;
+
+    scrollbar-width: thin;
+
+    box-sizing: border-box;
+  }
+
+
+  /* ==========================================================
+     UNIVERSAL TABLES
+
+     Keep the actual table complete.
+     Do NOT shrink all columns until text becomes unreadable.
+     ========================================================== */
+
+  .table-wrapper table,
+  .table-container table,
+  .data-table-wrapper table,
+  .data-table-container table,
+  .table-responsive table,
+  .transactions-table-wrapper table,
+  .alerts-table-wrapper table,
+  .cases-table-wrapper table,
+  .models-table-wrapper table,
+  .admin-table-wrapper table,
+  .users-table-wrapper table,
+  .live-stream-table-wrapper table,
+  .stream-table-wrapper table,
+  .overview-table-wrapper table,
+  .dashboard-table-wrapper table,
+  .requests-table-wrapper table {
+    width: max-content;
+
+    min-width: 680px;
+
+    max-width: none;
+
+    border-collapse: collapse;
+
+    table-layout: auto;
+  }
+
+
+  /* ==========================================================
+     TABLE CELLS
+     ========================================================== */
+
+  .table-wrapper th,
+  .table-wrapper td,
+  .table-container th,
+  .table-container td,
+  .data-table-wrapper th,
+  .data-table-wrapper td,
+  .data-table-container th,
+  .data-table-container td,
+  .table-responsive th,
+  .table-responsive td,
+  .transactions-table-wrapper th,
+  .transactions-table-wrapper td,
+  .alerts-table-wrapper th,
+  .alerts-table-wrapper td,
+  .cases-table-wrapper th,
+  .cases-table-wrapper td,
+  .models-table-wrapper th,
+  .models-table-wrapper td,
+  .admin-table-wrapper th,
+  .admin-table-wrapper td,
+  .users-table-wrapper th,
+  .users-table-wrapper td,
+  .live-stream-table-wrapper th,
+  .live-stream-table-wrapper td,
+  .stream-table-wrapper th,
+  .stream-table-wrapper td,
+  .overview-table-wrapper th,
+  .overview-table-wrapper td,
+  .dashboard-table-wrapper th,
+  .dashboard-table-wrapper td,
+  .requests-table-wrapper th,
+  .requests-table-wrapper td {
+    white-space: nowrap;
+
+    font-size: 11px;
+
+    padding:
+      9px
+      10px;
+
+    vertical-align: middle;
+  }
+
+
+  /* ==========================================================
+     TABLE HEADINGS
+     ========================================================== */
+
+  .table-wrapper th,
+  .table-container th,
+  .data-table-wrapper th,
+  .data-table-container th,
+  .table-responsive th,
+  .transactions-table-wrapper th,
+  .alerts-table-wrapper th,
+  .cases-table-wrapper th,
+  .models-table-wrapper th,
+  .admin-table-wrapper th,
+  .users-table-wrapper th,
+  .live-stream-table-wrapper th,
+  .stream-table-wrapper th,
+  .overview-table-wrapper th,
+  .dashboard-table-wrapper th,
+  .requests-table-wrapper th {
+    font-size: 9px;
+
+    font-weight: 700;
+
+    white-space: nowrap;
+  }
+
+
+  /* ==========================================================
+     TABLE BUTTONS
+     ========================================================== */
+
+  .table-wrapper button,
+  .table-container button,
+  .data-table-wrapper button,
+  .data-table-container button,
+  .table-responsive button,
+  .transactions-table-wrapper button,
+  .alerts-table-wrapper button,
+  .cases-table-wrapper button,
+  .models-table-wrapper button,
+  .admin-table-wrapper button,
+  .users-table-wrapper button,
+  .requests-table-wrapper button {
+    font-size: 9px;
+
+    padding:
+      6px
+      8px;
+
+    white-space: nowrap;
+  }
+
+
+  /* ==========================================================
+     TRANSACTIONS
+     ========================================================== */
+
+  .transactions-page {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .transactions-page h1 {
+    font-size: 24px;
+  }
+
+
+  /* ==========================================================
+     ALERTS
+     ========================================================== */
+
+  .alerts-page {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .alerts-page h1 {
+    font-size: 24px;
+  }
+
+
+  /* ==========================================================
+     CASES
+     ========================================================== */
+
+  .cases-page {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .cases-page h1 {
+    font-size: 24px;
+  }
+
+
+  /* ==========================================================
+     ML MODELS
+     ========================================================== */
+
+  .models-page {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .models-page h1 {
+    font-size: 24px;
+  }
+
+
+  /* ==========================================================
+     ADMINISTRATION
+     ========================================================== */
+
+  .admin-page {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .admin-page h1 {
+    font-size: 24px;
+  }
+
+
+  /* ==========================================================
+     REQUESTS PAGE
+     ========================================================== */
+
+  .requests-page {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    margin: 0;
+
+    padding:
+      20px
+      12px
+      30px;
+
+    box-sizing: border-box;
+  }
+
+  .requests-header {
+    width: 100%;
+    min-width: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    gap: 12px;
+  }
+
+  .requests-heading {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .requests-header h1 {
+    max-width: 100%;
+
+    font-size: 25px;
+
+    line-height: 1.15;
+  }
+
+  .requests-header p {
+    max-width: 100%;
+
+    font-size: 11px;
+
+    line-height: 1.5;
+
+    overflow-wrap: anywhere;
+  }
+
+  .requests-live-status {
+    align-self: flex-start;
+
+    max-width: 100%;
+  }
+
+
+  /* ==========================================================
+     REQUEST SUMMARY CARDS
+     ========================================================== */
+
+  .requests-summary {
+    width: 100%;
+
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
+
+    gap: 10px;
+
+    box-sizing: border-box;
+  }
+
+  .request-stat-card {
+    min-width: 0;
+
+    padding: 12px;
+
+    box-sizing: border-box;
+  }
+
+  .request-stat-content {
+    min-width: 0;
+  }
+
+  .request-stat-label {
+    display: block;
+
+    max-width: 100%;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+
+    font-size: 9px;
+  }
+
+  .request-stat-card strong {
+    font-size: 18px;
+  }
+
+
+  /* ==========================================================
+     REQUEST PANEL
+     ========================================================== */
+
+  .requests-panel {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    box-sizing: border-box;
+
+    overflow: hidden;
+  }
+
+  .requests-panel-header {
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    gap: 10px;
+
+    padding: 14px;
+  }
+
+  .requests-refresh-btn {
+    width: 100%;
+  }
+
+
+  /* ==========================================================
+     REQUEST TABLE
+
+     Unlike the old version, DON'T turn this table into
+     display:block cards.
+
+     Keep every column available and scroll horizontally.
+     ========================================================== */
+
+  .requests-table-wrapper {
+    width: 100%;
+    max-width: 100%;
+
+    overflow-x: auto;
+
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .requests-table {
+    display: table;
+
+    width: max-content;
+
+    min-width: 760px;
+
+    table-layout: auto;
+  }
+
+  .requests-table thead {
+    display: table-header-group;
+  }
+
+  .requests-table tbody {
+    display: table-row-group;
+  }
+
+  .requests-table tr {
+    display: table-row;
+
+    margin: 0;
+
+    padding: 0;
+  }
+
+  .requests-table td,
+  .requests-table th {
+    display: table-cell;
+
+    width: auto;
+
+    padding:
+      9px
+      10px;
+
+    text-align: left;
+
+    white-space: nowrap;
+
+    font-size: 10px;
+  }
+
+  .requests-table td::before {
+    content: none;
+  }
+
+  .request-user {
+    max-width: none;
+
+    text-align: left;
+  }
+
+  .request-email {
+    max-width: none;
+
+    white-space: nowrap;
+  }
+
+  .request-date {
+    max-width: none;
+
+    white-space: nowrap;
+  }
+
+  .request-actions {
+    max-width: none;
+
+    display: flex;
+
+    flex-wrap: nowrap;
+
+    justify-content: flex-start;
+
+    gap: 5px;
+  }
+
+  .request-action {
+    flex:
+      0 0 auto;
+
+    padding:
+      6px
+      8px;
+
+    font-size: 9px;
+  }
+
+  .requests-footer-note {
+    line-height: 1.5;
+
+    text-align: center;
+
+    font-size: 10px;
+  }
+
+
+  /* ==========================================================
+     LIVE INCOMING STREAM ANOMALIES
+     ========================================================== */
+
+  .live-stream-card {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    overflow: hidden;
+  }
+
+  .live-stream-card table {
+    width: max-content;
+
+    min-width: 850px;
+  }
+
+
+  /* ==========================================================
+     PAGINATION
+     ========================================================== */
+
+  .pagination,
+  .table-pagination,
+  .pagination-container,
+  .page-controls,
+  .pagination-controls {
+    width: 100%;
+    max-width: 100%;
+
+    min-width: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-wrap: wrap;
+
+    gap: 5px;
+
+    box-sizing: border-box;
+  }
+
+  .pagination button,
+  .table-pagination button,
+  .pagination-container button,
+  .page-controls button,
+  .pagination-controls button {
+    min-width: 30px;
+
+    min-height: 30px;
+
+    padding:
+      5px
+      8px;
+
+    font-size: 10px;
+  }
+
+
+  /* ==========================================================
+     FORMS
+     ========================================================== */
+
+  input,
+  select,
+  textarea {
+    max-width: 100%;
+
+    box-sizing: border-box;
+
+    font-size: 12px;
+  }
+
+  button {
+    max-width: 100%;
+
+    box-sizing: border-box;
+  }
+
+
+  /* ==========================================================
+     BADGES
+     ========================================================== */
+
+  .badge {
+    font-size: 9px;
+
+    line-height: 1.2;
+
+    white-space: nowrap;
+  }
+
+
+  /* ==========================================================
+     CARDS
+     ========================================================== */
+
+  .card,
+  .stat-card,
+  .metric-card,
+  .panel,
+  .chart-card {
+    max-width: 100%;
+
+    min-width: 0;
+
+    box-sizing: border-box;
+  }
+
+
+  /* ==========================================================
+     PREVENT LONG TEXT FROM BREAKING MOBILE LAYOUT
+     ========================================================== */
+
+  .dashboard-page *,
+  .transactions-page *,
+  .alerts-page *,
+  .cases-page *,
+  .models-page *,
+  .admin-page *,
+  .requests-page * {
+    max-width: 100%;
+  }
+
+
+  /*
+     Don't apply max-width to tables themselves because
+     tables need their complete width inside the scroll area.
+  */
+
+  .table-wrapper table,
+  .table-container table,
+  .data-table-wrapper table,
+  .data-table-container table,
+  .table-responsive table,
+  .transactions-table-wrapper table,
+  .alerts-table-wrapper table,
+  .cases-table-wrapper table,
+  .models-table-wrapper table,
+  .admin-table-wrapper table,
+  .users-table-wrapper table,
+  .live-stream-table-wrapper table,
+  .stream-table-wrapper table,
+  .overview-table-wrapper table,
+  .dashboard-table-wrapper table,
+  .requests-table-wrapper table {
+    max-width: none;
+  }
+
+}
+
+
+/* ============================================================
+   SMALL PHONES
+   <= 430px
+   ============================================================ */
+
+@media (max-width: 430px) {
+
+  html,
+  body {
+    overflow-x: hidden;
+  }
+
+
+  /* ==========================================================
+     TOPBAR
+     ========================================================== */
+
+  .topbar {
+    grid-template-columns:
+      36px
+      minmax(0, 1fr)
+      auto;
+
+    padding:
+      7px
+      8px;
+
+    gap: 6px;
+  }
+
+  .mobile-menu-toggle {
+    width: 36px;
+
+    height: 36px;
+
+    min-width: 36px;
+
+    flex-basis: 36px;
+
+    font-size: 18px;
+  }
+
+  .system-status {
+    font-size: 9px;
+  }
+
+
+  /* ==========================================================
+     THEME
+     ========================================================== */
+
+  #btn-theme-toggle {
+    padding:
+      6px
+      7px;
+
+    font-size: 9px;
+  }
+
+
+  /* ==========================================================
+     STREAM BUTTON
+     ========================================================== */
+
+  #btn-stream-toggle {
+    display: inline-flex !important;
+
+    max-width: 128px;
+
+    padding:
+      7px
+      8px;
+
+    font-size: 9px;
+  }
+
+
+  /* ==========================================================
+     PAGE HEADINGS
+     ========================================================== */
+
+  .dashboard-header h1,
+  .transactions-header h1,
+  .alerts-header h1,
+  .cases-header h1,
+  .models-header h1,
+  .admin-header h1,
+  .requests-header h1 {
+    font-size: 22px;
+  }
+
+  .dashboard-header p,
+  .transactions-header p,
+  .alerts-header p,
+  .cases-header p,
+  .models-header p,
+  .admin-header p {
+    font-size: 11px;
+  }
+
+
+  /* ==========================================================
+     PAGE PADDING
+     ========================================================== */
+
+  .dashboard-page,
+  .transactions-page,
+  .alerts-page,
+  .cases-page,
+  .models-page,
+  .admin-page,
+  .overview-page {
+    padding-left: 9px;
+    padding-right: 9px;
+  }
+
+
+  /* ==========================================================
+     STAT CARDS
+     ========================================================== */
+
+  .stats-grid,
+  .metrics-grid,
+  .cards-grid {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      ) !important;
+
+    gap: 8px;
+  }
+
+  .stat-card,
+  .metric-card {
+    padding: 10px;
+  }
+
+
+  /* ==========================================================
+     CARD TEXT
+     ========================================================== */
+
+  .stat-card h3,
+  .metric-card h3 {
+    font-size: 11px;
+  }
+
+  .stat-card strong,
+  .metric-card strong {
+    font-size: 19px;
+  }
+
+
+  /* ==========================================================
+     CHART
+     ========================================================== */
+
+  .chart-wrapper,
+  .chart-wrapper-wide,
+  .chart-wrapper-risk {
+    height: 230px;
+
+    min-height: 230px;
+  }
+
+  .chart-card-header h3 {
+    font-size: 13px;
+  }
+
+  .chart-card-header p {
+    font-size: 9px;
+  }
+
+
+  /* ==========================================================
+     TABLE
+     ========================================================== */
+
+  .table-wrapper th,
+  .table-wrapper td,
+  .table-container th,
+  .table-container td,
+  .data-table-wrapper th,
+  .data-table-wrapper td,
+  .data-table-container th,
+  .data-table-container td,
+  .table-responsive th,
+  .table-responsive td,
+  .transactions-table-wrapper th,
+  .transactions-table-wrapper td,
+  .alerts-table-wrapper th,
+  .alerts-table-wrapper td,
+  .cases-table-wrapper th,
+  .cases-table-wrapper td,
+  .models-table-wrapper th,
+  .models-table-wrapper td,
+  .admin-table-wrapper th,
+  .admin-table-wrapper td,
+  .users-table-wrapper th,
+  .users-table-wrapper td,
+  .live-stream-table-wrapper th,
+  .live-stream-table-wrapper td,
+  .stream-table-wrapper th,
+  .stream-table-wrapper td,
+  .overview-table-wrapper th,
+  .overview-table-wrapper td,
+  .dashboard-table-wrapper th,
+  .dashboard-table-wrapper td,
+  .requests-table-wrapper th,
+  .requests-table-wrapper td {
+    font-size: 10px;
+
+    padding:
+      8px
+      9px;
+  }
+
+
+  /* ==========================================================
+     REQUESTS
+     ========================================================== */
+
+  .requests-page {
+    padding:
+      17px
+      9px
+      25px;
+  }
+
+  .requests-summary {
+    gap: 8px;
+  }
+
+  .request-stat-card {
+    padding: 10px;
+
+    gap: 7px;
+  }
+
+  .request-stat-card strong {
+    font-size: 17px;
+  }
+
+  .request-stat-label {
+    font-size: 8px;
+  }
+
+  .requests-panel-header {
+    padding: 12px;
+  }
+
+
+  /* ==========================================================
+     REQUEST TABLE
+     ========================================================== */
+
+  .requests-table {
+    min-width: 720px;
+  }
+
+  .requests-table td,
+  .requests-table th {
+    font-size: 9px;
+
+    padding:
+      8px
+      9px;
+  }
+
+
+  /* ==========================================================
+     PAGINATION
+     ========================================================== */
+
+  .pagination button,
+  .table-pagination button,
+  .pagination-container button,
+  .page-controls button,
+  .pagination-controls button {
+    min-width: 28px;
+
+    min-height: 28px;
+
+    font-size: 9px;
+
+    padding:
+      4px
+      7px;
+  }
+
+}
+
+
+/* ============================================================
+   VERY SMALL PHONES
+   <= 360px
+   ============================================================ */
+
+@media (max-width: 360px) {
+
+  .topbar {
+    grid-template-columns:
+      36px
+      minmax(0, 1fr);
+
+    grid-template-areas:
+      "menu actions"
+      "status status"
+      "search search";
+
+    gap: 6px;
+
+    padding:
+      6px
+      7px;
+  }
+
+
+  /* ==========================================================
+     MENU
+     ========================================================== */
+
+  .mobile-menu-toggle {
+    width: 36px;
+
+    height: 36px;
+
+    min-width: 36px;
+  }
+
+
+  /* ==========================================================
+     ACTIONS
+     ========================================================== */
+
+  .topbar-actions {
+    justify-content: flex-end;
+
+    gap: 4px;
+  }
+
+  #btn-theme-toggle {
+    font-size: 8px;
+
+    padding:
+      6px
+      6px;
+  }
+
+  #btn-stream-toggle {
+    display: inline-flex !important;
+
+    max-width: 112px;
+
+    font-size: 8px;
+
+    padding:
+      7px
+      7px;
+  }
+
+
+  /* ==========================================================
+     STATUS
+     ========================================================== */
+
+  .system-status {
+    width: 100%;
+
+    font-size: 8px;
+  }
+
+
+  /* ==========================================================
+     PAGE HEADINGS
+     ========================================================== */
+
+  .dashboard-header h1,
+  .transactions-header h1,
+  .alerts-header h1,
+  .cases-header h1,
+  .models-header h1,
+  .admin-header h1,
+  .requests-header h1 {
+    font-size: 20px;
+  }
+
+
+  /* ==========================================================
+     PAGE PADDING
+     ========================================================== */
+
+  .dashboard-page,
+  .transactions-page,
+  .alerts-page,
+  .cases-page,
+  .models-page,
+  .admin-page,
+  .overview-page {
+    padding-left: 7px;
+    padding-right: 7px;
+  }
+
+
+  /* ==========================================================
+     TWO COLUMN CARDS
+     ========================================================== */
+
+  .stats-grid,
+  .metrics-grid,
+  .cards-grid {
+    gap: 6px;
+  }
+
+  .stat-card,
+  .metric-card {
+    padding: 8px;
+  }
+
+  .stat-card strong,
+  .metric-card strong {
+    font-size: 17px;
+  }
+
+
+  /* ==========================================================
+     CHARTS
+     ========================================================== */
+
+  .chart-wrapper,
+  .chart-wrapper-wide,
+  .chart-wrapper-risk {
+    height: 215px;
+
+    min-height: 215px;
+  }
+
+
+  /* ==========================================================
+     REQUESTS
+     ========================================================== */
+
+  .requests-page {
+    padding-left: 7px;
+
+    padding-right: 7px;
+  }
+
+  .request-stat-card {
+    padding: 8px;
+  }
+
+  .request-stat-card strong {
+    font-size: 16px;
+  }
+
+  .request-stat-label {
+    font-size: 7px;
+  }
+
+  .requests-table {
+    min-width: 700px;
+  }
+
+
+  /* ==========================================================
+     TABLE FONT
+     ========================================================== */
+
+  .table-wrapper th,
+  .table-wrapper td,
+  .table-container th,
+  .table-container td,
+  .data-table-wrapper th,
+  .data-table-wrapper td,
+  .data-table-container th,
+  .data-table-container td,
+  .table-responsive th,
+  .table-responsive td,
+  .transactions-table-wrapper th,
+  .transactions-table-wrapper td,
+  .alerts-table-wrapper th,
+  .alerts-table-wrapper td,
+  .cases-table-wrapper th,
+  .cases-table-wrapper td,
+  .models-table-wrapper th,
+  .models-table-wrapper td,
+  .admin-table-wrapper th,
+  .admin-table-wrapper td,
+  .users-table-wrapper th,
+  .users-table-wrapper td,
+  .live-stream-table-wrapper th,
+  .live-stream-table-wrapper td,
+  .stream-table-wrapper th,
+  .stream-table-wrapper td,
+  .overview-table-wrapper th,
+  .overview-table-wrapper td,
+  .dashboard-table-wrapper th,
+  .dashboard-table-wrapper td,
+  .requests-table-wrapper th,
+  .requests-table-wrapper td {
+    font-size: 9px;
+
+    padding:
+      7px
+      8px;
+  }
+
+}
+
+
+/* ============================================================
+   LANDSCAPE PHONES
+   ============================================================ */
+
+@media (max-width: 900px) and (orientation: landscape) {
+
+  .sidebar {
+    width: 260px;
+  }
+
+  .topbar {
+    position: sticky;
+
+    top: 0;
+  }
+
+  .chart-wrapper,
+  .chart-wrapper-wide,
+  .chart-wrapper-risk {
+    height: 220px;
+
+    min-height: 220px;
+  }
+
+}
+
+
+/* ============================================================
+   FINAL MOBILE MENU SAFETY
+   ============================================================ */
+
+@media (max-width: 768px) {
+
+  .mobile-menu-toggle {
+    display: flex !important;
+  }
+
+}
+
+
+/* ============================================================
+   FINAL DESKTOP SAFETY
+   ============================================================ */
+
+@media (min-width: 769px) {
+
+  .mobile-menu-toggle {
+    display: none !important;
+  }
+
+}
+/* =========================================================
+   MOBILE TYPOGRAPHY
+   Keep fonts compact and readable on 360px screens
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    /* Main page heading */
+    .view-container h1,
+    .view-container .page-title,
+    .page-header h1 {
+        font-size: 22px !important;
+        line-height: 1.15 !important;
+        margin-bottom: 6px !important;
     }
 
-    .global-search {
-        width: min(320px, 35vw);
+    /* Secondary headings */
+    .view-container h2,
+    .page-header h2 {
+        font-size: 18px !important;
+        line-height: 1.2 !important;
     }
 
-    .dashboard-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+    .view-container h3 {
+        font-size: 16px !important;
+        line-height: 1.25 !important;
     }
 
-    .charts-grid {
-        grid-template-columns: 1fr;
+    /* Page subtitles/descriptions */
+    .view-container .page-subtitle,
+    .page-header p,
+    .view-container > p {
+        font-size: 13px !important;
+        line-height: 1.35 !important;
     }
 
+    /* Card headings */
+    .card h2,
+    .card h3,
+    .metric-card h2,
+    .metric-card h3 {
+        font-size: 15px !important;
+    }
+
+    /* Normal card text */
+    .card,
+    .metric-card {
+        font-size: 13px !important;
+    }
+
+    /* Metric numbers */
+    .metric-value,
+    .metric-card .value {
+        font-size: 24px !important;
+        line-height: 1.1 !important;
+    }
+
+    /* Navigation */
+    .sidebar,
+    .sidebar a,
+    .nav-item {
+        font-size: 13px !important;
+    }
+
+    /* Top bar */
+    .topbar,
+    .top-bar {
+        font-size: 12px !important;
+    }
+
+    /* Search box */
+    .search-input,
+    .search-container input,
+    input[type="search"] {
+        font-size: 13px !important;
+    }
+
+    /* Buttons */
+    button,
+    .btn,
+    .button {
+        font-size: 12px !important;
+    }
+
+    /* Table heading */
+    table thead th {
+        font-size: 11px !important;
+        line-height: 1.2 !important;
+        padding: 9px 8px !important;
+    }
+
+    /* Table body */
+    table tbody td {
+        font-size: 11px !important;
+        line-height: 1.25 !important;
+        padding: 9px 8px !important;
+    }
+
+    /* Table links */
+    table a {
+        font-size: 11px !important;
+    }
+
+    /* Status badges */
+    .status,
+    .badge,
+    .risk-badge,
+    .status-badge {
+        font-size: 10px !important;
+        line-height: 1 !important;
+    }
+
+    /* Pagination */
+    .pagination,
+    .pagination button,
+    .pagination a {
+        font-size: 11px !important;
+    }
+
+    /* Small labels */
+    .label,
+    .caption,
+    .muted,
+    small {
+        font-size: 11px !important;
+    }
+}
+/* ============================================================
+   MOBILE USER AUTHORIZATION CARDS
+   Admin users table only
+   Desktop remains unchanged
+   ============================================================ */
+
+@media (max-width: 768px) {
+
+  /* User table container */
+  .users-table-container {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+
+  /* Remove normal table minimum width */
+  .users-table {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+    display: block !important;
+  }
+
+  /* Hide normal column headings on mobile */
+  .users-table thead {
+    display: none !important;
+  }
+
+  /* Table body becomes a block */
+  .users-table tbody {
+    display: block !important;
+    width: 100% !important;
+  }
+
+  /* Each user becomes its own card */
+  .users-table tbody tr {
+    display: block !important;
+
+    width: 100% !important;
+    max-width: 100% !important;
+
+    margin: 0 0 14px 0 !important;
+    padding: 8px 0 !important;
+
+    border: 1px solid var(--border, #dfe7f2) !important;
+    border-radius: 12px !important;
+
+    background: var(--card, #ffffff);
+
+    box-sizing: border-box;
+
+    overflow: hidden;
+  }
+
+  /* Each field becomes label + value */
+  .users-table tbody td {
+    display: flex !important;
+
+    align-items: flex-start !important;
+
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+
+    padding: 10px 14px !important;
+
+    border: 0 !important;
+    border-bottom: 1px solid var(--border, #e5eaf1) !important;
+
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-word !important;
+
+    font-size: 12px !important;
+    line-height: 1.4 !important;
+
+    box-sizing: border-box;
+  }
+
+  /* Remove border from final field */
+  .users-table tbody td:last-child {
+    border-bottom: 0 !important;
+  }
+
+  /* Labels */
+  .users-table tbody td::before {
+    content: attr(data-label);
+
+    flex: 0 0 92px;
+
+    width: 92px;
+    min-width: 92px;
+
+    margin-right: 12px;
+
+    font-size: 10px !important;
+    font-weight: 700;
+
+    color: var(--text-muted, #64748b);
+
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+
+    line-height: 1.4;
+  }
+
+  /* Actual values */
+  .users-table tbody td > * {
+    min-width: 0;
+    max-width: 100%;
+
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  /* User ID */
+  .users-table tbody td:first-child code {
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-all !important;
+
+    font-size: 11px !important;
+  }
+
+  /* Username / email values */
+  .users-table tbody td:nth-child(2),
+  .users-table tbody td:nth-child(3) {
+    color: var(--text-primary, #14213d);
+  }
+
+  /* Role badge */
+  .users-table tbody td:nth-child(4) .badge {
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  /* Status */
+  .users-table tbody td:nth-child(5) span {
+    font-weight: 600;
+  }
+
+  /* Pagination below cards */
+  #users-pagination {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    box-sizing: border-box;
+  }
+}
+
+
+/* ============================================================
+   SMALL PHONES
+   ============================================================ */
+
+@media (max-width: 430px) {
+
+  .users-table tbody tr {
+    margin-bottom: 12px !important;
+    border-radius: 10px !important;
+  }
+
+  .users-table tbody td {
+    padding: 9px 11px !important;
+    font-size: 11px !important;
+  }
+
+  .users-table tbody td::before {
+    flex-basis: 82px;
+    width: 82px;
+    min-width: 82px;
+
+    margin-right: 9px;
+
+    font-size: 9px !important;
+  }
+
+  .users-table tbody td:first-child code {
+    font-size: 10px !important;
+  }
+}
+
+
+/* ============================================================
+   VERY SMALL PHONES
+   ============================================================ */
+
+@media (max-width: 360px) {
+
+  .users-table tbody td {
+    padding: 8px 9px !important;
+  }
+
+  .users-table tbody td::before {
+    flex-basis: 74px;
+    width: 74px;
+    min-width: 74px;
+
+    margin-right: 8px;
+
+    font-size: 8px !important;
+  }
+
+  .users-table tbody td:first-child code {
+    font-size: 9px !important;
+  }
+}
+/* ============================================================
+   MOBILE FRAUD CASE CARDS
+   Cases table only
+   Desktop remains unchanged
+   ============================================================ */
+
+@media (max-width: 768px) {
+
+  .fraud-cases-table {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+    display: block !important;
+  }
+
+  .fraud-cases-table thead {
+    display: none !important;
+  }
+
+  .fraud-cases-table tbody {
+    display: block !important;
+    width: 100% !important;
+  }
+
+  .fraud-cases-table tbody tr {
+    display: block !important;
+
+    width: 100% !important;
+    max-width: 100% !important;
+
+    margin: 0 0 14px 0 !important;
+    padding: 8px 0 !important;
+
+    border: 1px solid var(--border, #dfe7f2) !important;
+    border-radius: 12px !important;
+
+    background: var(--card, #ffffff);
+
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .fraud-cases-table tbody td {
+    display: flex !important;
+
+    align-items: flex-start !important;
+
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+
+    padding: 10px 14px !important;
+
+    border: 0 !important;
+    border-bottom: 1px solid var(--border, #e5eaf1) !important;
+
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-word !important;
+
+    font-size: 12px !important;
+    line-height: 1.4 !important;
+
+    box-sizing: border-box;
+  }
+
+  .fraud-cases-table tbody td:last-child {
+    border-bottom: 0 !important;
+  }
+
+  /* Field labels */
+  .fraud-cases-table tbody td::before {
+    content: attr(data-label);
+
+    flex: 0 0 115px;
+
+    width: 115px;
+    min-width: 115px;
+
+    margin-right: 12px;
+
+    font-size: 10px !important;
+    font-weight: 700;
+
+    color: var(--text-muted, #64748b);
+
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+
+    line-height: 1.4;
+  }
+
+  /* Values */
+  .fraud-cases-table tbody td > * {
+    min-width: 0;
+    max-width: 100%;
+
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  /* Case ID */
+  .fraud-cases-table tbody td:first-child code {
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-all !important;
+    font-size: 11px !important;
+  }
+
+  /* Priority badge */
+  .fraud-cases-table tbody td:nth-child(3) .badge {
+    white-space: normal !important;
+  }
+
+  /* Model prediction */
+  .fraud-cases-table tbody td:nth-child(4) strong {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  /* Actions */
+  .fraud-cases-table tbody td:nth-child(5) button {
+    max-width: 100% !important;
+    white-space: normal !important;
+  }
+
+  /* Pagination */
+  #cases-pagination {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    box-sizing: border-box;
+  }
+}
+
+
+/* ============================================================
+   SMALL PHONES
+   ============================================================ */
+
+@media (max-width: 430px) {
+
+  .fraud-cases-table tbody tr {
+    margin-bottom: 12px !important;
+    border-radius: 10px !important;
+  }
+
+  .fraud-cases-table tbody td {
+    padding: 9px 11px !important;
+    font-size: 11px !important;
+  }
+
+  .fraud-cases-table tbody td::before {
+    flex-basis: 100px;
+    width: 100px;
+    min-width: 100px;
+
+    margin-right: 9px;
+
+    font-size: 9px !important;
+  }
+
+  .fraud-cases-table tbody td:first-child code {
+    font-size: 10px !important;
+  }
+}
+
+
+/* ============================================================
+   VERY SMALL PHONES
+   ============================================================ */
+
+@media (max-width: 360px) {
+
+  .fraud-cases-table tbody td {
+    padding: 8px 9px !important;
+  }
+
+  .fraud-cases-table tbody td::before {
+    flex-basis: 88px;
+    width: 88px;
+    min-width: 88px;
+
+    margin-right: 8px;
+
+    font-size: 8px !important;
+  }
+
+  .fraud-cases-table tbody td:first-child code {
+    font-size: 9px !important;
+  }
+}
+/* ============================================================
+   MOBILE DASHBOARD LIVE STREAM CARDS
+   Dashboard table only
+   Desktop remains unchanged
+   ============================================================ */
+
+@media (max-width: 768px) {
+
+  .live-stream-table-container {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+
+  .live-stream-table {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+
+    display: block !important;
+
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+  }
+
+  .live-stream-table thead {
+    display: none !important;
+  }
+
+  .live-stream-table tbody {
+    display: block !important;
+    width: 100% !important;
+  }
+
+  .live-stream-table tbody tr {
+    display: block !important;
+
+    width: 100% !important;
+    max-width: 100% !important;
+
+    margin: 0 0 14px 0 !important;
+    padding: 8px 0 !important;
+
+    border: 1px solid var(--border, #dfe7f2) !important;
+    border-radius: 12px !important;
+
+    background: var(--card, #ffffff);
+
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .live-stream-table tbody td {
+    display: flex !important;
+
+    align-items: flex-start !important;
+
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+
+    padding: 10px 14px !important;
+
+    border: 0 !important;
+    border-bottom: 1px solid var(--border, #e5eaf1) !important;
+
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-word !important;
+
+    font-size: 12px !important;
+    line-height: 1.4 !important;
+
+    box-sizing: border-box;
+  }
+
+  .live-stream-table tbody td:last-child {
+    border-bottom: 0 !important;
+  }
+
+  /* Labels */
+  .live-stream-table tbody td::before {
+    content: attr(data-label);
+
+    flex: 0 0 92px;
+
+    width: 92px;
+    min-width: 92px;
+
+    margin-right: 12px;
+
+    font-size: 10px !important;
+    font-weight: 700;
+
+    color: var(--text-muted, #64748b);
+
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+
+    line-height: 1.4;
+  }
+
+  /* Values */
+  .live-stream-table tbody td > * {
+    min-width: 0;
+    max-width: 100%;
+
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  /* Transaction ID */
+  .live-stream-table tbody td:first-child code {
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-all !important;
+
+    font-size: 10px !important;
+  }
+
+  /* User ID */
+  .live-stream-table tbody td:nth-child(2) {
+    overflow-wrap: anywhere !important;
+    word-break: break-all !important;
+  }
+
+  /* Merchant */
+  .live-stream-table tbody td:nth-child(4) {
+    overflow-wrap: anywhere !important;
+  }
+
+  /* Risk badge */
+  .live-stream-table tbody td:nth-child(5) .badge {
+    white-space: normal !important;
+  }
+
+  /* Status */
+  .live-stream-table tbody td:nth-child(6) span {
+    white-space: normal !important;
+  }
+
+  /* Dashboard pagination */
+  #live-tx-pagination {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    box-sizing: border-box;
+  }
+}
+
+
+/* ============================================================
+   SMALL PHONES
+   ============================================================ */
+
+@media (max-width: 430px) {
+
+  .live-stream-table tbody tr {
+    margin-bottom: 12px !important;
+    border-radius: 10px !important;
+  }
+
+  .live-stream-table tbody td {
+    padding: 9px 11px !important;
+    font-size: 11px !important;
+  }
+
+  .live-stream-table tbody td::before {
+    flex-basis: 82px;
+    width: 82px;
+    min-width: 82px;
+
+    margin-right: 9px;
+
+    font-size: 9px !important;
+  }
+
+  .live-stream-table tbody td:first-child code {
+    font-size: 9px !important;
+  }
+}
+
+
+/* ============================================================
+   VERY SMALL PHONES
+   ============================================================ */
+
+@media (max-width: 360px) {
+
+  .live-stream-table tbody td {
+    padding: 8px 9px !important;
+  }
+
+  .live-stream-table tbody td::before {
+    flex-basis: 74px;
+    width: 74px;
+    min-width: 74px;
+
+    margin-right: 8px;
+
+    font-size: 8px !important;
+  }
+
+  .live-stream-table tbody td:first-child code {
+    font-size: 8px !important;
+  }
+}
+/* ============================================================
+   MOBILE TRANSACTION STREAM CARDS
+   Transactions table only
+   Desktop remains unchanged
+   ============================================================ */
+
+@media (max-width: 768px) {
+
+  .transactions-page .table-container {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+
+  .transactions-page .data-table {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    display: block !important;
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+  }
+
+  .transactions-page .data-table thead {
+    display: none !important;
+  }
+
+  .transactions-page .data-table tbody {
+    display: block !important;
+    width: 100% !important;
+  }
+
+  .transactions-page .data-table tbody tr {
+    display: block !important;
+
+    width: 100% !important;
+    max-width: 100% !important;
+
+    margin: 0 0 14px 0 !important;
+    padding: 8px 0 !important;
+
+    border: 1px solid var(--border, #dfe7f2) !important;
+    border-radius: 12px !important;
+
+    background: var(--card, #ffffff);
+
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .transactions-page .data-table tbody td {
+    display: flex !important;
+
+    align-items: flex-start !important;
+
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+
+    padding: 10px 14px !important;
+
+    border: 0 !important;
+    border-bottom: 1px solid var(--border, #e5eaf1) !important;
+
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-word !important;
+
+    font-size: 12px !important;
+    line-height: 1.4 !important;
+
+    box-sizing: border-box;
+  }
+
+  .transactions-page .data-table tbody td:last-child {
+    border-bottom: 0 !important;
+  }
+
+  /* Field labels */
+  .transactions-page .data-table tbody td::before {
+    content: attr(data-label);
+
+    flex: 0 0 105px;
+
+    width: 105px;
+    min-width: 105px;
+
+    margin-right: 12px;
+
+    font-size: 10px !important;
+    font-weight: 700;
+
+    color: var(--text-muted, #64748b);
+
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+
+    line-height: 1.4;
+  }
+
+  /* Values */
+  .transactions-page .data-table tbody td > * {
+    min-width: 0;
+    max-width: 100%;
+
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  /* Transaction ID */
+  .transactions-page .data-table tbody td:nth-child(2) code {
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-all !important;
+    font-size: 10px !important;
+  }
+
+  /* User ID */
+  .transactions-page .data-table tbody td:nth-child(3) {
+    overflow-wrap: anywhere !important;
+    word-break: break-all !important;
+  }
+
+  /* Amount */
+  .transactions-page .data-table tbody td:nth-child(4) {
+    font-weight: 600;
+  }
+
+  /* Anomaly badge */
+  .transactions-page .data-table tbody td:nth-child(7) .badge {
+    white-space: normal !important;
+  }
+
+  /* Pagination */
+  .transactions-page .transactions-pagination {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+}
+
+
+/* ============================================================
+   SMALL PHONES
+   ============================================================ */
+
+@media (max-width: 430px) {
+
+  .transactions-page .data-table tbody tr {
+    margin-bottom: 12px !important;
+    border-radius: 10px !important;
+  }
+
+  .transactions-page .data-table tbody td {
+    padding: 9px 11px !important;
+    font-size: 11px !important;
+  }
+
+  .transactions-page .data-table tbody td::before {
+    flex-basis: 92px;
+    width: 92px;
+    min-width: 92px;
+
+    margin-right: 9px;
+
+    font-size: 9px !important;
+  }
+
+  .transactions-page .data-table tbody td:nth-child(2) code {
+    font-size: 9px !important;
+  }
+}
+
+
+/* ============================================================
+   VERY SMALL PHONES
+   ============================================================ */
+
+@media (max-width: 360px) {
+
+  .transactions-page .data-table tbody td {
+    padding: 8px 9px !important;
+  }
+
+  .transactions-page .data-table tbody td::before {
+    flex-basis: 82px;
+    width: 82px;
+    min-width: 82px;
+
+    margin-right: 8px;
+
+    font-size: 8px !important;
+  }
+
+  .transactions-page .data-table tbody td:nth-child(2) code {
+    font-size: 8px !important;
+  }
+}
+/* ============================================================
+   MOBILE SECURITY ALERT CARDS
+   Alerts table only
+   Desktop remains unchanged
+   ============================================================ */
+
+@media (max-width: 768px) {
+
+  .alerts-table {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+
+    display: block !important;
+
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+  }
+
+  .alerts-table thead {
+    display: none !important;
+  }
+
+  .alerts-table tbody {
+    display: block !important;
+    width: 100% !important;
+  }
+
+  .alerts-table tbody tr {
+    display: block !important;
+
+    width: 100% !important;
+    max-width: 100% !important;
+
+    margin: 0 0 14px 0 !important;
+    padding: 8px 0 !important;
+
+    border: 1px solid var(--border, #dfe7f2) !important;
+    border-radius: 12px !important;
+
+    background: var(--card, #ffffff);
+
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .alerts-table tbody td {
+    display: flex !important;
+
+    align-items: flex-start !important;
+
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+
+    padding: 10px 14px !important;
+
+    border: 0 !important;
+    border-bottom: 1px solid var(--border, #e5eaf1) !important;
+
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-word !important;
+
+    font-size: 12px !important;
+    line-height: 1.4 !important;
+
+    box-sizing: border-box;
+  }
+
+  .alerts-table tbody td:last-child {
+    border-bottom: 0 !important;
+  }
+
+  /* Field labels */
+  .alerts-table tbody td::before {
+    content: attr(data-label);
+
+    flex: 0 0 105px;
+
+    width: 105px;
+    min-width: 105px;
+
+    margin-right: 12px;
+
+    font-size: 10px !important;
+    font-weight: 700;
+
+    color: var(--text-muted, #64748b);
+
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+
+    line-height: 1.4;
+  }
+
+  /* Values */
+  .alerts-table tbody td > * {
+    min-width: 0;
+    max-width: 100%;
+
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  /* Transaction ID */
+  .alerts-table tbody td:nth-child(2) code {
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-all !important;
+
+    font-size: 10px !important;
+  }
+
+  /* Severity badge */
+  .alerts-table tbody td:nth-child(1) .badge {
+    white-space: normal !important;
+  }
+
+  /* Risk score */
+  .alerts-table tbody td:nth-child(4) strong {
+    white-space: nowrap;
+  }
+
+  /* Message */
+  .alerts-table tbody td:nth-child(5) {
+    overflow-wrap: anywhere !important;
+    word-break: break-word !important;
+  }
+
+  /* Resolve button */
+  .alerts-table tbody td:nth-child(6) button {
+    max-width: 100% !important;
+    white-space: normal !important;
+  }
+
+  /* Pagination */
+  #alerts-pagination {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    box-sizing: border-box;
+  }
+}
+
+
+/* ============================================================
+   SMALL PHONES
+   ============================================================ */
+
+@media (max-width: 430px) {
+
+  .alerts-table tbody tr {
+    margin-bottom: 12px !important;
+    border-radius: 10px !important;
+  }
+
+  .alerts-table tbody td {
+    padding: 9px 11px !important;
+    font-size: 11px !important;
+  }
+
+  .alerts-table tbody td::before {
+    flex-basis: 92px;
+    width: 92px;
+    min-width: 92px;
+
+    margin-right: 9px;
+
+    font-size: 9px !important;
+  }
+
+  .alerts-table tbody td:nth-child(2) code {
+    font-size: 9px !important;
+  }
+}
+
+
+/* ============================================================
+   VERY SMALL PHONES
+   ============================================================ */
+
+@media (max-width: 360px) {
+
+  .alerts-table tbody td {
+    padding: 8px 9px !important;
+  }
+
+  .alerts-table tbody td::before {
+    flex-basis: 82px;
+    width: 82px;
+    min-width: 82px;
+
+    margin-right: 8px;
+
+    font-size: 8px !important;
+  }
+
+  .alerts-table tbody td:nth-child(2) code {
+    font-size: 8px !important;
+  }
+}
+/* ============================================================
+   MOBILE ML MODEL REGISTRY CARDS
+   ML Models table only
+   Desktop remains unchanged
+   ============================================================ */
+
+@media (max-width: 768px) {
+
+  .models-page #models-table-container {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+
+  .models-page #models-table-container .data-table {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+
+    display: block !important;
+
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+  }
+
+  .models-page #models-table-container .data-table thead {
+    display: none !important;
+  }
+
+  .models-page #models-table-container .data-table tbody {
+    display: block !important;
+    width: 100% !important;
+  }
+
+  .models-page #models-table-container .data-table tbody tr {
+    display: block !important;
+
+    width: 100% !important;
+    max-width: 100% !important;
+
+    margin: 0 0 14px 0 !important;
+    padding: 8px 0 !important;
+
+    border: 1px solid var(--border, #dfe7f2) !important;
+    border-radius: 12px !important;
+
+    background: var(--card, #ffffff);
+
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .models-page #models-table-container .data-table tbody td {
+    display: flex !important;
+
+    align-items: flex-start !important;
+
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+
+    padding: 10px 14px !important;
+
+    border: 0 !important;
+    border-bottom: 1px solid var(--border, #e5eaf1) !important;
+
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-word !important;
+
+    font-size: 12px !important;
+    line-height: 1.4 !important;
+
+    box-sizing: border-box;
+  }
+
+  .models-page #models-table-container .data-table tbody td:last-child {
+    border-bottom: 0 !important;
+  }
+
+  /* Field labels */
+  .models-page #models-table-container .data-table tbody td::before {
+    content: attr(data-label);
+
+    flex: 0 0 105px;
+
+    width: 105px;
+    min-width: 105px;
+
+    margin-right: 12px;
+
+    font-size: 10px !important;
+    font-weight: 700;
+
+    color: var(--text-muted, #64748b);
+
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+
+    line-height: 1.4;
+  }
+
+  /* Values */
+  .models-page #models-table-container .data-table tbody td > * {
+    min-width: 0;
+    max-width: 100%;
+
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  /* Model name */
+  .models-page #models-table-container .data-table tbody td:nth-child(1) {
+    font-weight: 600;
+  }
+
+  /* Version */
+  .models-page #models-table-container .data-table tbody td:nth-child(2) {
+    overflow-wrap: anywhere;
+  }
+
+  /* Date */
+  .models-page #models-table-container .data-table tbody td:nth-child(3) {
+    overflow-wrap: anywhere;
+  }
+
+  /* Status badge */
+  .models-page #models-table-container .data-table tbody td:nth-child(4) .badge {
+    white-space: normal !important;
+  }
+}
+
+
+/* ============================================================
+   SMALL PHONES
+   ============================================================ */
+
+@media (max-width: 430px) {
+
+  .models-page #models-table-container .data-table tbody tr {
+    margin-bottom: 12px !important;
+    border-radius: 10px !important;
+  }
+
+  .models-page #models-table-container .data-table tbody td {
+    padding: 9px 11px !important;
+    font-size: 11px !important;
+  }
+
+  .models-page #models-table-container .data-table tbody td::before {
+    flex-basis: 92px;
+    width: 92px;
+    min-width: 92px;
+
+    margin-right: 9px;
+
+    font-size: 9px !important;
+  }
+}
+
+
+/* ============================================================
+   VERY SMALL PHONES
+   ============================================================ */
+
+@media (max-width: 360px) {
+
+  .models-page #models-table-container .data-table tbody td {
+    padding: 8px 9px !important;
+  }
+
+  .models-page #models-table-container .data-table tbody td::before {
+    flex-basis: 82px;
+    width: 82px;
+    min-width: 82px;
+
+    margin-right: 8px;
+
+    font-size: 8px !important;
+  }
+}
+/* ============================================================
+   MOBILE REQUEST CARDS
+   ============================================================ */
+
+@media (max-width: 768px) {
+
+  .requests-table-wrapper {
+    overflow-x: hidden !important;
+    width: 100% !important;
+  }
+
+  .requests-table {
+    width: 100% !important;
+    display: block !important;
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+  }
+
+  .requests-table thead {
+    display: none !important;
+  }
+
+  .requests-table tbody {
+    display: block !important;
+    width: 100% !important;
+  }
+
+  .requests-table tbody tr {
+    display: block !important;
+
+    width: 100% !important;
+    max-width: 100% !important;
+
+    margin-bottom: 14px !important;
+    padding: 8px 0 !important;
+
+    border: 1px solid var(--border, #e2e8f0) !important;
+    border-radius: 12px !important;
+
+    background: var(--card, #ffffff) !important;
+
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .requests-table tbody td {
+    display: flex !important;
+    align-items: flex-start !important;
+
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+
+    padding: 11px 14px !important;
+
+    border: 0 !important;
+    border-top: 0 !important;
+    border-bottom: 1px solid var(--border, #e2e8f0) !important;
+
+    box-sizing: border-box;
+
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-word !important;
+  }
+
+  .requests-table tbody td:last-child {
+    border-bottom: 0 !important;
+  }
+
+  /* Field labels */
+
+  .requests-table tbody td::before {
+    content: attr(data-label);
+
+    flex: 0 0 85px;
+
+    width: 85px;
+    min-width: 85px;
+
+    margin-right: 12px;
+
+    color: var(--muted, #64748b);
+
+    font-size: 9px !important;
+    font-weight: 800;
+
+    text-transform: uppercase;
+    letter-spacing: .07em;
+
+    line-height: 1.5;
+  }
+
+  /* Keep user information together */
+
+  .requests-table .request-user {
+    min-width: 0;
+    max-width: calc(100% - 97px);
+
+    flex: 1;
+
+    overflow-wrap: anywhere;
+  }
+
+  .requests-table .request-user > div:last-child {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .requests-table .request-user strong,
+  .requests-table .request-user span {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  /* Email */
+
+  .requests-table .request-email {
+    min-width: 0;
+    max-width: calc(100% - 97px);
+
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  /* Date */
+
+  .requests-table .request-date {
+    min-width: 0;
+    max-width: calc(100% - 97px);
+
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  /* Status */
+
+  .requests-table .request-status {
+    flex-shrink: 0;
+  }
+
+  /* Actions */
+
+  .requests-table .request-actions {
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 7px;
+
+    min-width: 0;
+    max-width: calc(100% - 97px);
+  }
+
+  .requests-table .request-action {
+    white-space: nowrap !important;
+  }
+
+  .requests-table .request-completed {
+    white-space: normal !important;
+    overflow-wrap: anywhere;
+  }
+}
+
+
+/* ============================================================
+   SMALL PHONES
+   ============================================================ */
+
+@media (max-width: 430px) {
+
+  .requests-page {
+    padding: 14px !important;
+  }
+
+  .requests-table tbody tr {
+    margin-bottom: 12px !important;
+    border-radius: 10px !important;
+  }
+
+  .requests-table tbody td {
+    padding: 9px 11px !important;
+    font-size: 10px !important;
+  }
+
+  .requests-table tbody td::before {
+    flex-basis: 75px;
+
+    width: 75px;
+    min-width: 75px;
+
+    margin-right: 9px;
+
+    font-size: 8px !important;
+  }
+
+  .requests-table .request-user {
+    max-width: calc(100% - 84px);
+  }
+
+  .requests-table .request-email,
+  .requests-table .request-date,
+  .requests-table .request-actions {
+    max-width: calc(100% - 84px);
+  }
+
+  .requests-table .request-avatar {
+    width: 30px;
+    height: 30px;
+  }
+
+  .requests-table .request-action {
+    padding: 6px 8px;
+    font-size: 8px;
+  }
+}
+
+
+/* ============================================================
+   VERY SMALL PHONES
+   ============================================================ */
+
+@media (max-width: 360px) {
+
+  .requests-page {
+    padding: 10px !important;
+  }
+
+  .requests-table tbody td {
+    padding: 8px 9px !important;
+  }
+
+  .requests-table tbody td::before {
+    flex-basis: 68px;
+
+    width: 68px;
+    min-width: 68px;
+
+    margin-right: 7px;
+
+    font-size: 7px !important;
+  }
+
+  .requests-table .request-user {
+    max-width: calc(100% - 75px);
+  }
+
+  .requests-table .request-email,
+  .requests-table .request-date,
+  .requests-table .request-actions {
+    max-width: calc(100% - 75px);
+  }
+}
+/* =========================================================
+   MOBILE HEADER / PAGE HEADING FIX
+   FraudShieldAI
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+  /* ---------------------------------------------------------
+     PAGE CONTENT WIDTH
+     --------------------------------------------------------- */
+
+  .main-content,
+  .content,
+  main {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+
+  /* ---------------------------------------------------------
+     PAGE HEADINGS
+     Prevent awkward oversized headings
+     --------------------------------------------------------- */
+
+  h1 {
+    font-size: 1.65rem !important;
+    line-height: 1.2 !important;
+    letter-spacing: -0.02em;
+    margin-top: 0 !important;
+    margin-bottom: 0.5rem !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+  }
+
+  h2 {
+    font-size: 1.45rem !important;
+    line-height: 1.25 !important;
+    letter-spacing: -0.015em;
+    margin-top: 0 !important;
+    margin-bottom: 0.5rem !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+  }
+
+  h3 {
+    font-size: 1.15rem !important;
+    line-height: 1.3 !important;
+  }
+
+
+  /* ---------------------------------------------------------
+     PAGE DESCRIPTION / SUBTITLE
+     --------------------------------------------------------- */
+
+  h1 + p,
+  h2 + p {
+    font-size: 0.95rem !important;
+    line-height: 1.45 !important;
+    margin-top: 0 !important;
+    margin-bottom: 1rem !important;
+  }
+
+
+  /* ---------------------------------------------------------
+     PAGE HEADER / TITLE + BUTTON AREA
+     --------------------------------------------------------- */
+
+  .page-header,
+  .section-header,
+  .header-content,
+  .page-title,
+  .title-section {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+
+  /* ---------------------------------------------------------
+     BUTTONS IN TOP PAGE HEADER
+     Prevent "Start Stream Ingestion" from being squeezed
+     --------------------------------------------------------- */
+
+  .page-header .btn,
+  .section-header .btn,
+  .header-content .btn,
+  .page-title .btn,
+  .title-section .btn {
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
+    width: auto !important;
+    max-width: 100% !important;
+  }
+
+
+  /* ---------------------------------------------------------
+     GENERAL TOP ACTION BUTTON
+     --------------------------------------------------------- */
+
+  button {
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+
+  /* ---------------------------------------------------------
+     STREAM INGESTION BUTTON
+     Covers the blue "Start Stream Ingestion" button
+     even if it uses the normal .btn class.
+     --------------------------------------------------------- */
+
+  .btn-primary {
+    min-height: 42px;
+    padding: 0.65rem 1rem !important;
+    font-size: 0.9rem !important;
+    line-height: 1.2 !important;
+  }
+
+
+  /* ---------------------------------------------------------
+     IF HEADER USES FLEX
+     Stack title and action button cleanly
+     --------------------------------------------------------- */
+
+  .page-header,
+  .section-header,
+  .header-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+
+  /* ---------------------------------------------------------
+     MOBILE: TITLE ABOVE, BUTTON BELOW
+     This is the important part for 360px screens.
+     --------------------------------------------------------- */
+
+  .page-header,
+  .section-header {
+    flex-direction: column;
+  }
+
+
+  .page-header > *,
+  .section-header > * {
+    max-width: 100%;
+  }
+
+
+  /* ---------------------------------------------------------
+     BUTTON SHOULD NOT GET COMPRESSED
+     --------------------------------------------------------- */
+
+  .page-header .btn-primary,
+  .section-header .btn-primary,
+  .header-content .btn-primary {
+    width: auto !important;
+    min-width: fit-content !important;
+    align-self: flex-start;
+  }
+
+
+  /* ---------------------------------------------------------
+     CARD HEADINGS
+     --------------------------------------------------------- */
+
+  .card > h3 {
+    font-size: 1.05rem !important;
+    line-height: 1.3 !important;
+  }
+
+
+  /* ---------------------------------------------------------
+     EXTRA SMALL PHONES
+     --------------------------------------------------------- */
+
+  @media (max-width: 430px) {
+
+    h1 {
+      font-size: 1.5rem !important;
+      line-height: 1.2 !important;
+    }
+
+    h2 {
+      font-size: 1.35rem !important;
+      line-height: 1.25 !important;
+    }
+
+    h3 {
+      font-size: 1.05rem !important;
+    }
+
+    h1 + p,
+    h2 + p {
+      font-size: 0.9rem !important;
+      line-height: 1.4 !important;
+    }
+
+    .btn-primary {
+      font-size: 0.85rem !important;
+      padding: 0.6rem 0.85rem !important;
+    }
+
+    .page-header,
+    .section-header {
+      gap: 0.6rem;
+    }
+  }
+}
+/* ============================================================
+   ML MODELS PAGE - RESPONSIVE HEADER FIX
+   ============================================================ */
+
+.models-page {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+
+/* Desktop header */
+
+.models-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  width: 100%;
+  min-width: 0;
+}
+
+
+.models-header-content {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+
+.models-page-title {
+  margin: 0;
+  font-size: 1.75rem;
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+
+.models-page-description {
+  margin: 0.4rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  max-width: 650px;
+}
+
+
+.models-retrain-btn {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  min-height: 44px;
+}
+
+
+/* Training message */
+
+.training-message {
+  min-height: 24px;
+  margin-bottom: 1rem;
+}
+
+
+.training-message-info {
+  color: var(--text-muted);
+}
+
+
+.training-message-success {
+  color: var(--risk-low);
+}
+
+
+.training-message-error {
+  color: var(--risk-critical);
+}
+
+
+/* Model metric values */
+
+.model-metric-value {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-top: 0.5rem;
+  overflow-wrap: anywhere;
+}
+
+
+.model-name-value {
+  font-size: 1.1rem;
+}
+
+
+.model-metric-status {
+  color: var(--text-muted);
+  margin-top: 0.4rem;
+  font-size: 0.8rem;
+}
+
+
+/* Registry */
+
+.models-registry-card {
+  margin-top: 1.5rem;
+}
+
+
+.models-registry-description {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  margin: 0.25rem 0 1rem;
+}
+
+
+.models-table {
+  width: 100%;
+}
+
+
+/* ============================================================
+   TABLET
+   ============================================================ */
+
+@media (max-width: 768px) {
+
+  .models-header {
+    gap: 1rem;
+  }
+
+  .models-page-title {
+    font-size: 1.5rem;
+  }
+
+  .models-page-description {
+    font-size: 0.875rem;
+  }
+
+  .models-retrain-btn {
+    max-width: 240px;
+    white-space: normal;
+    text-align: center;
+  }
+
+}
+
+
+/* ============================================================
+   MOBILE
+   ============================================================ */
+
+@media (max-width: 600px) {
+
+  .models-header {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+  }
+
+
+  .models-header-content {
+    width: 100%;
+  }
+
+
+  .models-page-title {
+    font-size: 1.4rem;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+
+
+  .models-page-description {
+    font-size: 0.875rem;
+    line-height: 1.45;
+    max-width: 100%;
+  }
+
+
+  .models-retrain-btn {
+    width: 100%;
+    max-width: 100%;
+    min-height: 46px;
+    white-space: normal;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+
+  .models-registry-card {
+    margin-top: 1rem;
+  }
+
+
+  .model-metric-value {
+    overflow-wrap: anywhere;
+  }
+
+}
+
+
+/* ============================================================
+   SMALL MOBILE - 360px
+   ============================================================ */
+
+@media (max-width: 430px) {
+
+  .models-page-title {
+    font-size: 1.3rem;
+    line-height: 1.25;
+  }
+
+
+  .models-page-description {
+    font-size: 0.82rem;
+  }
+
+
+  .models-retrain-btn {
+    width: 100%;
+    min-height: 44px;
+    font-size: 0.85rem;
+  }
+
+
+  .models-page .card {
+    min-width: 0;
+  }
+
+}
+/* =========================================================
+   START STREAM INGESTION BUTTON - FINAL RESPONSIVE FIX
+   ========================================================= */
+
+/* Desktop */
+.stream-ingestion-btn {
+    box-sizing: border-box;
+    white-space: nowrap;
+    max-width: 100%;
+    min-width: 0;
+    flex-shrink: 1;
+}
+
+/* Tablet */
+@media (max-width: 768px) {
+
+    .stream-ingestion-btn {
+        max-width: 100%;
+        width: auto;
+        min-width: 0;
+        flex-shrink: 1;
+
+        white-space: normal;
+        text-align: center;
+
+        line-height: 1.2;
+        padding: 0.65rem 0.85rem;
+
+        overflow-wrap: break-word;
+        word-break: normal;
+    }
+}
+
+/* Mobile */
+@media (max-width: 430px) {
+
+    .stream-ingestion-btn {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+
+        min-height: 44px;
+
+        padding: 0.65rem 0.75rem;
+
+        font-size: 0.82rem;
+        line-height: 1.2;
+
+        white-space: normal;
+        text-align: center;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        box-sizing: border-box;
+        overflow: hidden;
+    }
+
+    /* If the button is inside a header/action row */
+    .stream-ingestion-btn {
+        flex: 1 1 auto;
+    }
+}
+/* =========================================================
+   FINAL MOBILE TOPBAR BUTTON FIX
+   ========================================================= */
+
+/* Keep the normal desktop layout unchanged */
+.topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+/* =========================================================
+   TABLET / MOBILE
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .topbar-actions {
+        width: 100%;
+        max-width: 100%;
+
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+
+        gap: 0.6rem;
+
+        box-sizing: border-box;
+    }
+
+    /* Theme button stays compact */
+    .topbar-actions #btn-theme-toggle {
+        flex: 0 0 auto;
+        width: auto;
+        min-width: 0;
+        white-space: nowrap;
+    }
+
+    /* Stream button gets its own proper row */
+    .topbar-actions #btn-stream-toggle {
+        flex: 1 1 100%;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+
+        box-sizing: border-box;
+
+        min-height: 44px;
+
+        padding: 0.7rem 1rem;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        text-align: center;
+
+        white-space: normal;
+        line-height: 1.25;
+
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+/* =========================================================
+   SMALL MOBILE - 430px and below
+   ========================================================= */
+
+@media (max-width: 430px) {
+
+    .topbar-actions {
+        width: 100%;
+        max-width: 100%;
+
+        flex-direction: row;
+        flex-wrap: wrap;
+
+        gap: 0.5rem;
+    }
+
+    .topbar-actions #btn-theme-toggle {
+        flex: 0 0 auto;
+
+        min-height: 40px;
+
+        padding: 0.55rem 0.75rem;
+
+        font-size: 0.82rem;
+    }
+
+    .topbar-actions #btn-stream-toggle {
+        flex: 1 1 100%;
+
+        width: 100%;
+        max-width: 100%;
+
+        min-height: 44px;
+
+        padding: 0.65rem 0.75rem;
+
+        font-size: 0.82rem;
+
+        white-space: normal;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        text-align: center;
+
+        box-sizing: border-box;
+    }
+}
+
+/* =========================================================
+   FRAUDSHIELD AI - FINAL MOBILE TOPBAR
+   ========================================================= */
+
+/* Desktop */
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    box-sizing: border-box;
+    gap: 16px;
+}
+
+.topbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+}
+
+.brand-logo {
+    width: 34px;
+    height: 34px;
+    min-width: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #2563eb;
+    color: white;
+
+    border-radius: 8px;
+
+    font-size: 17px;
+    line-height: 1;
+}
+
+.brand-title {
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1;
+    white-space: nowrap;
+    color: #0f172a;
+}
+
+.topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.stream-toggle-btn {
+    min-width: 205px;
+    min-height: 42px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+
+    white-space: nowrap;
+    box-sizing: border-box;
+}
+
+.stream-label {
+    white-space: nowrap;
 }
 
 
@@ -55,90 +4262,158 @@ textarea {
 
 @media (max-width: 768px) {
 
-    /* Prevent horizontal scrolling */
-    html,
-    body {
+    /*
+       IMPORTANT:
+       Header becomes two rows.
+
+       Row 1:
+       hamburger | FraudShield AI | Dark
+
+       Row 2:
+       Start Stream Ingestion
+    */
+
+    .topbar {
         width: 100%;
-        overflow-x: hidden;
+        display: grid;
+
+        grid-template-columns: auto 1fr auto;
+
+        grid-template-areas:
+            "menu brand theme"
+            "stream stream stream";
+
+        align-items: center;
+
+        column-gap: 8px;
+        row-gap: 10px;
+
+        padding: 10px 10px 10px 10px;
+
+        box-sizing: border-box;
     }
 
-    /* Main content */
-    .main-content {
-        margin-left: 0 !important;
-        width: 100% !important;
+
+    /* -----------------------------------------------------
+       HAMBURGER
+       ----------------------------------------------------- */
+
+    #mobile-menu-toggle {
+        grid-area: menu;
+
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        padding: 0;
+
+        flex-shrink: 0;
     }
 
-    /* Dashboard cards */
-    .dashboard-grid {
-        grid-template-columns: 1fr !important;
+
+    /* -----------------------------------------------------
+       BRAND
+       ----------------------------------------------------- */
+
+    .topbar-brand {
+        grid-area: brand;
+
+        display: flex;
+        align-items: center;
+
+        justify-content: flex-start;
+
+        min-width: 0;
+
+        gap: 7px;
     }
 
-    /* Charts */
-    .charts-grid {
-        grid-template-columns: 1fr !important;
+
+    .brand-logo {
+        width: 32px;
+        height: 32px;
+        min-width: 32px;
+
+        border-radius: 8px;
+
+        font-size: 16px;
     }
 
-    /* Generic grids */
-    .feature-grid,
-    .stats-grid,
-    .card-grid {
-        grid-template-columns: 1fr !important;
+
+    .brand-title {
+        font-size: 0.95rem;
+        font-weight: 700;
+
+        line-height: 1;
+
+        white-space: nowrap;
+
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
-    /* Global search */
-    .global-search {
+
+    /* -----------------------------------------------------
+       TOPBAR ACTIONS
+       ----------------------------------------------------- */
+
+    .topbar-actions {
+        display: contents;
+    }
+
+
+    /* -----------------------------------------------------
+       DARK BUTTON
+       ----------------------------------------------------- */
+
+    #btn-theme-toggle {
+        grid-area: theme;
+
+        width: auto;
+        min-width: 72px;
+
+        min-height: 40px;
+
+        padding: 0 10px;
+
+        flex-shrink: 0;
+
+        font-size: 0.78rem;
+
+        white-space: nowrap;
+    }
+
+
+    /* -----------------------------------------------------
+       START STREAM INGESTION
+       ----------------------------------------------------- */
+
+    #btn-stream-toggle {
+        grid-area: stream;
+
         width: 100%;
-    }
+        min-width: 0;
 
-    .global-search-input {
-        width: 100%;
-    }
+        min-height: 44px;
 
-    .global-search-results {
-        left: 0;
-        right: 0;
-        width: 100%;
-    }
+        padding: 0 14px;
 
-    /* Tables */
-    .table-container,
-    .table-wrapper {
-        width: 100%;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-    }
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
-    table {
-        min-width: 700px;
-    }
+        gap: 7px;
 
-    /* Cards */
-    .card {
-        width: 100%;
-        max-width: 100%;
-    }
+        font-size: 0.84rem;
+        font-weight: 700;
 
-    /* Home */
-    .home-hero {
-        grid-template-columns: 1fr !important;
-    }
+        white-space: nowrap;
 
-    .home-hero-actions {
-        flex-wrap: wrap;
-    }
-
-    .home-stats {
-        grid-template-columns: 1fr 1fr !important;
-    }
-
-    .workflow {
-        grid-template-columns: 1fr !important;
-    }
-
-    /* Buttons */
-    .home-primary-btn,
-    .home-secondary-btn {
-        width: 100%;
+        box-sizing: border-box;
     }
 
 }
@@ -148,1087 +4423,1027 @@ textarea {
    SMALL MOBILE
    ========================================================= */
 
-@media (max-width: 480px) {
+@media (max-width: 430px) {
 
-    body {
+    .topbar {
+        padding: 9px 9px 10px;
+        column-gap: 7px;
+        row-gap: 9px;
+    }
+
+    #mobile-menu-toggle {
+        width: 38px;
+        height: 38px;
+        min-width: 38px;
+    }
+
+    .brand-logo {
+        width: 30px;
+        height: 30px;
+        min-width: 30px;
+        font-size: 15px;
+    }
+
+    .brand-title {
+        font-size: 0.9rem;
+    }
+
+    #btn-theme-toggle {
+        min-height: 38px;
+        min-width: 68px;
+        padding: 0 8px;
+        font-size: 0.76rem;
+    }
+
+    #btn-stream-toggle {
+        min-height: 43px;
+        font-size: 0.82rem;
+    }
+
+}
+
+
+/* =========================================================
+   VERY SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 360px) {
+
+    .brand-logo {
+        width: 28px;
+        height: 28px;
+        min-width: 28px;
         font-size: 14px;
     }
 
-    .home-stats {
-        grid-template-columns: 1fr !important;
+    .brand-title {
+        font-size: 0.84rem;
     }
 
-    .topbar {
-        padding: 10px;
+    #btn-theme-toggle {
+        min-width: 64px;
+        font-size: 0.72rem;
     }
 
-    .global-search {
-        width: 100%;
-    }
-
-    .global-search-input {
-        height: 42px;
-    }
-
-    .card {
-        padding: 14px;
-    }
-
-    h1 {
-        font-size: 24px;
-    }
-
-    h2 {
-        font-size: 20px;
-    }
-
-    h3 {
-        font-size: 17px;
+    #btn-stream-toggle {
+        font-size: 0.78rem;
     }
 
 }
-/* =========================================================
-   MOBILE SIDEBAR / NAVIGATION
-   ========================================================= */
+/* ============================================================
+   FRAUDSHIELD AI — FINAL MOBILE TOPBAR
+   ============================================================
+   Desired mobile layout:
 
-.mobile-menu-toggle {
-    display: none;
-}
+   [ ☰ ] [ 🛡️ FraudShield AI ] [ 🌙 Dark ]
+   [      Start Stream Ingestion          ]
 
-
-/* ---------- Mobile ---------- */
+   IMPORTANT:
+   This block must remain LAST in responsive.css.
+   ============================================================ */
 
 @media (max-width: 768px) {
 
-    /* Mobile topbar */
+    /* --------------------------------------------------------
+       TOPBAR
+       -------------------------------------------------------- */
+
     .topbar {
-        position: sticky !important;
+        position: sticky;
         top: 0;
-        z-index: 1200;
-        display: flex !important;
+        z-index: 1000;
+
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+
+        display: grid !important;
+
+        grid-template-columns: 40px minmax(0, 1fr) auto;
+
+        grid-template-areas:
+            "menu brand theme"
+            "stream stream stream";
+
         align-items: center;
-        gap: 10px;
-        min-height: 60px;
-        padding: 8px 12px;
+
+        column-gap: 8px;
+        row-gap: 8px;
+
+        padding: 8px 10px 10px;
+
+        box-sizing: border-box;
+
+        overflow: visible;
     }
 
-    /* Hamburger */
-    .mobile-menu-toggle {
+
+    /* --------------------------------------------------------
+       HAMBURGER
+       -------------------------------------------------------- */
+
+    #mobile-menu-toggle {
+        grid-area: menu;
+
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+
         display: flex !important;
+
         align-items: center;
         justify-content: center;
 
-        width: 42px;
-        height: 42px;
-        flex: 0 0 42px;
+        padding: 0;
 
-        border: 1px solid var(--border-color);
-        border-radius: 8px;
+        font-size: 18px;
+        line-height: 1;
 
-        background: var(--card-bg);
-        color: var(--text-primary);
-
-        font-size: 22px;
-        cursor: pointer;
-    }
-
-    .mobile-menu-toggle:hover {
-        background: var(--sidebar-hover);
+        flex-shrink: 0;
+        box-sizing: border-box;
     }
 
 
-    /* ---------- Sidebar ---------- */
+    /* --------------------------------------------------------
+       FRAUDSHIELD AI BRAND
+       -------------------------------------------------------- */
 
-    .sidebar {
-        position: fixed !important;
+    .topbar-brand {
+        grid-area: brand;
 
-        top: 0;
-        left: 0;
-        bottom: 0;
+        display: flex !important;
 
-        width: 280px !important;
-        max-width: 82vw;
+        align-items: center;
+        justify-content: flex-start;
 
-        z-index: 2000;
-
-        transform: translateX(-100%);
-        transition: transform 0.25s ease;
-
-        overflow-y: auto;
-        overflow-x: hidden;
-    }
-
-    /* Sidebar opened */
-    .sidebar.mobile-open {
-        transform: translateX(0);
-    }
-
-
-    /* ---------- Overlay ---------- */
-
-    .mobile-sidebar-overlay {
-        display: none;
-
-        position: fixed;
-        inset: 0;
-
-        z-index: 1900;
-
-        background: rgba(0, 0, 0, 0.55);
-    }
-
-    .mobile-sidebar-overlay.active {
-        display: block;
-    }
-
-
-    /* ---------- Main content ---------- */
-
-    .main-content {
-        margin-left: 0 !important;
-        width: 100% !important;
-        min-width: 0 !important;
-    }
-
-
-    /* ---------- Topbar system status ---------- */
-
-    .system-status {
+        width: 100%;
         min-width: 0;
-        flex: 0 1 auto;
+
+        gap: 7px;
+
+        overflow: hidden;
     }
 
-    .system-status span:last-child {
-        white-space: nowrap;
+
+    /* Logo */
+
+    .topbar-brand .brand-logo {
+        width: 30px;
+        height: 30px;
+
+        min-width: 30px;
+
+        flex: 0 0 30px;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 7px;
+
+        font-size: 15px;
+
+        line-height: 1;
+
         overflow: hidden;
+    }
+
+
+    /* FraudShield AI text */
+
+    .topbar-brand .brand-text {
+        min-width: 0;
+
+        display: flex;
+        align-items: center;
+    }
+
+
+    .topbar-brand .brand-title {
+        margin: 0;
+
+        font-size: 0.90rem !important;
+
+        font-weight: 700;
+
+        line-height: 1;
+
+        white-space: nowrap;
+
+        overflow: hidden;
+
         text-overflow: ellipsis;
     }
 
 
-    /* ---------- Global search ---------- */
+    /* Hide subtitle on mobile.
+       This keeps the brand compact as requested. */
 
-    .global-search {
-        flex: 1 1 auto;
-        min-width: 0;
-        width: auto !important;
-    }
-
-    .global-search-input {
-        min-width: 0;
+    .topbar-brand .brand-subtitle {
+        display: none !important;
     }
 
 
-    /* ---------- Topbar actions ---------- */
+    /* --------------------------------------------------------
+       TOPBAR ACTION WRAPPER
+       -------------------------------------------------------- */
 
     .topbar-actions {
+        display: contents !important;
+    }
+
+
+    /* --------------------------------------------------------
+       DARK BUTTON
+       -------------------------------------------------------- */
+
+    #btn-theme-toggle {
+        grid-area: theme;
+
+        width: auto !important;
+
+        min-width: 68px;
+        max-width: none;
+
+        height: 38px;
+        min-height: 38px;
+
+        padding: 0 9px !important;
+
+        margin: 0;
+
+        display: inline-flex !important;
+
+        align-items: center;
+        justify-content: center;
+
         flex-shrink: 0;
-    }
-}
 
+        font-size: 0.76rem !important;
 
-/* =========================================================
-   VERY SMALL PHONES
-   ========================================================= */
+        line-height: 1;
 
-@media (max-width: 480px) {
+        white-space: nowrap;
 
-    .topbar {
-        min-height: 56px;
-        padding: 7px 10px;
+        box-sizing: border-box;
     }
 
-    .mobile-menu-toggle {
-        width: 40px;
-        height: 40px;
-        flex-basis: 40px;
+
+    /* --------------------------------------------------------
+       START STREAM INGESTION
+       -------------------------------------------------------- */
+
+    #btn-stream-toggle {
+        grid-area: stream;
+
+        width: 100% !important;
+
+        max-width: 100% !important;
+
+        min-width: 0 !important;
+
+        height: 44px;
+
+        min-height: 44px;
+
+        margin: 0;
+
+        padding: 0 14px !important;
+
+        display: flex !important;
+
+        align-items: center;
+        justify-content: center;
+
+        flex: none !important;
+
+        box-sizing: border-box;
+
+        font-size: 0.84rem !important;
+
+        font-weight: 700;
+
+        line-height: 1;
+
+        white-space: nowrap !important;
+
+        overflow: hidden;
+
+        text-overflow: ellipsis;
+
+        border-radius: 7px;
     }
+
+
+    /* Keep the icon and text on one line */
+
+    #btn-stream-toggle .stream-icon,
+    #btn-stream-toggle .stream-label {
+        display: inline;
+
+        white-space: nowrap;
+    }
+
+
+    /* --------------------------------------------------------
+       REMOVE OLD ACTION / STATUS PLACEMENT
+       -------------------------------------------------------- */
 
     .system-status {
-        display: none;
-    }
-
-}
-/* =========================================================
-   LIVE STREAM TABLE - MOBILE CARD LAYOUT
-   ========================================================= */
-
-@media (max-width: 768px) {
-
-    .live-stream-table {
-        width: 100% !important;
-        min-width: 0 !important;
-        border-collapse: separate;
-        border-spacing: 0;
-    }
-
-    /* Hide desktop table header */
-    .live-stream-table thead {
-        display: none;
-    }
-
-    .live-stream-table tbody {
-        display: block;
-        width: 100%;
-    }
-
-    /* Each transaction becomes a card */
-    .live-stream-table tbody tr {
-        display: block;
-        width: 100%;
-        margin-bottom: 14px;
-
-        padding: 12px 14px;
-
-        border: 1px solid var(--border-color);
-        border-radius: 10px;
-
-        background: var(--card-bg);
-
-        box-sizing: border-box;
-    }
-
-    /* Individual fields */
-    .live-stream-table tbody td {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
+        /*
+         Status should stay below the header naturally,
+         not compete with the brand row.
+        */
 
         width: 100%;
+
         min-width: 0;
 
-        padding: 8px 0;
-
-        border: 0 !important;
-        text-align: right;
-
-        box-sizing: border-box;
-    }
-
-    /* Field names */
-    .live-stream-table tbody td::before {
-        content: attr(data-label);
-
-        flex: 0 0 auto;
-
-        margin-right: 16px;
-
-        font-size: 11px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-
-        color: var(--text-secondary);
-
-        text-align: left;
-    }
-
-    /* Values */
-    .live-stream-table tbody td {
-        color: var(--text-primary);
-        font-size: 13px;
-    }
-
-    /* Transaction ID */
-    .live-stream-table tbody td:first-child {
-        padding-top: 2px;
-    }
-
-    .live-stream-table tbody td:first-child code {
-        display: block;
-        max-width: 170px;
-
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-
-        font-size: 11px;
-    }
-
-    /* Separate fields visually */
-    .live-stream-table tbody td + td {
-        border-top: 1px solid var(--border-color) !important;
-    }
-
-    /* Risk badge */
-    .live-stream-table tbody .badge {
-        flex-shrink: 0;
-    }
-
-    /* Status */
-    .live-stream-table tbody td:last-child {
-        padding-bottom: 2px;
-    }
-
-}
-
-
-/* =========================================================
-   VERY SMALL PHONES
-   ========================================================= */
-
-@media (max-width: 480px) {
-
-    .live-stream-table tbody tr {
-        padding: 10px 12px;
-        margin-bottom: 12px;
-    }
-
-    .live-stream-table tbody td {
-        font-size: 12px;
-    }
-
-    .live-stream-table tbody td::before {
-        font-size: 10px;
-    }
-
-    .live-stream-table tbody td:first-child code {
-        max-width: 145px;
-    }
-
-}
-/* =========================================================
-   TRANSACTIONS PAGE - MOBILE TABLE
-   ========================================================= */
-
-@media (max-width: 768px) {
-
-    .transactions-table {
-        width: 100% !important;
-        min-width: 0 !important;
-        border-collapse: separate;
-        border-spacing: 0;
-    }
-
-    /* Hide desktop headers */
-    .transactions-table thead {
-        display: none;
-    }
-
-    .transactions-table tbody {
-        display: block;
-        width: 100%;
-    }
-
-    /* Each transaction becomes a card */
-    .transactions-table tbody tr {
-        display: block;
-        width: 100%;
-        box-sizing: border-box;
-
-        margin-bottom: 14px;
-        padding: 12px 14px;
-
-        border: 1px solid var(--border-color);
-        border-radius: 10px;
-
-        background: var(--card-bg);
-    }
-
-    /* Individual fields */
-    .transactions-table tbody td {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-
-        width: 100%;
-        min-width: 0;
-
-        padding: 9px 0;
-
-        border: 0 !important;
-
-        font-size: 13px;
-        text-align: right;
-
-        box-sizing: border-box;
-    }
-
-    /* Field labels */
-    .transactions-table tbody td::before {
-        content: attr(data-label);
-
-        flex: 0 0 auto;
-
-        margin-right: 14px;
+        margin: 0;
 
         font-size: 10px;
-        font-weight: 700;
 
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-
-        color: var(--text-secondary);
-
-        text-align: left;
-    }
-
-    /* Separator */
-    .transactions-table tbody td + td {
-        border-top: 1px solid var(--border-color) !important;
-    }
-
-    /* Transaction ID */
-    .transactions-table tbody td code {
-        display: block;
-
-        max-width: 155px;
-
-        overflow: hidden;
-        text-overflow: ellipsis;
         white-space: nowrap;
 
-        font-size: 11px;
-    }
-
-    /* Timestamp */
-    .transactions-table tbody td:first-child {
-        padding-top: 2px;
-    }
-
-    /* Risk badge */
-    .transactions-table .badge {
-        flex-shrink: 0;
-    }
-
-    /* Last row */
-    .transactions-table tbody td:last-child {
-        padding-bottom: 2px;
-    }
-}
-
-
-/* =========================================================
-   SMALL PHONES
-   ========================================================= */
-
-@media (max-width: 480px) {
-
-    .transactions-table tbody tr {
-        padding: 10px 12px;
-        margin-bottom: 12px;
-    }
-
-    .transactions-table tbody td {
-        font-size: 12px;
-    }
-
-    .transactions-table tbody td::before {
-        font-size: 9px;
-    }
-
-    .transactions-table tbody td code {
-        max-width: 135px;
-    }
-}
-/* =========================================================
-   FRAUD CASES - MOBILE RESPONSIVE TABLE
-   ========================================================= */
-
-@media (max-width: 768px) {
-
-    .fraud-cases-table {
-        width: 100% !important;
-        min-width: 0 !important;
-        border-collapse: separate;
-        border-spacing: 0;
-    }
-
-    .fraud-cases-table thead {
-        display: none;
-    }
-
-    .fraud-cases-table tbody {
-        display: block;
-        width: 100%;
-    }
-
-    .fraud-cases-table tbody tr {
-        display: block;
-        width: 100%;
-        box-sizing: border-box;
-
-        margin-bottom: 14px;
-        padding: 12px 14px;
-
-        border: 1px solid var(--border-color);
-        border-radius: 10px;
-
-        background: var(--card-bg);
-    }
-
-    .fraud-cases-table tbody td {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-
-        width: 100%;
-        min-width: 0;
-
-        padding: 9px 0;
-
-        border: 0 !important;
-
-        font-size: 13px;
-        text-align: right;
-
-        box-sizing: border-box;
-    }
-
-    .fraud-cases-table tbody td::before {
-        content: attr(data-label);
-
-        flex: 0 0 auto;
-
-        margin-right: 14px;
-
-        font-size: 10px;
-        font-weight: 700;
-
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-
-        color: var(--text-secondary);
-
-        text-align: left;
-    }
-
-    .fraud-cases-table tbody td + td {
-        border-top: 1px solid var(--border-color) !important;
-    }
-
-    .fraud-cases-table code {
-        display: block;
-        max-width: 150px;
-
         overflow: hidden;
+
         text-overflow: ellipsis;
-        white-space: nowrap;
-
-        font-size: 11px;
     }
 
-    .fraud-cases-table .badge {
-        flex-shrink: 0;
-    }
-}
 
+    /* --------------------------------------------------------
+       GLOBAL SEARCH
+       -------------------------------------------------------- */
 
-/* =========================================================
-   SMALL PHONES
-   ========================================================= */
-
-@media (max-width: 480px) {
-
-    .fraud-cases-table tbody tr {
-        padding: 10px 12px;
-        margin-bottom: 12px;
-    }
-
-    .fraud-cases-table tbody td {
-        font-size: 12px;
-    }
-
-    .fraud-cases-table tbody td::before {
-        font-size: 9px;
-    }
-
-    .fraud-cases-table code {
-        max-width: 135px;
-    }
-}
-/* Fraud Cases - loading / empty message */
-@media (max-width: 768px) {
-
-    .fraud-cases-table tbody td[colspan] {
-        display: block;
+    .global-search {
         width: 100%;
-        text-align: center !important;
-        padding: 20px 10px;
-    }
-
-    .fraud-cases-table tbody td[colspan]::before {
-        display: none;
-    }
-
-}
-/* =========================================================
-   ALERTS PAGE - MOBILE RESPONSIVE TABLE
-   ========================================================= */
-
-@media (max-width: 768px) {
-
-    .alerts-table {
-        width: 100% !important;
-        min-width: 0 !important;
-        border-collapse: separate;
-        border-spacing: 0;
-    }
-
-    /* Hide desktop headings */
-    .alerts-table thead {
-        display: none;
-    }
-
-    .alerts-table tbody {
-        display: block;
-        width: 100%;
-    }
-
-    /* Alert becomes a card */
-    .alerts-table tbody tr {
-        display: block;
-        width: 100%;
-        box-sizing: border-box;
-
-        margin-bottom: 14px;
-        padding: 12px 14px;
-
-        border: 1px solid var(--border-color);
-        border-radius: 10px;
-
-        background: var(--card-bg);
-    }
-
-    /* Individual fields */
-    .alerts-table tbody td {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-
-        width: 100%;
-        min-width: 0;
-
-        padding: 9px 0;
-
-        border: 0 !important;
-
-        font-size: 13px;
-        text-align: right;
-
-        box-sizing: border-box;
-    }
-
-    /* Field labels */
-    .alerts-table tbody td::before {
-        content: attr(data-label);
-
-        flex: 0 0 auto;
-
-        margin-right: 14px;
-
-        font-size: 10px;
-        font-weight: 700;
-
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-
-        color: var(--text-secondary);
-
-        text-align: left;
-    }
-
-    /* Separators */
-    .alerts-table tbody td + td {
-        border-top: 1px solid var(--border-color) !important;
-    }
-
-    /* Transaction ID */
-    .alerts-table tbody td code {
-        display: block;
-
-        max-width: 150px;
-
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-
-        font-size: 11px;
-    }
-
-    /* Message */
-    .alerts-table tbody td[data-label="Message"] {
-        align-items: flex-start;
-    }
-
-    .alerts-table tbody td[data-label="Message"] {
-        line-height: 1.4;
-    }
-
-    /* Action button */
-    .alerts-table tbody td[data-label="Action"] {
-        justify-content: space-between;
-    }
-
-    .alerts-table .btn {
-        flex-shrink: 0;
-    }
-
-    /* Badges */
-    .alerts-table .badge {
-        flex-shrink: 0;
-    }
-}
-
-
-/* =========================================================
-   SMALL PHONES
-   ========================================================= */
-
-@media (max-width: 480px) {
-
-    .alerts-table tbody tr {
-        padding: 10px 12px;
-        margin-bottom: 12px;
-    }
-
-    .alerts-table tbody td {
-        font-size: 12px;
-    }
-
-    .alerts-table tbody td::before {
-        font-size: 9px;
-    }
-
-    .alerts-table tbody td code {
-        max-width: 135px;
-    }
-
-    .alerts-table tbody td[data-label="Message"] {
         max-width: 100%;
-    }
-}
-
-
-/* =========================================================
-   ALERTS - LOADING / EMPTY STATES
-   ========================================================= */
-
-@media (max-width: 768px) {
-
-    .alerts-table tbody td[colspan] {
-        display: block;
-        width: 100%;
-        padding: 20px 10px;
-
-        text-align: center !important;
-    }
-
-    .alerts-table tbody td[colspan]::before {
-        display: none;
-    }
-
-}
-/* =========================================================
-   ML MODELS - MOBILE RESPONSIVE TABLE
-   ========================================================= */
-
-@media (max-width: 768px) {
-
-    .models-table {
-        width: 100% !important;
-        min-width: 0 !important;
-        border-collapse: separate;
-        border-spacing: 0;
-    }
-
-    .models-table thead {
-        display: none;
-    }
-
-    .models-table tbody {
-        display: block;
-        width: 100%;
-    }
-
-    .models-table tbody tr {
-        display: block;
-        width: 100%;
-        box-sizing: border-box;
-
-        margin-bottom: 14px;
-        padding: 12px 14px;
-
-        border: 1px solid var(--border-color);
-        border-radius: 10px;
-
-        background: var(--card-bg);
-    }
-
-    .models-table tbody td {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-
-        width: 100%;
         min-width: 0;
 
-        padding: 9px 0;
+        margin: 0;
+    }
 
-        border: 0 !important;
 
-        font-size: 13px;
-        text-align: right;
+    .global-search-input-wrapper {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+    }
+
+
+    .global-search-input {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
 
         box-sizing: border-box;
     }
-
-    .models-table tbody td::before {
-        content: attr(data-label);
-
-        flex: 0 0 auto;
-
-        margin-right: 14px;
-
-        font-size: 10px;
-        font-weight: 700;
-
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-
-        color: var(--text-secondary);
-
-        text-align: left;
-    }
-
-    .models-table tbody td + td {
-        border-top: 1px solid var(--border-color) !important;
-    }
-
-    .models-table code {
-        display: block;
-        max-width: 150px;
-
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-
-        font-size: 11px;
-    }
-
-    .models-table .badge {
-        flex-shrink: 0;
-    }
-
-    /* Loading / empty state */
-    .models-table tbody td[colspan] {
-        display: block;
-        width: 100%;
-        padding: 20px 10px;
-        text-align: center !important;
-    }
-
-    .models-table tbody td[colspan]::before {
-        display: none;
-    }
 }
 
 
-/* =========================================================
-   SMALL PHONES
-   ========================================================= */
+/* ============================================================
+   SMALL PHONES — 430px AND BELOW
+   ============================================================ */
 
-@media (max-width: 480px) {
+@media (max-width: 430px) {
 
-    .models-table tbody tr {
-        padding: 10px 12px;
-        margin-bottom: 12px;
+    .topbar {
+        grid-template-columns: 38px minmax(0, 1fr) auto;
+
+        column-gap: 7px;
+        row-gap: 8px;
+
+        padding: 8px 9px 9px;
     }
 
-    .models-table tbody td {
-        font-size: 12px;
+
+    #mobile-menu-toggle {
+        width: 38px;
+        height: 38px;
+        min-width: 38px;
+
+        font-size: 17px;
     }
 
-    .models-table tbody td::before {
-        font-size: 9px;
+
+    .topbar-brand {
+        gap: 6px;
     }
 
-    .models-table code {
-        max-width: 135px;
-    }
-}
-/* =========================================================
-   ML MODELS PAGE
-   ========================================================= */
 
-.models-page {
-    width: 100%;
-    min-width: 0;
-}
+    .topbar-brand .brand-logo {
+        width: 29px;
+        height: 29px;
+        min-width: 29px;
 
-.models-page-header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 20px;
-    margin-bottom: 1.5rem;
-}
+        flex-basis: 29px;
 
-.models-page-description {
-    color: var(--text-muted);
-    margin-top: 0.35rem;
-}
-
-.models-retrain-btn {
-    flex-shrink: 0;
-    white-space: nowrap;
-}
-
-.models-retrain-btn:disabled {
-    opacity: 0.65;
-    cursor: wait;
-}
-
-
-/* Registry header */
-
-.models-registry-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    margin-bottom: 12px;
-}
-
-.models-registry-header h3 {
-    margin: 0;
-}
-
-.models-registry-subtitle {
-    margin: 4px 0 0;
-    color: var(--text-secondary);
-    font-size: 12px;
-}
-
-.models-registry-status {
-    font-size: 12px;
-    color: var(--text-secondary);
-    white-space: nowrap;
-}
-
-
-/* Training status */
-
-.model-training-status {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-
-    margin-bottom: 1.25rem;
-    padding: 13px 15px;
-
-    border: 1px solid var(--border-color);
-    border-radius: 10px;
-
-    background: var(--card-bg);
-}
-
-.model-training-status-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    width: 36px;
-    height: 36px;
-
-    flex: 0 0 36px;
-
-    border-radius: 50%;
-    background: var(--sidebar-hover);
-}
-
-.model-training-status-content {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-    min-width: 0;
-}
-
-.model-training-status-content strong {
-    font-size: 13px;
-}
-
-.model-training-status-content span {
-    font-size: 12px;
-    color: var(--text-secondary);
-}
-
-.training-success {
-    border-color: var(--risk-low);
-}
-
-.training-error {
-    border-color: var(--risk-critical);
-}
-
-.training-running {
-    border-color: var(--primary-color);
-}
-
-
-/* =========================================================
-   ML MODELS MOBILE
-   ========================================================= */
-
-@media (max-width: 768px) {
-
-    .models-page-header {
-        flex-direction: column;
-        gap: 14px;
+        font-size: 14px;
     }
 
-    .models-page-header h2 {
-        line-height: 1.25;
+
+    .topbar-brand .brand-title {
+        font-size: 0.88rem !important;
     }
 
-    .models-retrain-btn {
-        width: 100%;
-        white-space: normal;
+
+    #btn-theme-toggle {
+        min-width: 67px;
+
+        height: 37px;
+        min-height: 37px;
+
+        padding: 0 8px !important;
+
+        font-size: 0.75rem !important;
     }
 
-    .models-metrics-grid {
-        grid-template-columns: 1fr !important;
-    }
 
-    .models-registry-header {
-        align-items: flex-start;
-    }
+    #btn-stream-toggle {
+        width: 100% !important;
 
-    .models-registry-status {
-        font-size: 11px;
-    }
+        height: 43px;
+        min-height: 43px;
 
-    .model-training-status {
-        align-items: flex-start;
-    }
+        font-size: 0.82rem !important;
 
-    .model-training-status-content {
-        flex: 1;
+        padding: 0 12px !important;
     }
-
 }
 
 
-/* =========================================================
-   VERY SMALL MOBILE
-   ========================================================= */
+/* ============================================================
+   VERY SMALL PHONES — 360px AND BELOW
+   ============================================================ */
 
-@media (max-width: 480px) {
+@media (max-width: 360px) {
 
-    .models-page-header {
-        margin-bottom: 1.1rem;
+    .topbar {
+        grid-template-columns: 36px minmax(0, 1fr) auto;
+
+        column-gap: 6px;
+
+        padding-left: 8px;
+        padding-right: 8px;
     }
 
-    .models-retrain-btn {
-        min-height: 44px;
+
+    #mobile-menu-toggle {
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
     }
 
-    .models-registry-header {
-        flex-direction: column;
+
+    .topbar-brand {
         gap: 5px;
     }
 
-    .model-training-status {
-        padding: 11px 12px;
+
+    .topbar-brand .brand-logo {
+        width: 27px;
+        height: 27px;
+        min-width: 27px;
+
+        flex-basis: 27px;
+
+        font-size: 13px;
+    }
+
+
+    .topbar-brand .brand-title {
+        font-size: 0.83rem !important;
+    }
+
+
+    #btn-theme-toggle {
+        min-width: 63px;
+
+        height: 36px;
+        min-height: 36px;
+
+        font-size: 0.70rem !important;
+    }
+
+
+    #btn-stream-toggle {
+        height: 42px;
+        min-height: 42px;
+
+        font-size: 0.78rem !important;
+    }
+}
+/* ============================================================
+   FINAL OVERRIDE — STREAM INGESTION MOBILE BUTTON
+   KEEP THIS AS THE LAST CSS IN THE FILE
+   ============================================================ */
+
+@media (max-width: 768px) {
+
+    .topbar {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+
+        display: grid !important;
+
+        grid-template-columns: 40px minmax(0, 1fr) auto !important;
+
+        grid-template-areas:
+            "menu brand theme"
+            "stream stream stream" !important;
+
+        align-items: center !important;
+
+        column-gap: 8px !important;
+        row-gap: 8px !important;
+
+        box-sizing: border-box !important;
+    }
+
+    .topbar-actions {
+        display: contents !important;
+    }
+
+    #mobile-menu-toggle {
+        grid-area: menu !important;
+
+        width: 40px !important;
+        min-width: 40px !important;
+        max-width: 40px !important;
+
+        height: 40px !important;
+    }
+
+    .topbar-brand {
+        grid-area: brand !important;
+
+        min-width: 0 !important;
+        width: 100% !important;
+
+        display: flex !important;
+
+        align-items: center !important;
+
+        overflow: hidden !important;
+    }
+
+    #btn-theme-toggle {
+        grid-area: theme !important;
+
+        width: auto !important;
+        min-width: 68px !important;
+        max-width: none !important;
+
+        flex: none !important;
+
+        white-space: nowrap !important;
+    }
+
+    #btn-stream-toggle {
+        grid-area: stream !important;
+
+        /* THE IMPORTANT PART */
+        width: 100% !important;
+        max-width: none !important;
+        min-width: 0 !important;
+
+        height: 44px !important;
+        min-height: 44px !important;
+
+        margin: 0 !important;
+        padding: 0 14px !important;
+
+        display: flex !important;
+
+        align-items: center !important;
+        justify-content: center !important;
+
+        flex: none !important;
+
+        box-sizing: border-box !important;
+
+        font-size: 0.84rem !important;
+        font-weight: 700 !important;
+
+        white-space: nowrap !important;
+
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+
+    #btn-stream-toggle .stream-icon,
+    #btn-stream-toggle .stream-label {
+        white-space: nowrap !important;
+    }
+}
+
+
+/* ============================================================
+   430px AND BELOW
+   ============================================================ */
+
+@media (max-width: 430px) {
+
+    .topbar {
+        grid-template-columns: 38px minmax(0, 1fr) auto !important;
+
+        grid-template-areas:
+            "menu brand theme"
+            "stream stream stream" !important;
+
+        width: 100% !important;
+        max-width: 100% !important;
+
+        padding: 8px 9px !important;
+    }
+
+    #mobile-menu-toggle {
+        width: 38px !important;
+        min-width: 38px !important;
+        max-width: 38px !important;
+
+        height: 38px !important;
+    }
+
+    #btn-theme-toggle {
+        min-width: 67px !important;
+        max-width: none !important;
+    }
+
+    #btn-stream-toggle {
+        width: 100% !important;
+
+        /* REMOVE THE OLD 128px LIMIT */
+        max-width: none !important;
+
+        min-width: 0 !important;
+
+        height: 43px !important;
+        min-height: 43px !important;
+
+        font-size: 0.82rem !important;
+
+        white-space: nowrap !important;
+    }
+}
+
+
+/* ============================================================
+   360px AND BELOW
+   ============================================================ */
+
+@media (max-width: 360px) {
+
+    .topbar {
+        grid-template-columns: 36px minmax(0, 1fr) auto !important;
+
+        grid-template-areas:
+            "menu brand theme"
+            "stream stream stream" !important;
+
+        width: 100% !important;
+    }
+
+    #mobile-menu-toggle {
+        width: 36px !important;
+        min-width: 36px !important;
+        max-width: 36px !important;
+
+        height: 36px !important;
+    }
+
+    #btn-theme-toggle {
+        min-width: 63px !important;
+        max-width: none !important;
+    }
+
+    #btn-stream-toggle {
+        width: 100% !important;
+
+        /* REMOVE THE OLD 118px LIMIT */
+        max-width: none !important;
+
+        min-width: 0 !important;
+
+        height: 42px !important;
+        min-height: 42px !important;
+
+        font-size: 0.78rem !important;
+
+        white-space: nowrap !important;
+    }
+}
+/* =========================================================
+   FINAL MOBILE TOPBAR + START INGESTION BUTTON FIX
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+  /* Main topbar */
+  #topbar.topbar {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+
+    display: grid !important;
+
+    grid-template-columns: auto 1fr auto !important;
+    grid-template-areas:
+      "menu status theme"
+      "stream stream stream"
+      "search search search" !important;
+
+    align-items: center !important;
+
+    gap: 10px !important;
+
+    padding: 10px !important;
+
+    box-sizing: border-box !important;
+
+    overflow: visible !important;
+  }
+
+
+  /* ---------------------------------------------------------
+     MOBILE MENU BUTTON
+     --------------------------------------------------------- */
+
+  #mobile-menu-toggle {
+    grid-area: menu !important;
+
+    width: 44px !important;
+    min-width: 44px !important;
+    max-width: 44px !important;
+
+    height: 44px !important;
+    min-height: 44px !important;
+
+    padding: 0 !important;
+
+    flex: none !important;
+
+    box-sizing: border-box !important;
+  }
+
+
+  /* ---------------------------------------------------------
+     ENGINE STATUS
+     --------------------------------------------------------- */
+
+  #topbar .system-status {
+    grid-area: status !important;
+
+    min-width: 0 !important;
+    width: auto !important;
+
+    justify-self: start !important;
+
+    white-space: nowrap !important;
+
+    overflow: hidden !important;
+  }
+
+
+  /* ---------------------------------------------------------
+     TOPBAR ACTIONS
+     
+     IMPORTANT:
+     Let the two buttons participate directly in the
+     topbar grid instead of restricting them to a small box.
+     --------------------------------------------------------- */
+
+  #topbar .topbar-actions {
+    display: contents !important;
+  }
+
+
+  /* ---------------------------------------------------------
+     DARK / THEME BUTTON
+     --------------------------------------------------------- */
+
+  #btn-theme-toggle {
+    grid-area: theme !important;
+
+    width: auto !important;
+    min-width: 74px !important;
+    max-width: none !important;
+
+    height: 44px !important;
+    min-height: 44px !important;
+
+    padding: 0 12px !important;
+
+    flex: none !important;
+
+    white-space: nowrap !important;
+
+    box-sizing: border-box !important;
+
+    justify-self: end !important;
+  }
+
+
+  /* ---------------------------------------------------------
+     START STREAM INGESTION
+     --------------------------------------------------------- */
+
+  #btn-stream-toggle {
+    grid-area: stream !important;
+
+    display: flex !important;
+
+    align-items: center !important;
+    justify-content: center !important;
+
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+
+    height: 48px !important;
+    min-height: 48px !important;
+
+    margin: 0 !important;
+
+    padding: 0 16px !important;
+
+    box-sizing: border-box !important;
+
+    flex: none !important;
+
+    white-space: nowrap !important;
+
+    overflow: visible !important;
+
+    text-overflow: clip !important;
+
+    position: static !important;
+  }
+
+
+  #btn-stream-toggle .stream-icon {
+    flex: 0 0 auto !important;
+
+    display: inline-flex !important;
+
+    align-items: center !important;
+  }
+
+
+  #btn-stream-toggle .stream-label {
+    display: inline-block !important;
+
+    flex: 0 0 auto !important;
+
+    white-space: nowrap !important;
+
+    overflow: visible !important;
+
+    text-overflow: clip !important;
+  }
+
+
+  /* ---------------------------------------------------------
+     SEARCH
+     --------------------------------------------------------- */
+
+  #topbar .global-search {
+    grid-area: search !important;
+
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+
+    margin: 0 !important;
+
+    box-sizing: border-box !important;
+  }
+
+
+  #topbar .global-search-input-wrapper {
+    width: 100% !important;
+    min-width: 0 !important;
+
+    box-sizing: border-box !important;
+  }
+
+
+  #topbar .global-search-input {
+    width: 100% !important;
+    min-width: 0 !important;
+
+    box-sizing: border-box !important;
+  }
+
+}
+
+
+/* =========================================================
+   EXTRA SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 430px) {
+
+  #topbar.topbar {
+    padding: 10px !important;
+
+    gap: 8px !important;
+  }
+
+
+  #mobile-menu-toggle {
+    width: 42px !important;
+    min-width: 42px !important;
+    max-width: 42px !important;
+
+    height: 42px !important;
+    min-height: 42px !important;
+  }
+
+
+  #btn-theme-toggle {
+    min-width: 72px !important;
+
+    height: 42px !important;
+    min-height: 42px !important;
+
+    padding: 0 10px !important;
+
+    font-size: 0.85rem !important;
+  }
+
+
+  #btn-stream-toggle {
+    width: 100% !important;
+    min-width: 0 !important;
+
+    height: 48px !important;
+    min-height: 48px !important;
+
+    padding: 0 12px !important;
+
+    font-size: 0.9rem !important;
+  }
+
+
+  #btn-stream-toggle .stream-label {
+    font-size: 0.9rem !important;
+
+    white-space: nowrap !important;
+  }
+
+}
+/* =========================================================
+   FINAL VISIBILITY FIX
+   Public pages must NEVER show the application topbar/sidebar
+   ========================================================= */
+
+.topbar.hidden,
+#topbar.hidden {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    max-height: 0 !important;
+    overflow: hidden !important;
+}
+
+.sidebar.hidden,
+#sidebar.hidden {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+
+/* =========================================================
+   MOBILE TOPBAR
+   Only applies when the topbar is actually visible
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .topbar:not(.hidden) {
+        display: grid;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 430px) {
+
+    .topbar:not(.hidden) {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
     }
 
 }

@@ -1,414 +1,499 @@
-/**
- * Chart.js Factory for FraudShield AI
+/*
+ * ============================================================
+ * FRAUDSHIELD AI
+ * CHART.JS RENDERERS
+ * ============================================================
  *
- * Supports:
- * - Light Mode
- * - Dark Mode
- * - Theme-aware text
- * - Theme-aware grid
- * - Theme-aware legends
- * - Theme-aware tooltips
+ * Stable responsive charts.
+ *
+ * IMPORTANT:
+ * The parent .chart-wrapper controls the height.
+ * The canvas fills that complete area.
+ *
+ * This fixes the problem where Fraud Velocity Trend
+ * occupies only the upper portion of its card.
+ * ============================================================
  */
 
 
-/* =========================================================
-   THEME COLORS
-   ========================================================= */
+// ============================================================
+// CSS VARIABLE HELPER
+// ============================================================
 
-function getChartTheme() {
+function getCssVariable(
+  name,
+  fallback
+) {
 
-  const theme =
-    document.documentElement.getAttribute(
-      'data-theme'
-    ) || 'dark';
+  const value =
+
+    getComputedStyle(
+      document.documentElement
+    )
+      .getPropertyValue(
+        name
+      )
+      .trim();
 
 
-  if (theme === 'light') {
+  return value ||
+    fallback;
 
-    return {
+}
 
-      text: '#334155',
 
-      mutedText: '#64748b',
+// ============================================================
+// THEME COLORS
+// ============================================================
 
-      grid: '#e2e8f0',
-
-      tooltipBackground: '#ffffff',
-
-      tooltipText: '#172033',
-
-      tooltipBorder: '#d9e1ea',
-
-    };
-
-  }
-
+function getThemeColors() {
 
   return {
 
-    text: '#e2e8f0',
+    text:
 
-    mutedText: '#94a3b8',
+      getCssVariable(
+        '--text-secondary',
+        '#475569'
+      ),
 
-    grid: '#334155',
 
-    tooltipBackground: '#111827',
+    muted:
 
-    tooltipText: '#f8fafc',
+      getCssVariable(
+        '--text-muted',
+        '#64748b'
+      ),
 
-    tooltipBorder: '#334155',
+
+    border:
+
+      getCssVariable(
+        '--border-color',
+        '#dbe2ea'
+      ),
+
+
+    primary:
+
+      getCssVariable(
+        '--accent-primary',
+        '#3b82f6'
+      ),
+
+
+    low:
+
+      getCssVariable(
+        '--risk-low',
+        '#10b981'
+      ),
+
+
+    medium:
+
+      getCssVariable(
+        '--risk-medium',
+        '#f59e0b'
+      ),
+
+
+    high:
+
+      getCssVariable(
+        '--risk-high',
+        '#f97316'
+      ),
+
+
+    critical:
+
+      getCssVariable(
+        '--risk-critical',
+        '#ef4444'
+      )
 
   };
 
 }
 
 
+// ============================================================
+// GET CANVAS
+// ============================================================
 
-/* =========================================================
-   RISK DISTRIBUTION CHART
-   ========================================================= */
-
-export function renderRiskDistributionChart(
-  canvasId,
-  dataPoints
+function getCanvas(
+  id
 ) {
 
   const canvas =
-    document.getElementById(canvasId);
+    document.getElementById(
+      id
+    );
 
 
   if (!canvas) {
-    return;
+
+    console.warn(
+      `Chart canvas not found: ${id}`
+    );
+
+    return null;
+
   }
 
 
-  const ctx =
-    canvas.getContext('2d');
+  if (
+    typeof Chart ===
+    'undefined'
+  ) {
 
+    console.error(
+      'Chart.js is not loaded. Check index.html.'
+    );
 
-  if (!ctx) {
-    return;
+    return null;
+
   }
 
 
-  const theme =
-    getChartTheme();
-
-
-  return new Chart(ctx, {
-
-    type: 'doughnut',
-
-
-    data: {
-
-      labels: [
-        'Low Risk',
-        'Medium Risk',
-        'High Risk',
-        'Critical Anomaly'
-      ],
-
-
-      datasets: [
-
-        {
-
-          data:
-            dataPoints ||
-            [65, 20, 10, 5],
-
-
-          backgroundColor: [
-
-            '#10b981',
-            '#f59e0b',
-            '#f97316',
-            '#ef4444'
-
-          ],
-
-
-          borderWidth: 0,
-
-        }
-
-      ]
-
-    },
-
-
-    options: {
-
-      responsive: true,
-
-      maintainAspectRatio: true,
-
-
-      plugins: {
-
-        legend: {
-
-          position: 'bottom',
-
-
-          labels: {
-
-            color:
-              theme.text,
-
-            padding: 18,
-
-            usePointStyle: true,
-
-            pointStyle: 'circle',
-
-            font: {
-
-              size: 12,
-
-            }
-
-          }
-
-        },
-
-
-        tooltip: {
-
-          backgroundColor:
-            theme.tooltipBackground,
-
-          titleColor:
-            theme.tooltipText,
-
-          bodyColor:
-            theme.tooltipText,
-
-          borderColor:
-            theme.tooltipBorder,
-
-          borderWidth: 1,
-
-          padding: 10,
-
-          displayColors: true,
-
-        }
-
-      }
-
-    }
-
-  });
+  return canvas;
 
 }
 
 
+// ============================================================
+// COMMON CHART OPTIONS
+// ============================================================
 
-/* =========================================================
-   FRAUD TREND CHART
-   ========================================================= */
-
-export function renderFraudTrendsChart(
-  canvasId,
-  labels,
-  data
+function baseChartOptions(
+  colors
 ) {
 
-  const canvas =
-    document.getElementById(canvasId);
+  return {
+
+    responsive:
+      true,
 
 
-  if (!canvas) {
-    return;
-  }
+    /*
+     * VERY IMPORTANT
+     *
+     * The parent wrapper controls chart height.
+     *
+     * Without this, Chart.js calculates its own
+     * aspect ratio and leaves whitespace.
+     */
+
+    maintainAspectRatio:
+      false,
 
 
-  const ctx =
-    canvas.getContext('2d');
+    /*
+     * Disable animation during chart rendering.
+     *
+     * This removes the visual jerk when ingestion
+     * updates the dashboard.
+     */
+
+    animation:
+      false,
 
 
-  if (!ctx) {
-    return;
-  }
+    /*
+     * Slight delay when browser resizes.
+     * Prevents excessive resize calculations.
+     */
+
+    resizeDelay:
+      80,
 
 
-  const theme =
-    getChartTheme();
+    interaction: {
 
+      intersect:
+        false,
 
-  return new Chart(ctx, {
-
-    type: 'line',
-
-
-    data: {
-
-      labels:
-        labels ||
-        [
-          '00:00',
-          '04:00',
-          '08:00',
-          '12:00',
-          '16:00',
-          '20:00'
-        ],
-
-
-      datasets: [
-
-        {
-
-          label:
-            'Anomalous Transaction Volume',
-
-
-          data:
-            data ||
-            [2, 1, 5, 14, 8, 22],
-
-
-          borderColor:
-            '#ef4444',
-
-
-          backgroundColor:
-            'rgba(239, 68, 68, 0.10)',
-
-
-          tension: 0.4,
-
-          fill: true,
-
-          pointRadius: 3,
-
-          pointHoverRadius: 5,
-
-          pointBackgroundColor:
-            '#ef4444',
-
-          pointBorderColor:
-            '#ef4444',
-
-        }
-
-      ]
+      mode:
+        'index'
 
     },
 
 
-    options: {
+    plugins: {
 
-      responsive: true,
+      legend: {
 
-      maintainAspectRatio: true,
+        labels: {
 
+          color:
+            colors.text,
 
-      interaction: {
+          usePointStyle:
+            true,
 
-        intersect: false,
+          boxWidth:
+            8,
 
-        mode: 'index',
+          padding:
+            14,
 
-      },
+          font: {
 
-
-      plugins: {
-
-        legend: {
-
-          labels: {
-
-            color:
-              theme.text,
-
-            padding: 18,
-
-            usePointStyle: true,
-
-            font: {
-
-              size: 12,
-
-            }
+            size:
+              11
 
           }
-
-        },
-
-
-        tooltip: {
-
-          backgroundColor:
-            theme.tooltipBackground,
-
-          titleColor:
-            theme.tooltipText,
-
-          bodyColor:
-            theme.tooltipText,
-
-          borderColor:
-            theme.tooltipBorder,
-
-          borderWidth: 1,
-
-          padding: 10,
 
         }
 
       },
 
 
-      scales: {
+      tooltip: {
 
-        x: {
+        enabled:
+          true
 
-          grid: {
+      }
 
-            color:
-              theme.grid,
+    }
 
-            drawBorder: false,
+  };
 
-          },
+}
 
 
-          ticks: {
+// ============================================================
+// FRAUD VELOCITY TREND
+// ============================================================
 
-            color:
-              theme.mutedText,
+export function renderFraudTrendsChart(
 
-            maxRotation: 0,
+  canvasId,
+
+  labels = [],
+
+  data = []
+
+) {
+
+  const canvas =
+    getCanvas(
+      canvasId
+    );
+
+
+  if (!canvas) {
+
+    return null;
+
+  }
+
+
+  const colors =
+    getThemeColors();
+
+
+  /*
+   * Prevent duplicate Chart.js instances
+   * attached to the same canvas.
+   */
+
+  const existing =
+    Chart.getChart(
+      canvas
+    );
+
+
+  if (existing) {
+
+    existing.destroy();
+
+  }
+
+
+  return new Chart(
+
+    canvas,
+
+    {
+
+      type:
+        'line',
+
+
+      data: {
+
+        labels:
+
+          Array.isArray(
+            labels
+          )
+
+            ? labels
+
+            : [],
+
+
+        datasets: [
+
+          {
+
+            label:
+              'Anomalous Transaction Volume',
+
+
+            data:
+
+              Array.isArray(
+                data
+              )
+
+                ? data
+
+                : [],
+
+
+            borderColor:
+              colors.critical,
+
+
+            backgroundColor:
+              'rgba(239, 68, 68, 0.10)',
+
+
+            borderWidth:
+              2.5,
+
+
+            pointRadius:
+              3,
+
+
+            pointHoverRadius:
+              5,
+
+
+            pointBackgroundColor:
+              colors.critical,
+
+
+            pointBorderColor:
+              colors.critical,
+
+
+            fill:
+              true,
+
+
+            /*
+             * Small curve makes the graph
+             * look smooth without excessive animation.
+             */
+
+            tension:
+              0.28,
+
+
+            spanGaps:
+              true
 
           }
 
-        },
+        ]
+
+      },
 
 
-        y: {
+      options: {
 
-          beginAtZero: true,
+        ...baseChartOptions(
+          colors
+        ),
 
 
-          grid: {
+        /*
+         * Do not force a tiny chart height here.
+         *
+         * The .chart-wrapper controls the full
+         * available chart rectangle.
+         */
 
-            color:
-              theme.grid,
+        scales: {
 
-            drawBorder: false,
+          x: {
+
+            grid: {
+
+              color:
+                colors.border,
+
+              drawBorder:
+                false
+
+            },
+
+
+            ticks: {
+
+              color:
+                colors.muted,
+
+              maxRotation:
+                0,
+
+              autoSkip:
+                true,
+
+              maxTicksLimit:
+                8,
+
+              font: {
+
+                size:
+                  10
+
+              }
+
+            }
 
           },
 
 
-          ticks: {
+          y: {
 
-            color:
-              theme.mutedText,
+            beginAtZero:
+              true,
 
-            precision: 0,
+
+            grid: {
+
+              color:
+                colors.border,
+
+              drawBorder:
+                false
+
+            },
+
+
+            ticks: {
+
+              color:
+                colors.muted,
+
+              precision:
+                0,
+
+              font: {
+
+                size:
+                  10
+
+              }
+
+            }
 
           }
 
@@ -418,6 +503,184 @@ export function renderFraudTrendsChart(
 
     }
 
-  });
+  );
+
+}
+
+
+// ============================================================
+// RISK DISTRIBUTION
+// ============================================================
+
+export function renderRiskDistributionChart(
+
+  canvasId,
+
+  data = [
+    1,
+    0,
+    0,
+    0
+  ]
+
+) {
+
+  const canvas =
+    getCanvas(
+      canvasId
+    );
+
+
+  if (!canvas) {
+
+    return null;
+
+  }
+
+
+  const colors =
+    getThemeColors();
+
+
+  const existing =
+    Chart.getChart(
+      canvas
+    );
+
+
+  if (existing) {
+
+    existing.destroy();
+
+  }
+
+
+  return new Chart(
+
+    canvas,
+
+    {
+
+      type:
+        'doughnut',
+
+
+      data: {
+
+        labels: [
+
+          'Low Risk',
+
+          'Medium Risk',
+
+          'High Risk',
+
+          'Critical Anomaly'
+
+        ],
+
+
+        datasets: [
+
+          {
+
+            data:
+
+              Array.isArray(
+                data
+              )
+
+                ? data
+
+                : [
+                    1,
+                    0,
+                    0,
+                    0
+                  ],
+
+
+            backgroundColor: [
+
+              colors.low,
+
+              colors.medium,
+
+              colors.high,
+
+              colors.critical
+
+            ],
+
+
+            borderWidth:
+              0,
+
+
+            hoverOffset:
+              4
+
+          }
+
+        ]
+
+      },
+
+
+      options: {
+
+        ...baseChartOptions(
+          colors
+        ),
+
+
+        /*
+         * Doughnut thickness.
+         */
+
+        cutout:
+          '62%',
+
+
+        plugins: {
+
+          legend: {
+
+            position:
+              'bottom',
+
+
+            labels: {
+
+              color:
+                colors.text,
+
+              usePointStyle:
+                true,
+
+              boxWidth:
+                8,
+
+              padding:
+                12,
+
+              font: {
+
+                size:
+                  10
+
+              }
+
+            }
+
+          }
+
+        }
+
+      }
+
+    }
+
+  );
 
 }

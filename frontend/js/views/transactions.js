@@ -1,251 +1,1091 @@
 import { API } from '../api.js';
-import { renderPagination } from '../pagination.js';
+
+
+// ============================================================
+// STATE
+// ============================================================
+
+let currentPage = 1;
+
+let pageSize = 10;
+
+let totalRecords = 0;
+
+let totalPages = 1;
+
+let loading = false;
+
+
+// ============================================================
+// HTML
+// ============================================================
 
 export function renderTransactions() {
+
   return `
-    <div>
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-        <h2>Transaction Stream Monitor</h2>
-        <button id="btn-manual-tx" class="btn btn-primary">+ Simulate Transaction</button>
+
+    <div class="transactions-page">
+
+      <div
+        style="
+          display:flex;
+          justify-content:space-between;
+          align-items:center;
+          gap:1rem;
+          margin-bottom:1.5rem;
+        "
+      >
+
+        <div>
+
+          <h2>
+            Transaction Stream Monitor
+          </h2>
+
+          <p
+            style="
+              color:var(--text-muted);
+              font-size:.875rem;
+            "
+          >
+            Monitor incoming transaction activity
+            and anomaly scores.
+          </p>
+
+        </div>
+
+
+        <button
+          type="button"
+          id="simulate-transaction"
+          class="btn btn-primary"
+        >
+          + Simulate Transaction
+        </button>
+
       </div>
 
-      <div class="card table-container">
-        <table class="data-table transactions-table">
-          <thead>
-            <tr>
-              <th>Timestamp</th>
-              <th>Transaction ID</th>
-              <th>User ID</th>
-              <th>Amount</th>
-              <th>Location</th>
-              <th>Device</th>
-              <th>Anomaly Score</th>
-            </tr>
-          </thead>
 
-          <tbody id="tx-full-tbody">
-            <tr>
-              <td colspan="7" style="text-align: center;">
-                Loading transaction ledger...
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="card">
 
-        <div id="transactions-pagination"></div>
+        <div class="table-container">
+
+          <table class="data-table">
+
+            <thead>
+
+              <tr>
+
+                <th>
+                  Timestamp
+                </th>
+
+                <th>
+                  Transaction ID
+                </th>
+
+                <th>
+                  User ID
+                </th>
+
+                <th>
+                  Amount
+                </th>
+
+                <th>
+                  Location
+                </th>
+
+                <th>
+                  Device
+                </th>
+
+                <th>
+                  Anomaly Score
+                </th>
+
+              </tr>
+
+            </thead>
+
+
+            <tbody
+              id="transactions-tbody"
+            >
+
+              <tr>
+
+                <td
+                  colspan="7"
+                  style="text-align:center;"
+                >
+                  Loading transactions...
+                </td>
+
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+
+        <div
+          class="transactions-pagination"
+          style="
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:1rem;
+            flex-wrap:wrap;
+            margin-top:1rem;
+            padding-top:1rem;
+            border-top:1px solid var(--border-color);
+          "
+        >
+
+          <div
+            id="transactions-count"
+            style="
+              color:var(--text-muted);
+              font-size:.85rem;
+            "
+          >
+            Loading...
+          </div>
+
+
+          <div
+            style="
+              display:flex;
+              align-items:center;
+              gap:.5rem;
+              flex-wrap:wrap;
+            "
+          >
+
+            <label
+              style="
+                color:var(--text-muted);
+                font-size:.85rem;
+              "
+            >
+              Rows per page
+            </label>
+
+
+            <select
+              id="transactions-page-size"
+              class="form-control"
+              style="
+                width:auto;
+                min-width:80px;
+              "
+            >
+
+              <option value="10">
+                10
+              </option>
+
+              <option value="25">
+                25
+              </option>
+
+              <option value="50">
+                50
+              </option>
+
+              <option value="100">
+                100
+              </option>
+
+            </select>
+
+
+            <div
+              id="transactions-pagination-buttons"
+              style="
+                display:flex;
+                align-items:center;
+                gap:.35rem;
+                flex-wrap:wrap;
+              "
+            ></div>
+
+          </div>
+
+        </div>
+
       </div>
+
     </div>
+
   `;
+
 }
 
-export async function initTransactionsEvents() {
-  let currentPage = 1;
-  let pageSize = 10;
-  let isShowingAll = false;
 
-  async function loadData() {
-    const tbody = document.getElementById('tx-full-tbody');
-    if (!tbody) return;
+// ============================================================
+// ESCAPE
+// ============================================================
 
-    tbody.innerHTML = `
-      <tr>
-        <td colspan="7" style="text-align: center;">
-          Loading transactions...
-        </td>
-      </tr>
-    `;
+function escapeHtml(
+  value
+) {
 
-    try {
-      let response;
+  return String(
+    value ?? ''
+  )
 
-      if (isShowingAll) {
-        response = await API.getTransactions(1, 50);
+    .replace(
+      /&/g,
+      '&amp;'
+    )
 
-        const total = response.total || 0;
+    .replace(
+      /</g,
+      '&lt;'
+    )
 
-        if (total > 50) {
-          const allResponse = await API.getTransactions(1, total);
-          response = allResponse;
-        }
-      } else {
-        response = await API.getTransactions(currentPage, pageSize);
-      }
+    .replace(
+      />/g,
+      '&gt;'
+    )
 
-      const data = response.items || [];
+    .replace(
+      /"/g,
+      '&quot;'
+    )
 
-      if (Array.isArray(data) && data.length > 0) {
-        tbody.innerHTML = data.map(tx => `
-       <tr>
-  <td data-label="Timestamp">
-    ${new Date(tx.timestamp || Date.now()).toLocaleString()}
-  </td>
+    .replace(
+      /'/g,
+      '&#039;'
+    );
 
-  <td data-label="Transaction ID">
-    <code>${tx.transaction_id || 'N/A'}</code>
-  </td>
+}
 
-  <td data-label="User ID">
-    ${tx.user_id ?? 'N/A'}
-  </td>
 
-  <td data-label="Amount">
-    $${Number(tx.transaction_amount || 0).toFixed(2)}
-  </td>
+// ============================================================
+// NORMALIZE API RESPONSE
+// ============================================================
 
-  <td data-label="Location">
-    ${tx.location || 'N/A'}
-  </td>
+function normalizeResponse(
+  response
+) {
 
-  <td data-label="Device">
-    ${tx.device_type || 'Unknown'}
-  </td>
+  if (
+    Array.isArray(response)
+  ) {
 
-  <td data-label="Anomaly Score">
-    <span class="badge ${
-      Number(tx.risk_score) > 0.7
-        ? 'badge-critical'
-        : 'badge-low'
-    }">
-      ${(Number(tx.risk_score || 0) * 100).toFixed(0)}
-    </span>
-  </td>
-</tr>
-        `).join('');
-      } else {
-        tbody.innerHTML = `
-          <tr>
-            <td colspan="7" style="text-align: center;">
-              No transactions found.
-            </td>
-          </tr>
-        `;
-      }
+    return {
 
-      renderPagination({
-        containerId: 'transactions-pagination',
-        page: response.page || currentPage,
-        pageSize: response.page_size || pageSize,
-        total: response.total || data.length,
-        pages: response.pages || 1,
-        isShowingAll,
+      transactions:
+        response,
 
-        onPageChange: (page) => {
-          currentPage = page;
-          isShowingAll = false;
-          loadData();
-        },
+      total:
+        response.length,
 
-        onPageSizeChange: (newPageSize) => {
-          pageSize = newPageSize;
-          currentPage = 1;
-          isShowingAll = false;
-          loadData();
-        },
+      page:
+        currentPage,
 
-        onShowAll: (showAll) => {
-          isShowingAll = showAll;
-          currentPage = 1;
-          loadData();
-        }
-      });
+      pageSize:
+        pageSize,
 
-    } catch (error) {
-      console.error('Failed to load transactions:', error);
+      totalPages:
+        Math.max(
+          1,
+          Math.ceil(
+            response.length /
+            pageSize
+          )
+        )
 
-      tbody.innerHTML = `
-        <tr>
-          <td colspan="7" style="text-align: center;">
-            Failed to load transactions.
-          </td>
-        </tr>
-      `;
+    };
 
-      const pagination = document.getElementById('transactions-pagination');
-      if (pagination) {
-        pagination.innerHTML = '';
-      }
-    }
   }
 
-  await loadData();
 
-  document
-    .getElementById('btn-manual-tx')
-    ?.addEventListener('click', async () => {
+  const transactions =
+    Array.isArray(
+      response?.transactions
+    )
+      ? response.transactions
 
-      const dummy = {
-        transaction_id:
-          "TX-" +
-          Math.random()
-            .toString(36)
-            .substr(2, 9)
-            .toUpperCase(),
+      : Array.isArray(
+          response?.items
+        )
+        ? response.items
 
-        user_id: 1001,
+        : Array.isArray(
+            response?.data
+          )
+          ? response.data
 
-        transaction_amount:
-          (Math.random() * 5000).toFixed(2),
+          : [];
 
-        transaction_type: "DEBIT",
 
-        timestamp: new Date().toISOString(),
+  const total =
+    Number(
+      response?.total ??
+      response?.count ??
+      transactions.length
+    );
 
-        account_balance: 12000.0,
 
-        device_type: "Mobile_iOS",
+  const page =
+    Number(
+      response?.page ??
+      currentPage
+    );
 
-        location: "San Jose, CA",
 
-        merchant_category: "Electronics",
+  const size =
+    Number(
+      response?.page_size ??
+      response?.pageSize ??
+      pageSize
+    );
 
-        ip_address_flag: 1,
 
-        previous_fraudulent_activity: 0,
+  const pages =
+    Number(
+      response?.total_pages ??
+      response?.totalPages ??
+      Math.max(
+        1,
+        Math.ceil(
+          total / size
+        )
+      )
+    );
 
-        daily_transaction_count: 3,
 
-        avg_transaction_amount_7d: 120.5,
+  return {
 
-        failed_transaction_count_7d: 0,
+    transactions,
 
-        card_type: "VISA",
+    total,
 
-        card_age: 180,
+    page,
 
-        transaction_distance: 45.2,
+    pageSize: size,
 
-        authentication_method: "PIN",
+    totalPages:
+      Math.max(
+        1,
+        pages
+      )
 
-        risk_score: 0.88,
+  };
 
-        is_weekend: 0,
+}
 
-        ip_address: "192.168.1.100",
 
-        gps_location: "37.3382,-121.8863"
-      };
+// ============================================================
+// RENDER TABLE
+// ============================================================
 
-      try {
-        await API.createTransaction(dummy);
+function renderTable(
+  transactions
+) {
 
-        alert(
-          'Simulated transaction dispatched into ML pipeline.'
+  const tbody =
+    document.getElementById(
+      'transactions-tbody'
+    );
+
+
+  if (!tbody) {
+    return;
+  }
+
+
+  if (
+    !transactions.length
+  ) {
+
+    tbody.innerHTML = `
+
+      <tr>
+
+        <td
+          colspan="7"
+          style="
+            text-align:center;
+            padding:2rem;
+            color:var(--text-muted);
+          "
+        >
+          No transactions found.
+        </td>
+
+      </tr>
+
+    `;
+
+    return;
+
+  }
+
+
+  tbody.innerHTML =
+    transactions
+      .map(
+        transaction => {
+
+          const timestamp =
+            transaction.timestamp ||
+            transaction.created_at ||
+            transaction.transaction_date ||
+            '-';
+
+
+          const transactionId =
+            transaction.transaction_id ||
+            transaction.id ||
+            transaction._id ||
+            '-';
+
+
+          const userId =
+            transaction.user_id ??
+            '-';
+
+
+          const amount =
+            Number(
+              transaction.transaction_amount ??
+              transaction.amount ??
+              0
+            );
+
+
+          const location =
+            transaction.location ||
+            '-';
+
+
+          const device =
+            transaction.device ||
+            transaction.device_type ||
+            '-';
+
+
+          const score =
+            Number(
+              transaction.risk_score ??
+              transaction.anomaly_score ??
+              0
+            );
+
+
+          const badgeClass =
+            score >= 0.8
+              ? 'badge-critical'
+              : score >= 0.5
+                ? 'badge-high'
+                : 'badge-low';
+
+
+          return `
+
+            <tr>
+
+              <td data-label="Timestamp">
+                ${escapeHtml(
+                  timestamp
+                )}
+              </td>
+
+
+              <td data-label="Transaction ID">
+
+                <code>
+                  ${escapeHtml(
+                    transactionId
+                  )}
+                </code>
+
+              </td>
+
+
+              <td data-label="User ID">
+
+                ${escapeHtml(
+                  userId
+                )}
+
+              </td>
+
+
+              <td data-label="Amount">
+
+                $
+                ${amount.toFixed(2)}
+
+              </td>
+
+
+              <td data-label="Location">
+
+                ${escapeHtml(
+                  location
+                )}
+
+              </td>
+
+
+              <td data-label="Device">
+
+                ${escapeHtml(
+                  device
+                )}
+
+              </td>
+
+
+              <td data-label="Anomaly Score">
+
+                <span
+                  class="badge ${badgeClass}"
+                >
+                  ${
+                    (
+                      score * 100
+                    ).toFixed(1)
+                  }%
+                </span>
+
+              </td>
+
+            </tr>
+
+          `;
+
+        }
+      )
+      .join('');
+
+}
+
+
+// ============================================================
+// PAGINATION
+// ============================================================
+
+function renderPagination() {
+
+  const count =
+    document.getElementById(
+      'transactions-count'
+    );
+
+
+  const buttons =
+    document.getElementById(
+      'transactions-pagination-buttons'
+    );
+
+
+  if (
+    !count ||
+    !buttons
+  ) {
+
+    return;
+
+  }
+
+
+  const first =
+    totalRecords === 0
+      ? 0
+      : (
+          (
+            currentPage -
+            1
+          ) *
+          pageSize
+        ) + 1;
+
+
+  const last =
+    Math.min(
+      currentPage *
+        pageSize,
+      totalRecords
+    );
+
+
+  count.textContent =
+    `Showing ${first.toLocaleString()}-${last.toLocaleString()} of ${totalRecords.toLocaleString()}`;
+
+
+  let html = '';
+
+
+  html += `
+
+    <button
+      type="button"
+      class="btn btn-sm btn-outline-secondary"
+      data-page="prev"
+      ${currentPage <= 1 ? 'disabled' : ''}
+    >
+      ← Previous
+    </button>
+
+  `;
+
+
+  const pages = [];
+
+
+  if (
+    totalPages <= 7
+  ) {
+
+    for (
+      let page = 1;
+      page <= totalPages;
+      page++
+    ) {
+
+      pages.push(page);
+
+    }
+
+  } else {
+
+    pages.push(1);
+
+
+    if (
+      currentPage > 4
+    ) {
+
+      pages.push('...');
+
+    }
+
+
+    const start =
+      Math.max(
+        2,
+        currentPage - 1
+      );
+
+
+    const end =
+      Math.min(
+        totalPages - 1,
+        currentPage + 1
+      );
+
+
+    for (
+      let page = start;
+      page <= end;
+      page++
+    ) {
+
+      pages.push(page);
+
+    }
+
+
+    if (
+      currentPage <
+      totalPages - 3
+    ) {
+
+      pages.push('...');
+
+    }
+
+
+    pages.push(
+      totalPages
+    );
+
+  }
+
+
+  pages.forEach(
+    page => {
+
+      if (
+        page === '...'
+      ) {
+
+        html += `
+          <span
+            style="
+              padding:0 .25rem;
+              color:var(--text-muted);
+            "
+          >
+            ...
+          </span>
+        `;
+
+        return;
+
+      }
+
+
+      html += `
+
+        <button
+          type="button"
+          class="btn btn-sm ${
+            page === currentPage
+              ? 'btn-primary'
+              : 'btn-outline-secondary'
+          }"
+          data-page="${page}"
+        >
+          ${page}
+        </button>
+
+      `;
+
+    }
+  );
+
+
+  html += `
+
+    <button
+      type="button"
+      class="btn btn-sm btn-outline-secondary"
+      data-page="next"
+      ${
+        currentPage >= totalPages
+          ? 'disabled'
+          : ''
+      }
+    >
+      Next →
+    </button>
+
+  `;
+
+
+  buttons.innerHTML =
+    html;
+
+
+  buttons
+    .querySelectorAll(
+      '[data-page]'
+    )
+    .forEach(
+      button => {
+
+        button.addEventListener(
+          'click',
+          async () => {
+
+            const value =
+              button.getAttribute(
+                'data-page'
+              );
+
+
+            if (
+              value === 'prev'
+            ) {
+
+              if (
+                currentPage > 1
+              ) {
+
+                currentPage--;
+
+              }
+
+            } else if (
+              value === 'next'
+            ) {
+
+              if (
+                currentPage <
+                totalPages
+              ) {
+
+                currentPage++;
+
+              }
+
+            } else {
+
+              currentPage =
+                Number(value);
+
+            }
+
+
+            await loadTransactions();
+
+          }
         );
 
-        currentPage = 1;
-        isShowingAll = false;
+      }
+    );
 
-        await loadData();
+}
+
+
+// ============================================================
+// LOAD
+// ============================================================
+
+async function loadTransactions() {
+
+  if (loading) {
+    return;
+  }
+
+
+  loading = true;
+
+
+  const tbody =
+    document.getElementById(
+      'transactions-tbody'
+    );
+
+
+  if (tbody) {
+
+    tbody.innerHTML = `
+
+      <tr>
+
+        <td
+          colspan="7"
+          style="text-align:center;"
+        >
+          Loading transactions...
+        </td>
+
+      </tr>
+
+    `;
+
+  }
+
+
+  try {
+
+    const response =
+      await API.getTransactions(
+        currentPage,
+        pageSize
+      );
+
+
+    const normalized =
+      normalizeResponse(
+        response
+      );
+
+
+    totalRecords =
+      normalized.total;
+
+
+    totalPages =
+      normalized.totalPages;
+
+
+    currentPage =
+      Math.min(
+        Math.max(
+          1,
+          normalized.page
+        ),
+        totalPages
+      );
+
+
+    renderTable(
+      normalized.transactions
+    );
+
+
+    renderPagination();
+
+  } catch (error) {
+
+    console.error(
+      'Transactions loading error:',
+      error
+    );
+
+
+    if (tbody) {
+
+      tbody.innerHTML = `
+
+        <tr>
+
+          <td
+            colspan="7"
+            style="
+              text-align:center;
+              color:var(--risk-critical);
+              padding:2rem;
+            "
+          >
+            Unable to load transactions.
+          </td>
+
+        </tr>
+
+      `;
+
+    }
+
+  } finally {
+
+    loading = false;
+
+  }
+
+}
+
+
+// ============================================================
+// INITIALIZE
+// ============================================================
+
+export async function initTransactionsEvents() {
+
+  currentPage =
+    1;
+
+  pageSize =
+    10;
+
+  totalRecords =
+    0;
+
+  totalPages =
+    1;
+
+
+  const pageSizeSelect =
+    document.getElementById(
+      'transactions-page-size'
+    );
+
+
+  pageSizeSelect?.addEventListener(
+    'change',
+    async event => {
+
+      pageSize =
+        Number(
+          event.target.value
+        );
+
+
+      currentPage =
+        1;
+
+
+      await loadTransactions();
+
+    }
+  );
+
+
+  const simulateButton =
+    document.getElementById(
+      'simulate-transaction'
+    );
+
+
+  simulateButton?.addEventListener(
+    'click',
+    async () => {
+
+      try {
+
+        simulateButton.disabled =
+          true;
+
+
+        simulateButton.textContent =
+          'Creating...';
+
+
+        await API.createTransaction({
+
+          user_id:
+            Math.floor(
+              Math.random() *
+              9999
+            ),
+
+          transaction_amount:
+            Number(
+              (
+                Math.random() *
+                5000 +
+                50
+              ).toFixed(2)
+            ),
+
+          merchant_category:
+            'Shopping',
+
+          location:
+            'Online',
+
+          device:
+            'Web',
+
+          transaction_type:
+            'purchase'
+
+        });
+
+
+        currentPage =
+          1;
+
+
+        await loadTransactions();
 
       } catch (error) {
+
         console.error(
-          'Failed to create transaction:',
+          'Simulation error:',
           error
         );
 
         alert(
-          'Failed to create simulated transaction.'
+          error.message
         );
+
+      } finally {
+
+        simulateButton.disabled =
+          false;
+
+        simulateButton.textContent =
+          '+ Simulate Transaction';
+
       }
-    });
+
+    }
+  );
+
+
+  await loadTransactions();
+
 }

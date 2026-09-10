@@ -22,6 +22,7 @@ from backend.app.api.v1.routes import (
     user_role_routes,
     case_review_routes,
     bootstrap_routes,
+    demo_request_routes,
 )
 
 api_router = APIRouter()
@@ -47,3 +48,4 @@ api_router.include_router(stream_routes.router)
 api_router.include_router(user_role_routes.router)
 api_router.include_router(case_review_routes.router)
 api_router.include_router(bootstrap_routes.router)
+api_router.include_router(demo_request_routes.router)

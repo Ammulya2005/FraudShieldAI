@@ -9,14 +9,17 @@ export function renderAdmin() {
   return `
     <div>
       <h2>Administration & System Telemetry</h2>
+
       <p style="color: var(--text-muted); margin-bottom: 1.5rem;">
         RBAC permission controls and infrastructure monitors
       </p>
 
-      <div class="card table-container">
-        <h3 style="padding: 1rem 1.25rem;">User Authorization Ledger</h3>
+      <div class="card table-container users-table-container">
+        <h3 style="padding: 1rem 1.25rem;">
+          User Authorization Ledger
+        </h3>
 
-        <table class="data-table">
+        <table class="data-table users-table">
           <thead>
             <tr>
               <th>User ID</th>
@@ -77,13 +80,19 @@ async function loadUsers() {
 
     tbody.innerHTML = users.map(u => `
       <tr>
-        <td><code>${u.id || u._id || ''}</code></td>
+        <td data-label="USER ID">
+          <code>${u.id || u._id || ''}</code>
+        </td>
 
-        <td>${u.username || ''}</td>
+        <td data-label="USERNAME">
+          ${u.username || ''}
+        </td>
 
-        <td>${u.email || ''}</td>
+        <td data-label="EMAIL">
+          ${u.email || ''}
+        </td>
 
-        <td>
+        <td data-label="ROLE">
           <span class="badge badge-info">
             ${
               Array.isArray(u.roles) && u.roles.length
@@ -93,7 +102,7 @@ async function loadUsers() {
           </span>
         </td>
 
-        <td>
+        <td data-label="STATUS">
           <span style="color: var(--risk-low);">
             Active
           </span>
