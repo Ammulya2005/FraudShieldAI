@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 from backend.database.mongodb import db
 from backend.app.core.config import (
     TRANSACTIONS_COLLECTION,
@@ -7,35 +9,85 @@ from backend.app.core.config import (
 )
 
 async def get_dashboard_summary():
+        # =========================================================
+    # TODAY'S TRANSACTIONS
+    # Dashboard counters reset at midnight.
+    # Historical transactions remain untouched.
+    # =========================================================
+
+    today = datetime.now(
+        ZoneInfo("Asia/Kolkata")
+    )
+
+    start_of_day = today.replace(
+        hour=0,
+        minute=0,
+        second=0,
+        microsecond=0
+    )
+
+    start_of_next_day = (
+        start_of_day +
+        timedelta(days=1)
+    )
+
+    today_filter = {
+        "created_at": {
+            "$gte": start_of_day,
+            "$lt": start_of_next_day
+        }
+    }
+
     total_transactions = await db[
         TRANSACTIONS_COLLECTION
-    ].count_documents({})
+    ].count_documents(
+        today_filter
+    )
 
     total_fraud_transactions = await db[
         TRANSACTIONS_COLLECTION
     ].count_documents({
+        **today_filter,
         "final_prediction": "fraud"
     })
 
     total_legitimate_transactions = await db[
         TRANSACTIONS_COLLECTION
     ].count_documents({
+        **today_filter,
         "final_prediction": "legitimate"
     })
 
     high_risk_transactions = await db[
         TRANSACTIONS_COLLECTION
     ].count_documents({
-        "risk_score": {"$gte": 0.65}
+        **today_filter,
+        "risk_score": {
+            "$gte": 0.65
+        }
     })
+        # =========================================================
+    # TODAY'S FRAUD CASES
+    # Dashboard fraud-case counters reset at midnight.
+    # Historical fraud cases remain untouched.
+    # =========================================================
 
     total_fraud_cases = await db[
         FRAUD_CASES_COLLECTION
-    ].count_documents({})
+    ].count_documents({
+        "created_at": {
+            "$gte": start_of_day,
+            "$lt": start_of_next_day
+        }
+    })
 
     open_fraud_cases = await db[
         FRAUD_CASES_COLLECTION
     ].count_documents({
+        "created_at": {
+            "$gte": start_of_day,
+            "$lt": start_of_next_day
+        },
         "status": {
             "$in": ["open", "assigned"]
         }
@@ -44,37 +96,69 @@ async def get_dashboard_summary():
     closed_fraud_cases = await db[
         FRAUD_CASES_COLLECTION
     ].count_documents({
+        "created_at": {
+            "$gte": start_of_day,
+            "$lt": start_of_next_day
+        },
         "status": "closed"
     })
+    
+    # =========================================================
+    # TODAY'S ALERTS
+    # Dashboard alert counters reset at midnight.
+    # Historical alerts remain untouched.
+    # =========================================================
 
     total_alerts = await db[
         ALERTS_COLLECTION
-    ].count_documents({})
+    ].count_documents({
+        "created_at": {
+            "$gte": start_of_day,
+            "$lt": start_of_next_day
+        }
+    })
 
     open_alerts = await db[
         ALERTS_COLLECTION
     ].count_documents({
+        "created_at": {
+            "$gte": start_of_day,
+            "$lt": start_of_next_day
+        },
         "status": "open"
     })
 
     assigned_alerts = await db[
         ALERTS_COLLECTION
     ].count_documents({
+        "created_at": {
+            "$gte": start_of_day,
+            "$lt": start_of_next_day
+        },
         "status": "assigned"
     })
 
     acknowledged_alerts = await db[
         ALERTS_COLLECTION
     ].count_documents({
+        "created_at": {
+            "$gte": start_of_day,
+            "$lt": start_of_next_day
+        },
         "status": "acknowledged"
     })
 
     resolved_alerts = await db[
         ALERTS_COLLECTION
     ].count_documents({
+        "created_at": {
+            "$gte": start_of_day,
+            "$lt": start_of_next_day
+        },
         "status": "resolved"
     })
 
+   
     total_users = await db[
         USERS_COLLECTION
     ].count_documents({})
@@ -136,66 +220,133 @@ async def get_live_alerts(limit: int = 10):
     return alerts
 
 async def get_fraud_overview():
+
+    # =========================================================
+    # TODAY'S FRAUD OVERVIEW
+    # =========================================================
+
+    today = datetime.now(
+        ZoneInfo("Asia/Kolkata")
+    )
+
+    start_of_day = today.replace(
+        hour=0,
+        minute=0,
+        second=0,
+        microsecond=0
+    )
+
+    start_of_next_day = (
+        start_of_day +
+        timedelta(days=1)
+    )
+
+    today_filter = {
+        "created_at": {
+            "$gte": start_of_day,
+            "$lt": start_of_next_day
+        }
+    }
+
     total_transactions = await db[
         TRANSACTIONS_COLLECTION
-    ].count_documents({})
+    ].count_documents(
+        today_filter
+    )
 
     fraud_transactions = await db[
         TRANSACTIONS_COLLECTION
     ].count_documents({
+        **today_filter,
         "final_prediction": "fraud"
     })
 
     legitimate_transactions = await db[
         TRANSACTIONS_COLLECTION
     ].count_documents({
+        **today_filter,
         "final_prediction": "legitimate"
     })
-
-    if total_transactions == 0:
-        fraud_percentage = 0
-        legitimate_percentage = 0
-    else:
-        fraud_percentage = round(
-            (fraud_transactions / total_transactions) * 100,
-            2
-        )
-        legitimate_percentage = round(
-            (legitimate_transactions / total_transactions) * 100,
-            2
-        )
 
     return {
         "total_transactions": total_transactions,
         "fraud_transactions": fraud_transactions,
-        "legitimate_transactions": legitimate_transactions,
-        "fraud_percentage": fraud_percentage,
-        "legitimate_percentage": legitimate_percentage
+        "legitimate_transactions": legitimate_transactions
+    }
+async def get_risk_distribution():
+
+    # =========================================================
+    # TODAY'S RISK DISTRIBUTION
+    # =========================================================
+
+    today = datetime.now(
+        ZoneInfo("Asia/Kolkata")
+    )
+
+    start_of_day = today.replace(
+        hour=0,
+        minute=0,
+        second=0,
+        microsecond=0
+    )
+
+    start_of_next_day = (
+        start_of_day +
+        timedelta(days=1)
+    )
+
+    today_filter = {
+        "created_at": {
+            "$gte": start_of_day,
+            "$lt": start_of_next_day
+        }
     }
 
-async def get_risk_distribution():
+    # ---------------------------------------------------------
+    # LOW RISK
+    # ---------------------------------------------------------
+
     low_risk = await db[
         TRANSACTIONS_COLLECTION
     ].count_documents({
-        "risk_score": {"$lt": 0.40}
+        **today_filter,
+        "risk_score": {
+            "$lt": 0.40
+        }
     })
+
+    # ---------------------------------------------------------
+    # MEDIUM RISK
+    # ---------------------------------------------------------
 
     medium_risk = await db[
         TRANSACTIONS_COLLECTION
     ].count_documents({
+        **today_filter,
         "risk_score": {
             "$gte": 0.40,
             "$lt": 0.70
         }
     })
 
+    # ---------------------------------------------------------
+    # HIGH RISK
+    # ---------------------------------------------------------
+
     high_risk = await db[
         TRANSACTIONS_COLLECTION
     ].count_documents({
-        "risk_score": {"$gte": 0.70}
+        **today_filter,
+        "risk_score": {
+            "$gte": 0.70
+        }
     })
 
-    total = low_risk + medium_risk + high_risk
+    total = (
+        low_risk +
+        medium_risk +
+        high_risk
+    )
 
     return {
         "low_risk": low_risk,
@@ -203,23 +354,35 @@ async def get_risk_distribution():
         "high_risk": high_risk,
         "total": total
     }
+
 async def get_top_risk_users(limit: int = 5):
+    today = datetime.now(
+        ZoneInfo("Asia/Kolkata")
+    )
+
+    start_of_day = today.replace(
+        hour=0,
+        minute=0,
+        second=0,
+        microsecond=0
+    )
+
+    start_of_next_day = (
+        start_of_day +
+        timedelta(days=1)
+    )
+
     pipeline = [
         {
             "$match": {
+                "created_at": {
+                    "$gte": start_of_day,
+                    "$lt": start_of_next_day
+                },
                 "$or": [
                     {"final_prediction": "fraud"},
                     {"risk_score": {"$gte": 0.65}}
                 ]
-            }
-        },
-        {
-            "$group": {
-                "_id": "$user_id",
-                "fraud_count": {"$sum": 1},
-                "total_risk_score": {"$sum": "$risk_score"},
-                "avg_risk_score": {"$avg": "$risk_score"},
-                "total_amount": {"$sum": "$transaction_amount"}
             }
         },
         {
@@ -257,9 +420,28 @@ async def get_top_risk_users(limit: int = 5):
     return results
 
 async def get_top_risk_merchants(limit: int = 5):
+    today = datetime.now(
+        ZoneInfo("Asia/Kolkata")
+    )
+
+    start_of_day = today.replace(
+        hour=0,
+        minute=0,
+        second=0,
+        microsecond=0
+    )
+
+    start_of_next_day = (
+        start_of_day +
+        timedelta(days=1)
+    )
     pipeline = [
         {
             "$match": {
+                "created_at": {
+                    "$gte": start_of_day,
+                    "$lt": start_of_next_day
+                },
                 "$or": [
                     {"final_prediction": "fraud"},
                     {"risk_score": {"$gte": 0.65}}
@@ -305,9 +487,30 @@ async def get_top_risk_merchants(limit: int = 5):
     return results
 
 async def get_top_risk_locations(limit: int = 5):
+
+    today = datetime.now(
+        ZoneInfo("Asia/Kolkata")
+    )
+
+    start_of_day = today.replace(
+        hour=0,
+        minute=0,
+        second=0,
+        microsecond=0
+    )
+
+    start_of_next_day = (
+        start_of_day +
+        timedelta(days=1)
+    )
+
     pipeline = [
         {
             "$match": {
+                "created_at": {
+                    "$gte": start_of_day,
+                    "$lt": start_of_next_day
+                },
                 "$or": [
                     {"final_prediction": "fraud"},
                     {"risk_score": {"$gte": 0.65}}
@@ -332,10 +535,13 @@ async def get_top_risk_locations(limit: int = 5):
             "$limit": limit
         }
     ]
+
     results = []
+
     async for item in db[
         TRANSACTIONS_COLLECTION
     ].aggregate(pipeline):
+
         results.append({
             "location": item["_id"],
             "fraud_count": item["fraud_count"],
@@ -348,8 +554,24 @@ async def get_top_risk_locations(limit: int = 5):
                 2
             )
         })
+
     return results
 async def get_top_risk_devices(limit: int = 5):
+    today = datetime.now(
+        ZoneInfo("Asia/Kolkata")
+    )
+
+    start_of_day = today.replace(
+        hour=0,
+        minute=0,
+        second=0,
+        microsecond=0
+    )
+
+    start_of_next_day = (
+        start_of_day +
+        timedelta(days=1)
+    )
     pipeline = [
         {
             "$match": {

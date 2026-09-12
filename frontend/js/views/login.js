@@ -52,12 +52,12 @@ function injectLoginThemeStyles() {
 
       padding: 0 13px;
 
-      border: 1px solid #dce5f1;
+      border: 1px solid var(--border-light, #3a311f);
       border-radius: 10px;
 
-      background: rgba(255, 255, 255, 0.90);
+      background: var(--surface, #fffdf8);
 
-      color: #18243b;
+      color: var(--text-primary, #17130b);
 
       font-family: inherit;
 
@@ -67,7 +67,7 @@ function injectLoginThemeStyles() {
       cursor: pointer;
 
       box-shadow:
-        0 8px 25px rgba(20, 48, 85, 0.08);
+        0 8px 25px rgba(0, 0, 0, 0.08);
 
       backdrop-filter: blur(12px);
 
@@ -83,10 +83,10 @@ function injectLoginThemeStyles() {
 
       transform: translateY(-2px);
 
-      border-color: #347ff1;
+      border-color: var(--accent-primary, #c9952f);
 
       box-shadow:
-        0 12px 30px rgba(20, 48, 85, 0.13);
+        0 12px 30px rgba(0, 0, 0, 0.13);
     }
 
 
@@ -100,9 +100,14 @@ function injectLoginThemeStyles() {
 
       border-radius: 50%;
 
-      background: rgba(52, 127, 241, 0.10);
+      background:
+        rgba(
+          var(--gold-rgb, 201, 149, 47),
+          0.10
+        );
 
-      color: #347ff1;
+      color:
+        var(--accent-primary, #c9952f);
 
       font-size: 12px;
     }
@@ -117,41 +122,62 @@ function injectLoginThemeStyles() {
       background:
         radial-gradient(
           circle at 20% 20%,
-          rgba(52, 127, 241, 0.15),
+          rgba(
+            var(--gold-rgb, 214, 168, 58),
+            0.10
+          ),
           transparent 30%
         ),
-        #07111f !important;
+        var(--bg-primary, #080807) !important;
 
-      color: #edf5ff;
+      color:
+        var(--text-primary, #fff8e5);
     }
 
 
     [data-theme="dark"] .login-panel {
 
-      background: #0b1728 !important;
+      background:
+        var(--bg-secondary, #10100e) !important;
 
-      color: #edf5ff;
+      color:
+        var(--text-primary, #fff8e5);
     }
 
 
     [data-theme="dark"] .login-card {
 
       background:
-        rgba(14, 27, 45, 0.94) !important;
+        rgba(
+          16,
+          16,
+          14,
+          0.94
+        ) !important;
 
-      border-color: #223750 !important;
+      border-color:
+        var(
+          --border-light,
+          #3a311f
+        ) !important;
 
-      color: #edf5ff;
+      color:
+        var(--text-primary, #fff8e5);
 
       box-shadow:
-        0 30px 80px rgba(0, 0, 0, 0.35);
+        0 30px 80px
+        rgba(0, 0, 0, 0.35);
     }
 
 
     [data-theme="dark"] .login-heading h2,
     [data-theme="dark"] .login-mobile-brand h2 {
 
-      color: #edf5ff !important;
+      color:
+        var(
+          --text-primary,
+          #fff8e5
+        ) !important;
     }
 
 
@@ -159,92 +185,172 @@ function injectLoginThemeStyles() {
     [data-theme="dark"] .login-description,
     [data-theme="dark"] .login-tagline {
 
-      color: #9aacc3 !important;
+      color:
+        var(
+          --text-secondary,
+          #d8c9a3
+        ) !important;
     }
 
 
     [data-theme="dark"] .form-group label {
 
-      color: #cbd8e8 !important;
+      color:
+        var(
+          --text-secondary,
+          #d8c9a3
+        ) !important;
     }
 
 
     [data-theme="dark"] .form-control {
 
-      background: #091525 !important;
+      background:
+        var(
+          --surface,
+          #10100e
+        ) !important;
 
-      border-color: #29415d !important;
+      border-color:
+        var(
+          --border-light,
+          #4a3a20
+        ) !important;
 
-      color: #edf5ff !important;
+      color:
+        var(
+          --text-primary,
+          #fff8e5
+        ) !important;
     }
 
 
     [data-theme="dark"] .form-control::placeholder {
 
-      color: #687c95 !important;
+      color:
+        var(
+          --text-muted,
+          #a99a74
+        ) !important;
     }
 
 
     [data-theme="dark"] .form-control:focus {
 
-      border-color: #347ff1 !important;
+      border-color:
+        var(
+          --accent-primary,
+          #c9952f
+        ) !important;
 
       box-shadow:
         0 0 0 3px
-        rgba(52, 127, 241, 0.14) !important;
+        rgba(
+          var(--gold-rgb, 201, 149, 47),
+          0.14
+        ) !important;
     }
 
 
     [data-theme="dark"] .login-security-message {
 
-      background: rgba(52, 127, 241, 0.08) !important;
+      background:
+        rgba(
+          var(--gold-rgb, 201, 149, 47),
+          0.08
+        ) !important;
 
-      border-color: #29415d !important;
+      border-color:
+        var(
+          --border-light,
+          #4a3a20
+        ) !important;
 
-      color: #a8bad0 !important;
+      color:
+        var(
+          --text-secondary,
+          #d8c9a3
+        ) !important;
     }
 
 
     [data-theme="dark"] .login-divider {
 
-      border-color: #263b54 !important;
+      border-color:
+        var(
+          --border-light,
+          #3d321f
+        ) !important;
     }
 
 
     [data-theme="dark"] .login-divider span {
 
-      background: #0e1b2d !important;
+      background:
+        var(
+          --surface,
+          #10100e
+        ) !important;
 
-      color: #71869f !important;
+      color:
+        var(
+          --text-muted,
+          #a99a74
+        ) !important;
     }
 
 
     [data-theme="dark"] .login-form-footer {
 
-      color: #71869f !important;
+      color:
+        var(
+          --text-muted,
+          #a99a74
+        ) !important;
     }
 
 
     [data-theme="dark"] .login-theme-toggle {
 
       background:
-        rgba(14, 27, 45, 0.94);
+        rgba(
+          16,
+          16,
+          14,
+          0.94
+        );
 
-      border-color: #29415d;
+      border-color:
+        var(
+          --border-light,
+          #4a3a20
+        );
 
-      color: #edf5ff;
+      color:
+        var(
+          --text-primary,
+          #fff8e5
+        );
 
       box-shadow:
-        0 10px 30px rgba(0, 0, 0, 0.28);
+        0 10px 30px
+        rgba(0, 0, 0, 0.28);
     }
 
 
     [data-theme="dark"] .login-theme-icon {
 
       background:
-        rgba(57, 217, 255, 0.10);
+        rgba(
+          var(--gold-rgb, 201, 149, 47),
+          0.10
+        );
 
-      color: #39d9ff;
+      color:
+        var(
+          --accent-primary-hover,
+          #e5bd58
+        );
     }
 
 
@@ -257,33 +363,364 @@ function injectLoginThemeStyles() {
       background:
         radial-gradient(
           circle at 50% 40%,
-          rgba(52, 127, 241, 0.13),
+          rgba(
+            var(--gold-rgb, 214, 168, 58),
+            0.08
+          ),
           transparent 42%
         ),
-        #07111f !important;
+        var(--bg-primary, #080807) !important;
     }
 
 
-    [data-theme="dark"] .login-hero-text h1 {
+    [data-theme="dark"] .login-hero-text h1 span {
+    display: inline-block;
 
-      color: #edf5ff !important;
-    }
+    color: #e5bd58 !important;
+
+    background: linear-gradient(
+        135deg,
+        #fff4c7 0%,
+        #e5bd58 50%,
+        #c9952f 100%
+    );
+
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    text-shadow:
+        0 0 24px rgba(229, 189, 88, 0.18);
+}
 
 
     [data-theme="dark"] .login-feature {
 
       background:
-        rgba(14, 27, 45, 0.65) !important;
+        rgba(
+          16,
+          16,
+          14,
+          0.65
+        ) !important;
 
-      border-color: #223750 !important;
+      border-color:
+        var(
+          --border-light,
+          #3a311f
+        ) !important;
 
-      color: #edf5ff;
+      color:
+        var(
+          --text-primary,
+          #fff8e5
+        );
     }
 
 
     [data-theme="dark"] .login-feature span {
 
-      color: #8ea2ba !important;
+      color:
+        var(
+          --text-secondary,
+          #b9aa83
+        ) !important;
+    }
+
+
+    /* ========================================================
+       LIGHT MODE
+       ======================================================== */
+
+    [data-theme="light"] .login-page {
+
+      background:
+        var(
+          --bg-primary,
+          #fbf8f0
+        ) !important;
+
+      color:
+        var(
+          --text-primary,
+          #17130b
+        );
+    }
+
+
+    [data-theme="light"] .login-hero {
+
+      background:
+        radial-gradient(
+          circle at 50% 40%,
+          rgba(
+            var(--gold-rgb, 201, 149, 47),
+            0.10
+          ),
+          transparent 42%
+        ),
+        var(
+          --bg-primary,
+          #fbf8f0
+        ) !important;
+    }
+
+
+    [data-theme="light"] .login-panel {
+
+      background:
+        var(
+          --bg-secondary,
+          #fffdf8
+        ) !important;
+
+      color:
+        var(
+          --text-primary,
+          #17130b
+        );
+    }
+
+
+    [data-theme="light"] .login-card {
+
+      background:
+        var(
+          --surface,
+          #fffdf8
+        ) !important;
+
+      border-color:
+        var(
+          --border-light,
+          #dfcfaa
+        ) !important;
+
+      color:
+        var(
+          --text-primary,
+          #17130b
+        );
+
+      box-shadow:
+        0 30px 80px
+        rgba(80, 55, 15, 0.10);
+    }
+
+
+    [data-theme="light"] .login-heading h2,
+    [data-theme="light"] .login-mobile-brand h2 {
+
+      color:
+        var(
+          --text-primary,
+          #17130b
+        ) !important;
+    }
+
+
+    [data-theme="light"] .login-heading p,
+    [data-theme="light"] .login-description,
+    [data-theme="light"] .login-tagline {
+
+      color:
+        var(
+          --text-secondary,
+          #5f543f
+        ) !important;
+    }
+
+
+    [data-theme="light"] .form-group label {
+
+      color:
+        var(
+          --text-primary,
+          #17130b
+        ) !important;
+    }
+
+
+    [data-theme="light"] .form-control {
+
+      background:
+        var(
+          --surface,
+          #fffdf8
+        ) !important;
+
+      border-color:
+        var(
+          --border-light,
+          #dfcfaa
+        ) !important;
+
+      color:
+        var(
+          --text-primary,
+          #17130b
+        ) !important;
+    }
+
+
+    [data-theme="light"] .form-control::placeholder {
+
+      color:
+        var(
+          --text-muted,
+          #8b7a5b
+        ) !important;
+    }
+
+
+    [data-theme="light"] .form-control:focus {
+
+      border-color:
+        var(
+          --accent-primary,
+          #c9952f
+        ) !important;
+
+      box-shadow:
+        0 0 0 3px
+        rgba(
+          var(--gold-rgb, 201, 149, 47),
+          0.14
+        ) !important;
+    }
+
+
+    [data-theme="light"] .login-security-message {
+
+      background:
+        rgba(
+          var(--gold-rgb, 201, 149, 47),
+          0.08
+        ) !important;
+
+      border-color:
+        var(
+          --border-light,
+          #dfcfaa
+        ) !important;
+
+      color:
+        var(
+          --text-secondary,
+          #5f543f
+        ) !important;
+    }
+
+
+    [data-theme="light"] .login-divider {
+
+      border-color:
+        var(
+          --border-light,
+          #dfcfaa
+        ) !important;
+    }
+
+
+    [data-theme="light"] .login-divider span {
+
+      background:
+        var(
+          --surface,
+          #fffdf8
+        ) !important;
+
+      color:
+        var(
+          --text-muted,
+          #8b7a5b
+        ) !important;
+    }
+
+
+    [data-theme="light"] .login-form-footer {
+
+      color:
+        var(
+          --text-muted,
+          #8b7a5b
+        ) !important;
+    }
+
+
+    [data-theme="light"] .login-theme-toggle {
+
+      background:
+        var(
+          --surface,
+          #fffdf8
+        );
+
+      border-color:
+        var(
+          --border-light,
+          #dfcfaa
+        );
+
+      color:
+        var(
+          --text-primary,
+          #17130b
+        );
+
+      box-shadow:
+        0 10px 30px
+        rgba(80, 55, 15, 0.10);
+    }
+
+
+    [data-theme="light"] .login-theme-icon {
+
+      background:
+        rgba(
+          var(--gold-rgb, 201, 149, 47),
+          0.10
+        );
+
+      color:
+        var(
+          --accent-primary,
+          #c9952f
+        );
+    }
+
+
+    [data-theme="light"] .login-feature {
+
+      background:
+        rgba(
+          255,
+          253,
+          248,
+          0.88
+        ) !important;
+
+      border-color:
+        var(
+          --border-light,
+          #dfcfaa
+        ) !important;
+
+      color:
+        var(
+          --text-primary,
+          #17130b
+        );
+    }
+
+
+    [data-theme="light"] .login-feature span {
+
+      color:
+        var(
+          --text-secondary,
+          #5f543f
+        ) !important;
     }
 
 
@@ -310,7 +747,159 @@ function injectLoginThemeStyles() {
       }
 
     }
+    /* ========================================================
+       GOLD GLOBE WATERMARK — LOGIN PAGE
+       ======================================================== */
 
+    .login-page {
+
+      background-image:
+        url("assets/images/fraud-watermark.png") !important;
+
+      background-repeat:
+        no-repeat !important;
+
+      background-position:
+        center center !important;
+
+      background-size:
+        cover !important;
+
+      background-attachment:
+        fixed !important;
+
+    }
+
+
+    [data-theme="dark"] .login-page {
+
+      background-color:
+        #080807 !important;
+
+      background-image:
+        url("assets/images/fraud-watermark.png") !important;
+
+      background-repeat:
+        no-repeat !important;
+
+      background-position:
+        center center !important;
+
+      background-size:
+        cover !important;
+
+      background-attachment:
+        fixed !important;
+
+    }
+
+
+    [data-theme="dark"] .login-page .login-hero,
+    [data-theme="dark"] .login-page .login-panel {
+
+      background:
+        rgba(8, 8, 7, 0.58) !important;
+
+    }
+
+
+    [data-theme="light"] .login-page {
+
+      background-color:
+        #fbf8f0 !important;
+
+      background-image:
+        url("assets/images/fraud-watermark.png") !important;
+
+      background-repeat:
+        no-repeat !important;
+
+      background-position:
+        center center !important;
+
+      background-size:
+        cover !important;
+
+      background-attachment:
+        fixed !important;
+
+    }
+
+
+    [data-theme="light"] .login-page .login-hero {
+
+      background:
+        rgba(251, 248, 240, 0.72) !important;
+
+    }
+
+
+    [data-theme="light"] .login-page .login-panel {
+
+      background:
+        rgba(255, 253, 248, 0.78) !important;
+
+    }
+
+
+    .login-page .login-card {
+
+      position:
+        relative !important;
+
+      z-index:
+        5 !important;
+
+    }
+       /* ========================================================
+        GOLD LOGIN BUTTON
+        ======================================================== */
+
+    .login-page .login-submit {
+     color: #17130b !important;
+
+    background: linear-gradient(
+        135deg,
+        #fff4c7 0%,
+        #e5bd58 45%,
+        #c9952f 100%
+    ) !important;
+
+    border: 1px solid rgba(255, 231, 154, 0.80) !important;
+
+    box-shadow:
+        0 10px 28px rgba(201, 149, 47, 0.28),
+        inset 0 1px 0 rgba(255, 255, 255, 0.38) !important;
+
+    font-weight: 800 !important;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+}
+
+.login-page .login-submit:hover {
+    color: #17130b !important;
+
+    background: linear-gradient(
+        135deg,
+        #fff8d8 0%,
+        #f0cb65 45%,
+        #d5a63a 100%
+    ) !important;
+
+    box-shadow:
+        0 15px 35px rgba(201, 149, 47, 0.42),
+        0 0 24px rgba(229, 189, 88, 0.18) !important;
+
+    transform: translateY(-2px);
+  }
+
+   .login-page .login-submit .login-arrow {
+    color: #17130b !important;
+    font-weight: 900;
+    }
   `;
 
 
@@ -450,16 +1039,11 @@ export function renderLogin() {
           <div class="login-brand">
 
             <img
-              src="assets/images/Fraud_logo.jpeg"
-              alt="FraudShield AI logo"
-              class="login-hero-logo"
-            />
+                src="assets/images/FraudShieldAI_full_logo.png"
+                alt="FraudShield AI"
+                class="full-brand-logo"
+            >
 
-            <div class="login-brand-name">
-
-              FraudShield<span>AI</span>
-
-            </div>
 
           </div>
 
@@ -716,8 +1300,9 @@ export function renderLogin() {
           <div class="login-mobile-brand">
 
             <img
-              src="assets/images/Fraud_logo.jpeg"
-              alt="FraudShield AI logo"
+              src="assets/images/FraudShieldAI_full_logo.png"
+              alt="FraudShield AI"
+              class="login-full-logo"
             />
 
             <h2>
@@ -820,20 +1405,13 @@ export function renderLogin() {
             </div>
 
 
-            <button
-              type="submit"
-              class="btn btn-primary login-submit"
-            >
-
-              <span>
-                Log In
-              </span>
-
-              <span class="login-arrow">
-                →
-              </span>
-
-            </button>
+           <button
+            type="submit"
+            class="btn btn-primary login-submit"
+          >
+             <span>Log In</span>
+             <span class="login-arrow">→</span>
+         </button> 
 
 
           </form>

@@ -7,21 +7,6 @@ import {
 
 
 // ============================================================
-// FRAUDSHIELD AI
-// DASHBOARD VIEW
-// ============================================================
-// Stable dashboard implementation.
-//
-// IMPORTANT:
-// - Charts are created once.
-// - Normal polling updates chart data only.
-// - Chart containers have fixed responsive dimensions.
-// - Live table keeps pagination.
-// - Dashboard DOM is never rebuilt during polling.
-// ============================================================
-
-
-// ============================================================
 // CHART STATE
 // ============================================================
 
@@ -46,25 +31,22 @@ let liveTotalRecords = 0;
 
 
 // ============================================================
-// POLLING STATE
+// DASHBOARD POLLER
 // ============================================================
 
 let dashboardPoller = null;
 
 let dashboardRefreshing = false;
 
-let themeHandler = null;
-
 
 // ============================================================
-// CHART DATA
+// CHART HISTORY
 // ============================================================
 
 let fraudHistory = [];
 
 let riskData = [
   1,
-  0,
   0,
   0
 ];
@@ -77,7 +59,6 @@ let riskData = [
 export function renderDashboard() {
 
   return `
-
     <div class="dashboard-page">
 
       <!-- ==================================================
@@ -109,89 +90,166 @@ export function renderDashboard() {
       <div class="dashboard-grid">
 
 
-        <!-- TOTAL INGESTED -->
+        <!-- ==================================================
+             TOTAL TRANSACTIONS
+             ================================================== -->
 
         <div class="card card-metric">
 
-          <h3>
-            Total Ingested (24h)
-          </h3>
+          <div class="metric-card-content">
 
-          <div
-            class="metric-val"
-            id="metric-total-tx"
-          >
-            --
+            <div class="metric-icon">
+
+              <img
+                src="assets/images/total-transactions-icon.png"
+                alt="Total Transactions"
+              />
+
+            </div>
+
+            <div class="metric-info">
+
+              <h3>
+                Total Transactions
+              </h3>
+
+              <div
+                class="metric-val"
+                id="metric-total-tx"
+              >
+                --
+              </div>
+
+            </div>
+
           </div>
 
         </div>
 
 
-        <!-- HIGH RISK -->
+        <!-- ==================================================
+             HIGH RISK VELOCITY
+             ================================================== -->
 
         <div class="card card-metric">
 
-          <h3>
-            High Risk Velocity
-          </h3>
+          <div class="metric-card-content">
 
-          <div
-            class="metric-val metric-risk-high"
-            id="metric-high-risk"
-          >
-            --
+            <div class="metric-icon">
+
+              <img
+                src="assets/images/high-risk-velocity.png"
+                alt="High Risk Velocity"
+              />
+
+            </div>
+
+            <div class="metric-info">
+
+              <h3>
+                High Risk Velocity
+              </h3>
+
+              <div
+                class="metric-val metric-risk-high"
+                id="metric-high-risk"
+              >
+                --
+              </div>
+
+            </div>
+
           </div>
 
         </div>
 
 
-        <!-- ACTIVE ALERTS -->
+        <!-- ==================================================
+             ACTIVE FRAUD ALERTS
+             ================================================== -->
 
         <div class="card card-metric">
 
-          <h3>
-            Active Fraud Alerts
-          </h3>
+          <div class="metric-card-content">
 
-          <div
-            class="metric-val metric-risk-critical"
-            id="metric-active-alerts"
-          >
-            --
+            <div class="metric-icon">
+
+              <img
+                src="assets/images/active-fraud-alerts.png"
+                alt="Active Fraud Alerts"
+              />
+
+            </div>
+
+            <div class="metric-info">
+
+              <h3>
+                Active Fraud Alerts
+              </h3>
+
+              <div
+                class="metric-val metric-risk-critical"
+                id="metric-active-alerts"
+              >
+                --
+              </div>
+
+            </div>
+
           </div>
 
         </div>
 
 
-        <!-- LATENCY -->
+        <!-- ==================================================
+             AVG INFERENCE LATENCY
+             ================================================== -->
 
         <div class="card card-metric">
 
-          <h3>
-            Avg Inference Latency
-          </h3>
+          <div class="metric-card-content">
 
-          <div
-            class="metric-val metric-risk-low"
-            id="metric-latency"
-          >
-            --
+            <div class="metric-icon">
+
+              <img
+                src="assets/images/avg-inference-latency.png"
+                alt="Average Inference Latency"
+              />
+
+            </div>
+
+            <div class="metric-info">
+
+              <h3>
+                Avg Inference Latency
+              </h3>
+
+              <div
+                class="metric-val metric-risk-low"
+                id="metric-latency"
+              >
+                --
+              </div>
+
+            </div>
+
           </div>
 
         </div>
+
 
       </div>
 
 
       <!-- ==================================================
-           CHART SECTION
+           CHARTS
            ================================================== -->
 
       <div class="dashboard-chart-grid">
 
 
         <!-- =================================================
-             FRAUD VELOCITY
+             TRANSACTION TREND
              ================================================= -->
 
         <div class="card chart-card">
@@ -201,11 +259,11 @@ export function renderDashboard() {
             <div>
 
               <h3>
-                Fraud Velocity Trend
+                Transaction Trend
               </h3>
 
               <p>
-                Anomalous transaction volume over time
+                Transaction activity and fraud detection trend
               </p>
 
             </div>
@@ -213,17 +271,7 @@ export function renderDashboard() {
           </div>
 
 
-          <!--
-            IMPORTANT:
-            The wrapper owns the height.
-
-            The canvas fills the entire wrapper.
-            This removes the large unused whitespace.
-          -->
-
-          <div
-            class="chart-wrapper chart-wrapper-wide"
-          >
+          <div class="chart-wrapper chart-wrapper-wide">
 
             <canvas
               id="fraudTrendCanvas"
@@ -257,9 +305,7 @@ export function renderDashboard() {
           </div>
 
 
-          <div
-            class="chart-wrapper chart-wrapper-risk"
-          >
+          <div class="chart-wrapper chart-wrapper-risk">
 
             <canvas
               id="riskDistributionCanvas"
@@ -269,6 +315,7 @@ export function renderDashboard() {
 
         </div>
 
+
       </div>
 
 
@@ -276,8 +323,15 @@ export function renderDashboard() {
            LIVE STREAM ANOMALIES
            ================================================== -->
 
-      <div class="card live-stream-card">
-
+      <div
+        class="card live-stream-card"
+        style="
+          width:100%;
+          max-width:100%;
+          margin-top:1.25rem;
+          box-sizing:border-box;
+        "
+      >
 
         <!-- HEADER -->
 
@@ -311,10 +365,19 @@ export function renderDashboard() {
 
         <div
           class="table-container live-stream-table-container"
+          style="
+            width:100%;
+            max-width:100%;
+            overflow-x:auto;
+          "
         >
 
           <table
             class="data-table live-stream-table"
+            style="
+              width:100%;
+              min-width:850px;
+            "
           >
 
             <thead>
@@ -357,6 +420,7 @@ export function renderDashboard() {
                 <td
                   colspan="6"
                   class="table-message"
+                  style="text-align:center;"
                 >
                   Loading stream packets...
                 </td>
@@ -381,18 +445,20 @@ export function renderDashboard() {
 
       </div>
 
-    </div>
 
+    </div>
   `;
 
 }
 
 
 // ============================================================
-// HTML ESCAPE
+// ESCAPE HTML
 // ============================================================
 
-function escapeHtml(value) {
+function escapeHtml(
+  value
+) {
 
   return String(
     value ?? ''
@@ -427,144 +493,395 @@ function escapeHtml(value) {
 
 
 // ============================================================
-// UPDATE METRIC
+// RENDER LIVE PAGINATION
 // ============================================================
 
-function updateMetric(
-  id,
-  value
-) {
+function renderLivePagination() {
 
-  const element =
-    document.getElementById(id);
-
-  if (!element) {
-    return;
-  }
-
-  const nextValue =
-    String(value);
-
-  if (
-    element.textContent !==
-    nextValue
-  ) {
-
-    element.textContent =
-      nextValue;
-
-  }
-
-}
-
-
-// ============================================================
-// NORMALIZE LIVE RESPONSE
-// ============================================================
-
-function normalizeLiveResponse(
-  response
-) {
-
-  /*
-   * Legacy backend response:
-   *
-   * [
-   *   {...},
-   *   {...}
-   * ]
-   */
-
-  if (
-    Array.isArray(response)
-  ) {
-
-    return {
-
-      records:
-        response,
-
-      total:
-        response.length,
-
-      page:
-        1,
-
-      totalPages:
-        1
-
-    };
-
-  }
-
-
-  /*
-   * Paginated response support.
-   */
-
-  const records =
-
-    Array.isArray(
-      response?.stream_records
-    )
-
-      ? response.stream_records
-
-      : Array.isArray(
-          response?.transactions
-        )
-
-        ? response.transactions
-
-        : Array.isArray(
-            response?.data
-          )
-
-          ? response.data
-
-          : [];
-
-
-  const total =
-
-    Number(
-      response?.total ??
-      response?.total_records ??
-      response?.count ??
-      records.length
+  const pagination =
+    document.getElementById(
+      'live-tx-pagination'
     );
 
 
-  const totalPages =
+  if (!pagination) {
 
+    return;
+
+  }
+
+
+  const totalPages =
     Math.max(
       1,
-
       Number(
-        response?.total_pages ??
-        Math.ceil(
-          total /
-          LIVE_PAGE_SIZE
-        )
+        liveTotalPages || 1
       )
     );
 
 
-  return {
+  const currentPage =
+    Math.min(
 
-    records,
-
-    total,
-
-    page:
-      Number(
-        response?.page ??
-        currentLivePage
+      Math.max(
+        1,
+        Number(
+          currentLivePage || 1
+        )
       ),
 
-    totalPages
+      totalPages
 
-  };
+    );
+
+
+  currentLivePage =
+    currentPage;
+
+
+  // ==========================================================
+  // ONLY ONE PAGE
+  // ==========================================================
+
+  if (
+    totalPages <= 1 &&
+    liveTotalRecords <= LIVE_PAGE_SIZE
+  ) {
+
+    pagination.innerHTML = `
+
+      <span
+        style="
+          color:var(--text-muted);
+          font-size:0.85rem;
+        "
+      >
+
+        ${liveTotalRecords.toLocaleString()}
+
+        ${
+          liveTotalRecords === 1
+            ? 'record'
+            : 'records'
+        }
+
+      </span>
+
+    `;
+
+    return;
+
+  }
+
+
+  let html = '';
+
+
+  // ==========================================================
+  // PREVIOUS
+  // ==========================================================
+
+  html += `
+
+    <button
+      type="button"
+      class="btn btn-sm btn-outline-secondary"
+      data-live-page="prev"
+      ${
+        currentPage <= 1
+          ? 'disabled'
+          : ''
+      }
+    >
+      ← Previous
+    </button>
+
+  `;
+
+
+  // ==========================================================
+  // PAGE NUMBERS
+  // ==========================================================
+
+  const pages = [];
+
+
+  if (
+    totalPages <= 7
+  ) {
+
+    for (
+      let page = 1;
+      page <= totalPages;
+      page++
+    ) {
+
+      pages.push(
+        page
+      );
+
+    }
+
+  } else {
+
+    pages.push(
+      1
+    );
+
+
+    if (
+      currentPage > 4
+    ) {
+
+      pages.push(
+        '...'
+      );
+
+    }
+
+
+    const start =
+      Math.max(
+        2,
+        currentPage - 1
+      );
+
+
+    const end =
+      Math.min(
+        totalPages - 1,
+        currentPage + 1
+      );
+
+
+    for (
+      let page = start;
+      page <= end;
+      page++
+    ) {
+
+      pages.push(
+        page
+      );
+
+    }
+
+
+    if (
+      currentPage <
+      totalPages - 3
+    ) {
+
+      pages.push(
+        '...'
+      );
+
+    }
+
+
+    pages.push(
+      totalPages
+    );
+
+  }
+
+
+  pages.forEach(
+    page => {
+
+      if (
+        page === '...'
+      ) {
+
+        html += `
+
+          <span
+            style="
+              padding:0 0.3rem;
+              color:var(--text-muted);
+            "
+          >
+            ...
+          </span>
+
+        `;
+
+        return;
+
+      }
+
+
+      const active =
+        page === currentPage;
+
+
+      html += `
+
+        <button
+          type="button"
+          class="btn btn-sm ${
+            active
+              ? 'btn-primary'
+              : 'btn-outline-secondary'
+          }"
+          data-live-page="${page}"
+          ${
+            active
+              ? 'aria-current="page"'
+              : ''
+          }
+        >
+
+          ${page}
+
+        </button>
+
+      `;
+
+    }
+  );
+
+
+  // ==========================================================
+  // NEXT
+  // ==========================================================
+
+  html += `
+
+    <button
+      type="button"
+      class="btn btn-sm btn-outline-secondary"
+      data-live-page="next"
+      ${
+        currentPage >= totalPages
+          ? 'disabled'
+          : ''
+      }
+    >
+      Next →
+    </button>
+
+  `;
+
+
+  // ==========================================================
+  // RECORD INFORMATION
+  // ==========================================================
+
+  const firstRecord =
+    liveTotalRecords === 0
+
+      ? 0
+
+      : (
+          (
+            currentPage - 1
+          ) *
+          LIVE_PAGE_SIZE
+        ) + 1;
+
+
+  const lastRecord =
+    Math.min(
+
+      currentPage *
+        LIVE_PAGE_SIZE,
+
+      liveTotalRecords
+
+    );
+
+
+  html += `
+
+    <span
+      style="
+        margin-left:0.75rem;
+        color:var(--text-muted);
+        font-size:0.85rem;
+      "
+    >
+
+      Showing
+      ${firstRecord.toLocaleString()}-
+      ${lastRecord.toLocaleString()}
+
+      of
+
+      ${liveTotalRecords.toLocaleString()}
+
+    </span>
+
+  `;
+
+
+  pagination.innerHTML =
+    html;
+
+
+  // ==========================================================
+  // PAGINATION EVENTS
+  // ==========================================================
+
+  pagination
+    .querySelectorAll(
+      '[data-live-page]'
+    )
+    .forEach(
+      button => {
+
+        button.addEventListener(
+          'click',
+          async () => {
+
+            const page =
+              button.getAttribute(
+                'data-live-page'
+              );
+
+
+            if (
+              page === 'prev'
+            ) {
+
+              if (
+                currentLivePage > 1
+              ) {
+
+                currentLivePage--;
+
+              }
+
+            } else if (
+              page === 'next'
+            ) {
+
+              if (
+                currentLivePage <
+                totalPages
+              ) {
+
+                currentLivePage++;
+
+              }
+
+            } else {
+
+              currentLivePage =
+                Number(
+                  page
+                );
+
+            }
+
+
+            await loadLiveTransactions();
+
+          }
+        );
+
+      }
+    );
 
 }
 
@@ -582,7 +899,9 @@ function renderLiveTransactions() {
 
 
   if (!tbody) {
+
     return;
+
   }
 
 
@@ -603,14 +922,21 @@ function renderLiveTransactions() {
 
         <td
           colspan="6"
-          class="table-message"
+          style="
+            text-align:center;
+            padding:1.5rem;
+            color:var(--text-muted);
+          "
         >
+
           No live stream transactions available.
+
         </td>
 
       </tr>
 
     `;
+
 
     renderLivePagination();
 
@@ -626,6 +952,7 @@ function renderLiveTransactions() {
   tbody.innerHTML =
 
     liveTransactions
+
       .map(
         tx => {
 
@@ -636,7 +963,7 @@ function renderLiveTransactions() {
             );
 
 
-          const badgeClass =
+          const riskClass =
 
             riskScore >= 0.8
 
@@ -660,13 +987,33 @@ function renderLiveTransactions() {
               0.7;
 
 
-          const statusClass =
+          const status =
 
             suspicious
 
-              ? 'stream-status suspicious'
+              ? `
 
-              : 'stream-status cleared';
+                <span
+                  style="
+                    color:var(--risk-critical);
+                  "
+                >
+                  Suspicious
+                </span>
+
+              `
+
+              : `
+
+                <span
+                  style="
+                    color:var(--risk-low);
+                  "
+                >
+                  Cleared
+                </span>
+
+              `;
 
 
           const transactionId =
@@ -683,6 +1030,7 @@ function renderLiveTransactions() {
           const userId =
 
             tx?.user_id ??
+
             '-';
 
 
@@ -715,9 +1063,11 @@ function renderLiveTransactions() {
               <td data-label="Tx ID">
 
                 <code>
+
                   ${escapeHtml(
                     transactionId
                   )}
+
                 </code>
 
               </td>
@@ -734,7 +1084,8 @@ function renderLiveTransactions() {
 
               <td data-label="Amount">
 
-                $${amount.toFixed(2)}
+                $
+                ${amount.toFixed(2)}
 
               </td>
 
@@ -751,13 +1102,15 @@ function renderLiveTransactions() {
               <td data-label="Risk Score">
 
                 <span
-                  class="badge ${badgeClass}"
+                  class="badge ${riskClass}"
                 >
 
-                  ${(
-                    riskScore *
-                    100
-                  ).toFixed(1)}%
+                  ${
+                    (
+                      riskScore *
+                      100
+                    ).toFixed(1)
+                  }%
 
                 </span>
 
@@ -766,17 +1119,7 @@ function renderLiveTransactions() {
 
               <td data-label="Status">
 
-                <span
-                  class="${statusClass}"
-                >
-
-                  ${
-                    suspicious
-                      ? 'Suspicious'
-                      : 'Cleared'
-                  }
-
-                </span>
+                ${status}
 
               </td>
 
@@ -786,389 +1129,11 @@ function renderLiveTransactions() {
 
         }
       )
+
       .join('');
 
 
   renderLivePagination();
-
-}
-
-
-// ============================================================
-// LIVE PAGINATION
-// ============================================================
-
-function renderLivePagination() {
-
-  const pagination =
-    document.getElementById(
-      'live-tx-pagination'
-    );
-
-
-  if (!pagination) {
-    return;
-  }
-
-
-  const totalPages =
-
-    Math.max(
-      1,
-      Number(
-        liveTotalPages ||
-        1
-      )
-    );
-
-
-  const currentPage =
-
-    Math.min(
-
-      Math.max(
-        1,
-        Number(
-          currentLivePage ||
-          1
-        )
-      ),
-
-      totalPages
-
-    );
-
-
-  currentLivePage =
-    currentPage;
-
-
-  // ==========================================================
-  // ONLY ONE PAGE
-  // ==========================================================
-
-  if (
-    totalPages <= 1 &&
-    liveTotalRecords <=
-      LIVE_PAGE_SIZE
-  ) {
-
-    pagination.innerHTML = `
-
-      <span
-        class="pagination-record-count"
-      >
-
-        ${liveTotalRecords.toLocaleString()}
-
-        ${
-          liveTotalRecords === 1
-            ? 'record'
-            : 'records'
-        }
-
-      </span>
-
-    `;
-
-    return;
-
-  }
-
-
-  // ==========================================================
-  // PAGE NUMBERS
-  // ==========================================================
-
-  const pages = [];
-
-
-  if (
-    totalPages <= 7
-  ) {
-
-    for (
-      let page = 1;
-      page <= totalPages;
-      page += 1
-    ) {
-
-      pages.push(page);
-
-    }
-
-  } else {
-
-    pages.push(1);
-
-
-    if (
-      currentPage > 4
-    ) {
-
-      pages.push('...');
-
-    }
-
-
-    const start =
-
-      Math.max(
-        2,
-        currentPage - 1
-      );
-
-
-    const end =
-
-      Math.min(
-        totalPages - 1,
-        currentPage + 1
-      );
-
-
-    for (
-      let page = start;
-      page <= end;
-      page += 1
-    ) {
-
-      pages.push(page);
-
-    }
-
-
-    if (
-      currentPage <
-      totalPages - 3
-    ) {
-
-      pages.push('...');
-
-    }
-
-
-    pages.push(
-      totalPages
-    );
-
-  }
-
-
-  const firstRecord =
-
-    liveTotalRecords === 0
-
-      ? 0
-
-      : (
-          (
-            currentPage - 1
-          ) *
-          LIVE_PAGE_SIZE
-        ) + 1;
-
-
-  const lastRecord =
-
-    Math.min(
-
-      currentPage *
-      LIVE_PAGE_SIZE,
-
-      liveTotalRecords
-
-    );
-
-
-  pagination.innerHTML = `
-
-    <div
-      class="pagination-controls"
-    >
-
-
-      <button
-        type="button"
-        class="btn btn-sm btn-outline-secondary"
-        data-live-page="prev"
-        ${
-          currentPage <= 1
-            ? 'disabled'
-            : ''
-        }
-      >
-        Previous
-      </button>
-
-
-      <div
-        class="pagination-pages"
-      >
-
-        ${
-          pages
-            .map(
-              page => {
-
-                if (
-                  page === '...'
-                ) {
-
-                  return `
-
-                    <span
-                      class="pagination-ellipsis"
-                    >
-                      ...
-                    </span>
-
-                  `;
-
-                }
-
-
-                const active =
-                  page ===
-                  currentPage;
-
-
-                return `
-
-                  <button
-                    type="button"
-                    class="btn btn-sm ${
-                      active
-                        ? 'btn-primary'
-                        : 'btn-outline-secondary'
-                    }"
-                    data-live-page="${page}"
-                    ${
-                      active
-                        ? 'aria-current="page"'
-                        : ''
-                    }
-                  >
-                    ${page}
-                  </button>
-
-                `;
-
-              }
-            )
-            .join('')
-        }
-
-      </div>
-
-
-      <button
-        type="button"
-        class="btn btn-sm btn-outline-secondary"
-        data-live-page="next"
-        ${
-          currentPage >=
-          totalPages
-            ? 'disabled'
-            : ''
-        }
-      >
-        Next
-      </button>
-
-
-    </div>
-
-
-    <span
-      class="pagination-record-count"
-    >
-
-      Showing
-
-      ${firstRecord.toLocaleString()}
-
-      -
-
-      ${lastRecord.toLocaleString()}
-
-      of
-
-      ${liveTotalRecords.toLocaleString()}
-
-    </span>
-
-  `;
-
-
-  // ==========================================================
-  // PAGINATION EVENTS
-  // ==========================================================
-
-  pagination
-    .querySelectorAll(
-      '[data-live-page]'
-    )
-    .forEach(
-      button => {
-
-        button.addEventListener(
-          'click',
-          async () => {
-
-            const target =
-              button.getAttribute(
-                'data-live-page'
-              );
-
-
-            if (
-              target ===
-              'prev'
-            ) {
-
-              if (
-                currentLivePage >
-                1
-              ) {
-
-                currentLivePage -=
-                  1;
-
-              }
-
-            } else if (
-              target ===
-              'next'
-            ) {
-
-              if (
-                currentLivePage <
-                totalPages
-              ) {
-
-                currentLivePage +=
-                  1;
-
-              }
-
-            } else {
-
-              currentLivePage =
-                Number(
-                  target
-                );
-
-            }
-
-
-            await loadLiveTransactions();
-
-          }
-        );
-
-      }
-    );
 
 }
 
@@ -1186,92 +1151,154 @@ async function loadLiveTransactions() {
 
 
   if (!tbody) {
+
     return;
+
   }
 
 
   try {
 
-    /*
-     * IMPORTANT:
-     * Do not clear the existing table before every poll.
-     *
-     * This prevents the visible loading flicker and
-     * contributes to a stable dashboard.
-     */
+    tbody.innerHTML = `
+
+      <tr>
+
+        <td
+          colspan="6"
+          style="text-align:center;"
+        >
+
+          Loading stream packets...
+
+        </td>
+
+      </tr>
+
+    `;
+
 
     const response =
-
       await API.getLiveTransactions(
+
         currentLivePage,
+
         LIVE_PAGE_SIZE
+
       );
 
 
-    const normalized =
-
-      normalizeLiveResponse(
-        response
-      );
-
-
-    liveTransactions =
-      normalized.records;
-
-
-    liveTotalRecords =
-      normalized.total;
-
-
-    liveTotalPages =
-      normalized.totalPages;
-
+    // ========================================================
+    // NORMALIZE RESPONSE
+    // ========================================================
 
     if (
-      normalized.page >= 1 &&
-      normalized.page <=
-        liveTotalPages
+      Array.isArray(
+        response
+      )
     ) {
 
+      liveTransactions =
+        response;
+
+
+      liveTotalRecords =
+        response.length;
+
+
+      liveTotalPages =
+        1;
+
+    } else {
+
+      liveTransactions =
+
+        Array.isArray(
+          response?.stream_records
+        )
+
+          ? response.stream_records
+
+          : Array.isArray(
+              response?.transactions
+            )
+
+            ? response.transactions
+
+            : Array.isArray(
+                response?.data
+              )
+
+              ? response.data
+
+              : [];
+
+
+      liveTotalRecords =
+
+        Number(
+
+          response?.total ??
+
+          response?.total_records ??
+
+          response?.count ??
+
+          liveTransactions.length
+
+        );
+
+
+      liveTotalPages =
+
+        Math.max(
+
+          1,
+
+          Number(
+
+            response?.total_pages ??
+
+            Math.ceil(
+
+              liveTotalRecords /
+              LIVE_PAGE_SIZE
+
+            )
+
+          )
+
+        );
+
+
       currentLivePage =
-        normalized.page;
+
+        Math.min(
+
+          Math.max(
+
+            1,
+
+            Number(
+
+              response?.page ??
+              currentLivePage
+
+            )
+
+          ),
+
+          liveTotalPages
+
+        );
 
     }
 
 
     renderLiveTransactions();
 
-
-    const updated =
-      document.getElementById(
-        'live-stream-updated'
-      );
-
-
-    if (updated) {
-
-      updated.textContent =
-
-        `Updated ${
-          new Date()
-            .toLocaleTimeString(
-              [],
-              {
-                hour:
-                  '2-digit',
-
-                minute:
-                  '2-digit',
-
-                second:
-                  '2-digit'
-              }
-            )
-        }`;
-
-    }
-
-  } catch (error) {
+  } catch (
+    error
+  ) {
 
     console.error(
       'Live transaction loading error:',
@@ -1279,34 +1306,27 @@ async function loadLiveTransactions() {
     );
 
 
-    /*
-     * Do not destroy previously loaded
-     * transaction data when a poll fails.
-     */
+    tbody.innerHTML = `
 
-    if (
-      !liveTransactions.length
-    ) {
+      <tr>
 
-      tbody.innerHTML = `
+        <td
+          colspan="6"
+          style="
+            text-align:center;
+            padding:1.5rem;
+            color:var(--risk-critical);
+          "
+        >
 
-        <tr>
+          Unable to load live stream transactions.
 
-          <td
-            colspan="6"
-            class="table-message table-error"
-          >
+        </td>
 
-            Unable to load live stream
-            transactions.
+      </tr>
 
-          </td>
+    `;
 
-        </tr>
-
-      `;
-
-    }
 
     renderLivePagination();
 
@@ -1316,15 +1336,57 @@ async function loadLiveTransactions() {
 
 
 // ============================================================
-// UPDATE CHARTS
+// UPDATE METRICS
+// ============================================================
+
+function updateMetric(
+  id,
+  value
+) {
+
+  const element =
+    document.getElementById(
+      id
+    );
+
+
+  if (!element) {
+
+    return;
+
+  }
+
+
+  const nextValue =
+    String(
+      value
+    );
+
+
+  if (
+    element.textContent !==
+    nextValue
+  ) {
+
+    element.textContent =
+      nextValue;
+
+  }
+
+}
+
+
+// ============================================================
+// UPDATE CHART DATA
 // ============================================================
 
 function updateCharts(
-  streamMetrics
+  streamMetrics,
+  summary
 ) {
 
   // ==========================================================
-  // FRAUD HISTORY
+  // TIME
   // ==========================================================
 
   const now =
@@ -1332,7 +1394,6 @@ function updateCharts(
 
 
   const timeLabel =
-
     now.toLocaleTimeString(
       [],
       {
@@ -1348,13 +1409,51 @@ function updateCharts(
     );
 
 
+  // ==========================================================
+  // TOTAL TRANSACTIONS
+  // ==========================================================
+
+  const totalValue =
+
+  Number(
+    summary?.total_transactions ?? 0
+  );
+
+
+  // ==========================================================
+  // FRAUD DETECTED
+  // ==========================================================
+
   const fraudValue =
 
+  Number(
+    summary?.total_fraud_transactions ?? 0
+  );
+
+  // ==========================================================
+  // BLOCKED
+  //
+  // Use a real blocked field when the backend provides one.
+  // ==========================================================
+
+  const blockedValue =
+
     Number(
-      streamMetrics?.fraud_detected ??
+
+      streamMetrics?.blocked ??
+
+      streamMetrics?.blocked_count ??
+
+      streamMetrics?.transactions_blocked ??
+
       0
+
     );
 
+
+  // ==========================================================
+  // SAVE TREND HISTORY
+  // ==========================================================
 
   fraudHistory.push({
 
@@ -1362,24 +1461,28 @@ function updateCharts(
       timeLabel,
 
     fraud:
-      fraudValue
+      fraudValue,
+
+    blocked:
+      blockedValue,
+
+    total:
+      totalValue
 
   });
 
 
   /*
-   * Keep enough points to create a useful
-   * graph without continuously growing memory.
+   * Keep only the latest 10 points.
    */
 
   if (
-    fraudHistory.length >
-    20
+    fraudHistory.length > 10
   ) {
 
     fraudHistory =
       fraudHistory.slice(
-        -20
+        -10
       );
 
   }
@@ -1389,17 +1492,13 @@ function updateCharts(
   // RISK DISTRIBUTION
   // ==========================================================
 
-  let low =
-    0;
+  let low = 0;
 
-  let medium =
-    0;
+  let medium = 0;
 
-  let high =
-    0;
+  let high = 0;
 
-  let critical =
-    0;
+  let critical = 0;
 
 
   liveTransactions.forEach(
@@ -1413,29 +1512,26 @@ function updateCharts(
 
 
       if (
-        score <=
-        0.25
+        score <= 0.25
       ) {
 
-        low += 1;
+        low++;
 
       } else if (
-        score <=
-        0.50
+        score <= 0.50
       ) {
 
-        medium += 1;
+        medium++;
 
       } else if (
-        score <=
-        0.80
+        score <= 0.80
       ) {
 
-        high += 1;
+        high++;
 
       } else {
 
-        critical += 1;
+        critical++;
 
       }
 
@@ -1443,18 +1539,33 @@ function updateCharts(
   );
 
 
+  /*
+   * The chart has only three categories:
+   *
+   * Low Risk
+   * Medium Risk
+   * High Risk
+   *
+   * Critical is included inside High Risk.
+   */
+
   riskData = [
 
     low,
 
     medium,
 
-    high,
-
-    critical
+    high +
+      critical
 
   ];
 
+
+  /*
+   * When there is no transaction data,
+   * show a small Low Risk segment instead
+   * of a completely empty doughnut.
+   */
 
   if (
     riskData.every(
@@ -1464,17 +1575,20 @@ function updateCharts(
   ) {
 
     riskData = [
+
       1,
+
       0,
-      0,
+
       0
+
     ];
 
   }
 
 
   // ==========================================================
-  // UPDATE FRAUD CHART
+  // UPDATE TRANSACTION TREND
   // ==========================================================
 
   if (
@@ -1489,23 +1603,77 @@ function updateCharts(
       );
 
 
-    fraudTrendChart
-      .data
-      .datasets[0]
-      .data =
+    /*
+     * Dataset 0
+     * Total Transactions
+     */
 
-      fraudHistory.map(
-        point =>
-          point.fraud
-      );
+    if (
+      fraudTrendChart
+        .data
+        .datasets[0]
+    ) {
+
+      fraudTrendChart
+        .data
+        .datasets[0]
+        .data =
+
+        fraudHistory.map(
+          point =>
+            point.total
+        );
+
+    }
 
 
     /*
-     * 'none' means:
-     * update immediately without animation.
-     *
-     * This prevents the jerk effect.
+     * Dataset 1
+     * Fraud Detected
      */
+
+    if (
+      fraudTrendChart
+        .data
+        .datasets[1]
+    ) {
+
+      fraudTrendChart
+        .data
+        .datasets[1]
+        .data =
+
+        fraudHistory.map(
+          point =>
+            point.fraud
+        );
+
+    }
+
+
+    /*
+     * Dataset 2
+     * Blocked
+     */
+
+    if (
+      fraudTrendChart
+        .data
+        .datasets[2]
+    ) {
+
+      fraudTrendChart
+        .data
+        .datasets[2]
+        .data =
+
+        fraudHistory.map(
+          point =>
+            point.blocked
+        );
+
+    }
+
 
     fraudTrendChart.update(
       'none'
@@ -1515,7 +1683,7 @@ function updateCharts(
 
 
   // ==========================================================
-  // UPDATE RISK CHART
+  // UPDATE RISK DISTRIBUTION
   // ==========================================================
 
   if (
@@ -1526,7 +1694,46 @@ function updateCharts(
       .data
       .datasets[0]
       .data =
+
       riskData;
+
+
+    /*
+     * Update center total.
+     */
+
+    const totalElement =
+      document.getElementById(
+        'metric-total-tx'
+      );
+
+
+    const displayedTotal =
+
+      Number(
+
+        totalElement
+          ?.textContent
+          ?.replace(
+            /,/g,
+            ''
+          )
+
+      );
+
+
+    riskDistributionChart
+      .$fraudShieldTotal =
+
+      Number.isFinite(
+        displayedTotal
+      )
+
+        ? displayedTotal
+
+        : totalValueFallback(
+            streamMetrics
+          );
 
 
     riskDistributionChart.update(
@@ -1539,162 +1746,140 @@ function updateCharts(
 
 
 // ============================================================
-// REFRESH DASHBOARD
+// TOTAL FALLBACK
+// ============================================================
+
+function totalValueFallback(
+  streamMetrics
+) {
+
+  return Number(
+
+    streamMetrics?.total_ingested ??
+
+    streamMetrics?.processed_count ??
+
+    0
+
+  );
+
+}
+
+
+// ============================================================
+// REFRESH DASHBOARD DATA
 // ============================================================
 
 async function refreshDashboard() {
-
-  if (
+ if (
     dashboardRefreshing
   ) {
-
     return;
-
   }
 
-
-  dashboardRefreshing =
-    true;
-
+  dashboardRefreshing = true;
 
   try {
 
-    /*
-     * Run independent API calls together.
-     * This reduces waiting time.
-     */
+    // ========================================================
+    // SUMMARY
+    // ========================================================
 
-    const [
-      summaryResponse,
-      streamResponse
-    ] = await Promise.all([
-
-      API.getDashboardSummary(),
-
-      API.getStreamMetrics()
-
-    ]);
-
+    const summaryResponse =
+      await API.getDashboardSummary();
 
     const summary =
-
-      summaryResponse?.data ??
-
-      summaryResponse ??
-
-      {};
-
-
-    const streamMetrics =
-
-      streamResponse?.metrics ??
-
-      streamResponse ??
-
+      summaryResponse?.data ||
+      summaryResponse ||
       {};
 
 
     // ========================================================
-    // METRICS
+    // UPDATE DAILY DASHBOARD METRICS
     // ========================================================
 
     const totalTransactions =
-
       Number(
-
-        summary?.total_transactions ??
-
-        streamMetrics?.total_ingested ??
-
-        0
-
+        summary.total_transactions ?? 0
       );
-
 
     const highRisk =
-
       Number(
-
-        summary?.high_risk_transactions ??
-
-        0
-
+        summary.high_risk_transactions ?? 0
       );
-
 
     const activeAlerts =
-
       Number(
-
-        summary?.open_alerts ??
-
-        0
-
+        summary.open_alerts ?? 0
       );
 
+
+    updateMetric(
+      'metric-total-tx',
+      totalTransactions.toLocaleString()
+    );
+
+    updateMetric(
+      'metric-high-risk',
+      highRisk.toLocaleString()
+    );
+
+    updateMetric(
+      'metric-active-alerts',
+      activeAlerts.toLocaleString()
+    );
+
+
+    // ========================================================
+    // STREAM METRICS
+    // ========================================================
+    // Stream metrics are separate from the daily dashboard
+    // counters. If unavailable, the dashboard still works.
+    // ========================================================
+
+    let streamMetrics = {};
+
+    try {
+
+      const streamResponse =
+        await API.getStreamMetrics();
+
+      streamMetrics =
+        streamResponse?.metrics ||
+        streamResponse ||
+        {};
+
+    } catch (streamError) {
+
+      console.warn(
+        'Stream metrics unavailable:',
+        streamError
+      );
+
+    }
+
+
+    // ========================================================
+    // LATENCY
+    // ========================================================
 
     const latency =
-
       Number(
-
-        streamMetrics?.latency_ms ??
-
-        0
-
+        streamMetrics?.latency_ms ?? 0
       );
 
-
     updateMetric(
-
-      'metric-total-tx',
-
-      totalTransactions.toLocaleString()
-
-    );
-
-
-    updateMetric(
-
-      'metric-high-risk',
-
-      highRisk.toLocaleString()
-
-    );
-
-
-    updateMetric(
-
-      'metric-active-alerts',
-
-      activeAlerts.toLocaleString()
-
-    );
-
-
-    updateMetric(
-
       'metric-latency',
-
       `${latency.toFixed(1)} ms`
-
     );
 
 
     // ========================================================
-    // LIVE TABLE
+    // LIVE TRANSACTIONS
     // ========================================================
-
-    /*
-     * Only automatically refresh page 1.
-     *
-     * If the user is reading page 2, 3, 4...
-     * the automatic poll does NOT throw them back
-     * to page 1.
-     */
 
     if (
-      currentLivePage ===
-      1
+      currentLivePage === 1
     ) {
 
       await loadLiveTransactions();
@@ -1703,11 +1888,12 @@ async function refreshDashboard() {
 
 
     // ========================================================
-    // CHARTS
+    // UPDATE CHARTS
     // ========================================================
 
     updateCharts(
-      streamMetrics
+      streamMetrics,
+      summary
     );
 
   } catch (error) {
@@ -1719,108 +1905,12 @@ async function refreshDashboard() {
 
   } finally {
 
-    dashboardRefreshing =
-      false;
+    dashboardRefreshing = false;
 
   }
 
 }
 
-
-// ============================================================
-// CREATE CHARTS
-// ============================================================
-
-function createCharts() {
-
-  const fraudCanvas =
-    document.getElementById(
-      'fraudTrendCanvas'
-    );
-
-
-  const riskCanvas =
-    document.getElementById(
-      'riskDistributionCanvas'
-    );
-
-
-  if (
-    !fraudCanvas ||
-    !riskCanvas
-  ) {
-
-    return;
-
-  }
-
-
-  // ==========================================================
-  // DESTROY ONLY WHEN ACTUALLY RECREATING
-  // ==========================================================
-
-  if (
-    fraudTrendChart
-  ) {
-
-    fraudTrendChart.destroy();
-
-    fraudTrendChart =
-      null;
-
-  }
-
-
-  if (
-    riskDistributionChart
-  ) {
-
-    riskDistributionChart.destroy();
-
-    riskDistributionChart =
-      null;
-
-  }
-
-
-  // ==========================================================
-  // CREATE FRAUD CHART
-  // ==========================================================
-
-  fraudTrendChart =
-
-    renderFraudTrendsChart(
-
-      'fraudTrendCanvas',
-
-      fraudHistory.map(
-        point =>
-          point.time
-      ),
-
-      fraudHistory.map(
-        point =>
-          point.fraud
-      )
-
-    );
-
-
-  // ==========================================================
-  // CREATE RISK CHART
-  // ==========================================================
-
-  riskDistributionChart =
-
-    renderRiskDistributionChart(
-
-      'riskDistributionCanvas',
-
-      riskData
-
-    );
-
-}
 
 
 // ============================================================
@@ -1841,29 +1931,8 @@ export async function initDashboardEvents() {
       dashboardPoller
     );
 
+
     dashboardPoller =
-      null;
-
-  }
-
-
-  // ==========================================================
-  // REMOVE OLD THEME LISTENER
-  // ==========================================================
-
-  if (
-    themeHandler
-  ) {
-
-    window.removeEventListener(
-
-      'fraudshield-theme-changed',
-
-      themeHandler
-
-    );
-
-    themeHandler =
       null;
 
   }
@@ -1894,51 +1963,209 @@ export async function initDashboardEvents() {
 
 
   riskData = [
+
     1,
+
     0,
-    0,
+
     0
+
   ];
 
 
   // ==========================================================
-  // WAIT FOR LAYOUT
+  // DESTROY OLD TRANSACTION TREND CHART
   // ==========================================================
 
-  /*
-   * The router inserts the dashboard first.
-   *
-   * Waiting one browser frame lets the browser calculate
-   * the final width/height of the chart containers before
-   * Chart.js measures them.
-   */
+  if (
+    fraudTrendChart
+  ) {
 
-  await new Promise(
-    resolve => {
+    fraudTrendChart.destroy();
 
-      requestAnimationFrame(
-        resolve
-      );
 
-    }
-  );
+    fraudTrendChart =
+      null;
+
+  }
 
 
   // ==========================================================
-  // CREATE CHARTS ONCE
+  // DESTROY OLD RISK CHART
   // ==========================================================
 
-  createCharts();
+  if (
+    riskDistributionChart
+  ) {
+
+    riskDistributionChart.destroy();
+
+
+    riskDistributionChart =
+      null;
+
+  }
+
+
+  // ==========================================================
+  // CREATE TRANSACTION TREND CHART
+  // ==========================================================
+
+  fraudTrendChart =
+
+    renderFraudTrendsChart(
+
+      'fraudTrendCanvas',
+
+      [],
+
+      [],
+
+      [],
+
+      []
+
+    );
+
+
+  // ==========================================================
+  // CREATE RISK DISTRIBUTION CHART
+  // ==========================================================
+
+  riskDistributionChart =
+
+    renderRiskDistributionChart(
+
+      'riskDistributionCanvas',
+
+      [
+
+        1,
+
+        0,
+
+        0
+
+      ],
+
+      0
+
+    );
 
 
   // ==========================================================
   // THEME CHANGE
   // ==========================================================
 
-  themeHandler =
+  const themeHandler =
     () => {
 
-      createCharts();
+      // ------------------------------------------------------
+      // Destroy old trend chart
+      // ------------------------------------------------------
+
+      if (
+        fraudTrendChart
+      ) {
+
+        fraudTrendChart.destroy();
+
+
+        fraudTrendChart =
+          null;
+
+      }
+
+
+      // ------------------------------------------------------
+      // Destroy old risk chart
+      // ------------------------------------------------------
+
+      if (
+        riskDistributionChart
+      ) {
+
+        riskDistributionChart.destroy();
+
+
+        riskDistributionChart =
+          null;
+
+      }
+
+
+      // ------------------------------------------------------
+      // Re-create trend chart
+      // ------------------------------------------------------
+
+      fraudTrendChart =
+
+        renderFraudTrendsChart(
+
+          'fraudTrendCanvas',
+
+          fraudHistory.map(
+            point =>
+              point.time
+          ),
+
+          fraudHistory.map(
+            point =>
+              point.fraud
+          ),
+
+          fraudHistory.map(
+            point =>
+              point.blocked
+          ),
+
+          fraudHistory.map(
+            point =>
+              point.total
+          )
+
+        );
+
+
+      // ------------------------------------------------------
+      // Get current total
+      // ------------------------------------------------------
+
+      const totalElement =
+        document.getElementById(
+          'metric-total-tx'
+        );
+
+
+      const totalTransactions =
+
+        Number(
+
+          totalElement
+            ?.textContent
+            ?.replace(
+              /,/g,
+              ''
+            )
+
+        ) || 0;
+
+
+      // ------------------------------------------------------
+      // Re-create risk chart
+      // ------------------------------------------------------
+
+      riskDistributionChart =
+
+        renderRiskDistributionChart(
+
+          'riskDistributionCanvas',
+
+          riskData,
+
+          totalTransactions
+
+        );
 
     };
 
@@ -1953,26 +2180,21 @@ export async function initDashboardEvents() {
 
 
   // ==========================================================
-  // FIRST DATA LOAD
+  // FIRST LOAD
   // ==========================================================
 
   await refreshDashboard();
 
 
   // ==========================================================
-  // STABLE POLLING
+  // STABLE REFRESH
+  //
+  // Refresh every 5 seconds.
   // ==========================================================
-
-  /*
-   * 5-second polling.
-   *
-   * The important difference is that polling updates existing
-   * DOM/chart objects instead of rebuilding the dashboard.
-   */
 
   dashboardPoller =
 
-    window.setInterval(
+    setInterval(
 
       refreshDashboard,
 

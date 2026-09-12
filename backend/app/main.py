@@ -5,7 +5,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-
+from prometheus_fastapi_instrumentator import Instrumentator
 from backend.app.api.v1.api_router import api_router
 from backend.database.mongodb import (
     client as mongo_client,
@@ -73,7 +73,14 @@ app = FastAPI(
         "persistAuthorization": True
     }
 )
+# ============================================================
+# PROMETHEUS MONITORING
+# ============================================================
 
+Instrumentator().instrument(app).expose(
+    app,
+    endpoint="/metrics"
+)
 
 # CORS
 origins = os.getenv(

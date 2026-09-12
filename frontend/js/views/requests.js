@@ -2069,365 +2069,179 @@ function injectRequestsStyles() {
     }
 
 
-    /* ========================================================
-       DARK MODE
-       ======================================================== */
+  /* ========================================================
+   DARK THEME — BLACK + GOLD
+   ======================================================== */
 
-    html.dark .requests-page,
-    body.dark .requests-page,
-    html[data-theme="dark"] .requests-page,
-    body[data-theme="dark"] .requests-page {
+html.dark .requests-page,
+body.dark .requests-page,
+[data-theme="dark"] .requests-page {
 
-      color: #e8eef8;
+    color: #fff8df;
+}
 
-    }
 
+/* --------------------------------------------------------
+   SUMMARY CARDS + PANEL
+   -------------------------------------------------------- */
 
-    html.dark .request-stat-card,
-    body.dark .request-stat-card,
-    html[data-theme="dark"] .request-stat-card,
-    body[data-theme="dark"] .request-stat-card {
+html.dark .request-stat-card,
+body.dark .request-stat-card,
+[data-theme="dark"] .request-stat-card,
 
-      background: #111a2b;
+html.dark .requests-panel,
+body.dark .requests-panel,
+[data-theme="dark"] .requests-panel,
 
-      border-color: #263550;
+html.dark .requests-live-status,
+body.dark .requests-live-status,
+[data-theme="dark"] .requests-live-status {
 
-    }
+    background:
+        linear-gradient(
+            145deg,
+            #15120b,
+            #090806
+        );
 
+    border-color:
+        rgba(242, 189, 50, 0.48);
 
-    html.dark .request-stat-card strong,
-    body.dark .request-stat-card strong,
-    html[data-theme="dark"] .request-stat-card strong,
-    body[data-theme="dark"] .request-stat-card strong {
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, 0.45),
+        0 0 20px rgba(242, 189, 50, 0.07);
+}
 
-      color: #f1f5f9;
 
-    }
+/* --------------------------------------------------------
+   TABLE
+   -------------------------------------------------------- */
 
+html.dark .requests-table,
+body.dark .requests-table,
+[data-theme="dark"] .requests-table {
 
-    html.dark .request-stat-label,
-    body.dark .request-stat-label,
-    html[data-theme="dark"] .request-stat-label,
-    body[data-theme="dark"] .request-stat-label {
+    background: #090806;
 
-      color: #94a3b8;
+    color: #fff8df;
+}
 
-    }
 
+/* TABLE HEADER */
 
-    html.dark .requests-live-status,
-    body.dark .requests-live-status,
-    html[data-theme="dark"] .requests-live-status,
-    body[data-theme="dark"] .requests-live-status {
+html.dark .requests-table th,
+body.dark .requests-table th,
+[data-theme="dark"] .requests-table th {
 
-      background: #111a2b;
+    background:
+        rgba(242, 189, 50, 0.07);
 
-      border-color: #263550;
+    color:
+        #f5d77d;
 
-      color: #dbe7f7;
+    border-bottom:
+        1px solid rgba(242, 189, 50, 0.35);
+}
 
-    }
 
+/* TABLE ROWS */
 
-    html.dark .requests-panel,
-    body.dark .requests-panel,
-    html[data-theme="dark"] .requests-panel,
-    body[data-theme="dark"] .requests-panel {
+html.dark .requests-table tbody tr,
+body.dark .requests-table tbody tr,
+[data-theme="dark"] .requests-table tbody tr {
 
-      background: #111a2b;
+    background:
+        #0c0b08;
 
-      border-color: #263550;
+    border-bottom:
+        1px solid rgba(242, 189, 50, 0.10);
+}
 
-    }
 
+/* ROW HOVER */
 
-    html.dark .requests-panel-header,
-    body.dark .requests-panel-header,
-    html[data-theme="dark"] .requests-panel-header,
-    body[data-theme="dark"] .requests-panel-header {
+html.dark .requests-table tbody tr:hover,
+body.dark .requests-table tbody tr:hover,
+[data-theme="dark"] .requests-table tbody tr:hover {
 
-      background: #111a2b;
+    background:
+        rgba(242, 189, 50, 0.06);
+}
 
-      border-bottom-color: #263550;
 
-    }
+/* TABLE CELLS */
 
+html.dark .requests-table td,
+body.dark .requests-table td,
+[data-theme="dark"] .requests-table td {
 
-    html.dark .requests-panel-header h2,
-    body.dark .requests-panel-header h2,
-    html[data-theme="dark"] .requests-panel-header h2,
-    body[data-theme="dark"] .requests-panel-header h2 {
+    color:
+        #eadfc4;
 
-      color: #f1f5f9;
+    border-color:
+        rgba(242, 189, 50, 0.10);
+}
 
-    }
 
+/* --------------------------------------------------------
+   USER TEXT
+   -------------------------------------------------------- */
 
-    html.dark .requests-panel-header p,
-    body.dark .requests-panel-header p,
-    html[data-theme="dark"] .requests-panel-header p,
-    body[data-theme="dark"] .requests-panel-header p {
+html.dark .request-user strong,
+body.dark .request-user strong,
+[data-theme="dark"] .request-user strong {
 
-      color: #94a3b8;
+    color: #fff8df;
+}
 
-    }
 
+html.dark .request-user span,
+body.dark .request-user span,
+[data-theme="dark"] .request-user span {
 
-    html.dark .requests-table,
-    body.dark .requests-table,
-    html[data-theme="dark"] .requests-table,
-    body[data-theme="dark"] .requests-table {
+    color: #a99668;
+}
 
-      background: #111a2b;
 
-      color: #e8eef8;
+/* --------------------------------------------------------
+   AVATAR
+   -------------------------------------------------------- */
 
-    }
+html.dark .request-avatar,
+body.dark .request-avatar,
+[data-theme="dark"] .request-avatar {
 
+    background:
+        rgba(242, 189, 50, 0.10);
 
-    html.dark .requests-table th,
-    body.dark .requests-table th,
-    html[data-theme="dark"] .requests-table th,
-    body[data-theme="dark"] .requests-table th {
+    color:
+        #f2bd32;
 
-      background: #0d1525;
+    border:
+        1px solid rgba(242, 189, 50, 0.30);
+}
 
-      color: #94a3b8;
 
-      border-bottom-color: #263550;
+/* --------------------------------------------------------
+   EMAIL + DATE
+   -------------------------------------------------------- */
 
-    }
+html.dark .request-email,
+body.dark .request-email,
+[data-theme="dark"] .request-email {
 
+    color: #e9ddc0;
+}
 
-    html.dark .requests-table td,
-    body.dark .requests-table td,
-    html[data-theme="dark"] .requests-table td,
-    body[data-theme="dark"] .requests-table td {
 
-      background: #111a2b;
+html.dark .request-date,
+body.dark .request-date,
+[data-theme="dark"] .request-date {
 
-      color: #e8eef8;
-
-      border-bottom-color: #263550;
-
-    }
-
-
-    html.dark .requests-table tbody tr:hover td,
-    body.dark .requests-table tbody tr:hover td,
-    html[data-theme="dark"] .requests-table tbody tr:hover td,
-    body[data-theme="dark"] .requests-table tbody tr:hover td {
-
-      background: #162238;
-
-    }
-
-
-    html.dark .request-user strong,
-    body.dark .request-user strong,
-    html[data-theme="dark"] .request-user strong,
-    body[data-theme="dark"] .request-user strong {
-
-      color: #f1f5f9;
-
-    }
-
-
-    html.dark .request-user span,
-    body.dark .request-user span,
-    html[data-theme="dark"] .request-user span,
-    body[data-theme="dark"] .request-user span {
-
-      color: #71809a;
-
-    }
-
-
-    html.dark .request-email,
-    body.dark .request-email,
-    html[data-theme="dark"] .request-email,
-    body[data-theme="dark"] .request-email {
-
-      color: #dbe7f7;
-
-    }
-
-
-    html.dark .request-date,
-    body.dark .request-date,
-    html[data-theme="dark"] .request-date,
-    body[data-theme="dark"] .request-date {
-
-      color: #94a3b8;
-
-    }
-
-
-    html.dark .request-completed,
-    body.dark .request-completed,
-    html[data-theme="dark"] .request-completed,
-    body[data-theme="dark"] .request-completed {
-
-      color: #94a3b8;
-
-    }
-
-
-    html.dark .request-avatar,
-    body.dark .request-avatar,
-    html[data-theme="dark"] .request-avatar,
-    body[data-theme="dark"] .request-avatar {
-
-      background: rgba(
-        59,
-        130,
-        246,
-        .15
-      );
-
-      color: #60a5fa;
-
-    }
-
-
-    html.dark .request-status.pending,
-    body.dark .request-status.pending,
-    html[data-theme="dark"] .request-status.pending,
-    body[data-theme="dark"] .request-status.pending {
-
-      background: rgba(
-        245,
-        158,
-        11,
-        .16
-      );
-
-      color: #fbbf24;
-
-    }
-
-
-    html.dark .request-status.approved,
-    body.dark .request-status.approved,
-    html[data-theme="dark"] .request-status.approved,
-    body[data-theme="dark"] .request-status.approved {
-
-      background: rgba(
-        34,
-        197,
-        94,
-        .14
-      );
-
-      color: #4ade80;
-
-    }
-
-
-    html.dark .request-status.rejected,
-    body.dark .request-status.rejected,
-    html[data-theme="dark"] .request-status.rejected,
-    body[data-theme="dark"] .request-status.rejected {
-
-      background: rgba(
-        239,
-        68,
-        68,
-        .14
-      );
-
-      color: #f87171;
-
-    }
-
-
-    html.dark .request-action.approve,
-    body.dark .request-action.approve,
-    html[data-theme="dark"] .request-action.approve,
-    body[data-theme="dark"] .request-action.approve {
-
-      background: rgba(
-        34,
-        197,
-        94,
-        .13
-      );
-
-      color: #4ade80;
-
-    }
-
-
-    html.dark .request-action.reject,
-    body.dark .request-action.reject,
-    html[data-theme="dark"] .request-action.reject,
-    body[data-theme="dark"] .request-action.reject {
-
-      background: rgba(
-        239,
-        68,
-        68,
-        .13
-      );
-
-      color: #f87171;
-
-    }
-
-
-    html.dark .requests-empty,
-    body.dark .requests-empty,
-    html[data-theme="dark"] .requests-empty,
-    body[data-theme="dark"] .requests-empty {
-
-      background: #111a2b;
-
-    }
-
-
-    html.dark .requests-empty h3,
-    body.dark .requests-empty h3,
-    html[data-theme="dark"] .requests-empty h3,
-    body[data-theme="dark"] .requests-empty h3 {
-
-      color: #e8eef8;
-
-    }
-
-
-    html.dark .requests-empty p,
-    body.dark .requests-empty p,
-    html[data-theme="dark"] .requests-empty p,
-    body[data-theme="dark"] .requests-empty p {
-
-      color: #94a3b8;
-
-    }
-
-
-    html.dark .requests-loading,
-    body.dark .requests-loading,
-    html[data-theme="dark"] .requests-loading,
-    body[data-theme="dark"] .requests-loading {
-
-      color: #94a3b8;
-
-    }
-
-
-    html.dark .requests-error,
-    body.dark .requests-error,
-    html[data-theme="dark"] .requests-error,
-    body[data-theme="dark"] .requests-error {
-
-      color: #f87171;
-
-    }
-
+    color: #b9a979;
+}
   `;
-
-
-  document.head.appendChild(
+   document.head.appendChild(
     style
   );
 

@@ -18,27 +18,27 @@ function injectHomeStyles() {
        ======================================================== */
 
     .fs-home {
-      --fs-blue: #347ff1;
-      --fs-blue-dark: #185fc9;
-      --fs-cyan: #39d9ff;
-      --fs-navy: #101b32;
-      --fs-text: #14213d;
-      --fs-muted: #66758f;
-      --fs-border: #dfe7f2;
-      --fs-bg: #f7faff;
-      --fs-card: #ffffff;
-      --fs-danger: #ef4d68;
+      --fs-blue: var(--accent-primary);
+      --fs-blue-dark: var(--accent-primary-hover);
+      --fs-cyan: var(--accent-primary);
+      --fs-navy: var(--bg-secondary);
+      --fs-text: var(--text-primary);
+      --fs-muted: var(--text-muted);
+      --fs-border: var(--border-light);
+      --fs-bg: var(--bg-primary);
+      --fs-card: var(--surface);
+      --fs-danger: var(--risk-critical);
 
       min-height: 100vh;
       background:
         radial-gradient(
           circle at 80% 8%,
-          rgba(52, 127, 241, 0.10),
+          rgba(var(--gold-rgb), 0.10),
           transparent 28%
         ),
         radial-gradient(
           circle at 10% 25%,
-          rgba(57, 217, 255, 0.06),
+          rgba(var(--gold-rgb), 0.06),
           transparent 25%
         ),
         var(--fs-bg);
@@ -53,7 +53,7 @@ function injectHomeStyles() {
         "Segoe UI",
         sans-serif;
 
-      overflow: hidden;
+      overflow: visible;
     }
 
     .fs-home *,
@@ -81,7 +81,7 @@ function injectHomeStyles() {
       justify-content: space-between;
       gap: 30px;
 
-      border-bottom: 1px solid rgba(223, 231, 242, 0.75);
+      border-bottom: 1px solid var(--fs-border);
     }
 
     .fs-brand {
@@ -95,13 +95,19 @@ function injectHomeStyles() {
       white-space: nowrap;
     }
 
-    .fs-brand img {
-      width: 38px;
-      height: 38px;
-      object-fit: cover;
-      border-radius: 11px;
-      box-shadow: 0 7px 22px rgba(52, 127, 241, 0.20);
-    }
+    .fs-brand img.full-brand-logo {
+    width: 190px;
+    height: auto;
+    max-height: 65px;
+    object-fit: contain;
+    border-radius: 0;
+    box-shadow: none;
+  }
+    .fs-brand {
+    display: flex;
+    align-items: center;
+    gap: 0;
+   }
 
     .fs-brand span span {
       color: var(--fs-blue);
@@ -112,7 +118,7 @@ function injectHomeStyles() {
       align-items: center;
       gap: 34px;
 
-      color: #52627b;
+      color: var(--text-secondary);
       font-size: 13px;
       font-weight: 600;
     }
@@ -188,10 +194,10 @@ function injectHomeStyles() {
 .fs-theme-toggle:hover {
   transform: translateY(-2px);
 
-  border-color: rgba(52, 127, 241, 0.30);
+  border-color: rgba(var(--gold-rgb), 0.30);
 
   box-shadow:
-    0 8px 22px rgba(30, 59, 104, 0.10);
+    0 8px 22px rgba(var(--gold-rgb), 0.10);
 }
 
 .fs-theme-icon {
@@ -203,7 +209,7 @@ function injectHomeStyles() {
 
   border-radius: 50%;
 
-  background: rgba(52, 127, 241, 0.10);
+  background: rgba(var(--gold-rgb), 0.10);
 
   color: var(--fs-blue);
 
@@ -211,15 +217,15 @@ function injectHomeStyles() {
 }
 
 [data-theme="dark"] .fs-theme-toggle {
-  background: rgba(14, 27, 45, 0.90);
+  background: rgba(16, 16, 14, 0.90);
 
-  border-color: #29415f;
+  border-color: var(--border-light);
 }
 
 [data-theme="dark"] .fs-theme-icon {
-  background: rgba(57, 217, 255, 0.10);
+  background: rgba(var(--gold-rgb), 0.10);
 
-  color: #39d9ff;
+  color: var(--accent-primary);
 }
     .fs-nav-cta {
       display: inline-flex;
@@ -228,7 +234,7 @@ function injectHomeStyles() {
 
       padding: 10px 16px;
 
-      border: 1px solid rgba(52, 127, 241, 0.22);
+      border: 1px solid rgba(var(--gold-rgb), 0.22);
       border-radius: 10px;
 
       background: rgba(255, 255, 255, 0.75);
@@ -237,7 +243,7 @@ function injectHomeStyles() {
       font-size: 12px;
       font-weight: 750;
 
-      box-shadow: 0 7px 22px rgba(35, 81, 145, 0.06);
+      box-shadow: 0 7px 22px rgba(var(--gold-rgb), 0.06);
 
       transition:
         transform 0.2s ease,
@@ -248,7 +254,7 @@ function injectHomeStyles() {
     .fs-nav-cta:hover {
       transform: translateY(-2px);
       background: #fff;
-      box-shadow: 0 12px 28px rgba(35, 81, 145, 0.12);
+      box-shadow: 0 12px 28px rgba(var(--gold-rgb), 0.12);
     }
 
     /* ========================================================
@@ -280,7 +286,7 @@ function injectHomeStyles() {
 
       margin-bottom: 18px;
 
-      color: #526782;
+      color: var(--text-secondary);
       font-size: 10px;
       font-weight: 850;
       letter-spacing: 0.13em;
@@ -317,11 +323,25 @@ function injectHomeStyles() {
       font-weight: 850;
     }
 
-    .fs-hero h1 span {
-      display: block;
-      color: var(--fs-blue);
-    }
+     .fs-hero h1 span {
+    display: block;
 
+    color: #e5bd58;
+
+    background: linear-gradient(
+        135deg,
+        #fff4c7 0%,
+        #e5bd58 45%,
+        #c9952f 100%
+    );
+
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    text-shadow:
+        0 0 28px rgba(229, 189, 88, 0.16);
+}
     .fs-hero-text {
       max-width: 590px;
 
@@ -364,21 +384,40 @@ function injectHomeStyles() {
     }
 
     .fs-btn-primary {
-      color: #fff;
-      background: linear-gradient(
+    color: #17130b !important;
+
+    background: linear-gradient(
         135deg,
-        var(--fs-blue),
-        #2469d6
-      );
+        #fff1b8 0%,
+        #e5bd58 45%,
+        #c9952f 100%
+    ) !important;
 
-      box-shadow:
-        0 12px 28px rgba(52, 127, 241, 0.25);
-    }
+    border: 1px solid rgba(255, 231, 154, 0.75);
 
-    .fs-btn-primary:hover {
-      box-shadow:
-        0 17px 35px rgba(52, 127, 241, 0.34);
-    }
+    box-shadow:
+        0 10px 28px rgba(201, 149, 47, 0.28),
+        inset 0 1px 0 rgba(255, 255, 255, 0.35);
+
+    font-weight: 800;
+}
+
+   .fs-btn-primary:hover {
+    color: #17130b !important;
+
+    background: linear-gradient(
+        135deg,
+        #fff6d0 0%,
+        #f0cb65 45%,
+        #d5a63a 100%
+    ) !important;
+
+    box-shadow:
+        0 15px 35px rgba(201, 149, 47, 0.40),
+        0 0 22px rgba(229, 189, 88, 0.18);
+
+    transform: translateY(-2px);
+}
 
     .fs-btn-ghost {
       color: var(--fs-text);
@@ -393,7 +432,7 @@ function injectHomeStyles() {
 
       margin-top: 27px;
 
-      color: #63738b;
+      color: var(--text-muted);
       font-size: 11px;
       font-weight: 650;
     }
@@ -439,12 +478,12 @@ function injectHomeStyles() {
 
       background-image:
         linear-gradient(
-          rgba(52, 127, 241, 0.055) 1px,
+          rgba(var(--gold-rgb), 0.055) 1px,
           transparent 1px
         ),
         linear-gradient(
           90deg,
-          rgba(52, 127, 241, 0.055) 1px,
+          rgba(var(--gold-rgb), 0.055) 1px,
           transparent 1px
         );
 
@@ -471,13 +510,13 @@ function injectHomeStyles() {
     }
 
     .fs-glow-a {
-      background: rgba(52, 127, 241, 0.17);
+      background: rgba(var(--gold-rgb), 0.17);
       left: 18%;
       top: 19%;
     }
 
     .fs-glow-b {
-      background: rgba(57, 217, 255, 0.12);
+      background: rgba(var(--gold-rgb), 0.12);
       right: 8%;
       bottom: 9%;
     }
@@ -485,7 +524,7 @@ function injectHomeStyles() {
     .fs-orbit {
       position: absolute;
 
-      border: 1px solid rgba(52, 127, 241, 0.17);
+      border: 1px solid rgba(var(--gold-rgb), 0.17);
 
       border-radius: 50%;
 
@@ -498,7 +537,7 @@ function injectHomeStyles() {
 
       transform: rotateX(65deg);
 
-      border-color: rgba(52, 127, 241, 0.13);
+      border-color: rgba(var(--gold-rgb), 0.13);
     }
 
     .fs-orbit-inner {
@@ -509,7 +548,7 @@ function injectHomeStyles() {
 
       animation-duration: 11s;
 
-      border-color: rgba(57, 217, 255, 0.18);
+      border-color: rgba(var(--gold-rgb), 0.18);
     }
 
     @keyframes fsOrbit {
@@ -533,8 +572,8 @@ function injectHomeStyles() {
       background: var(--fs-cyan);
 
       box-shadow:
-        0 0 0 5px rgba(57, 217, 255, 0.08),
-        0 0 20px rgba(57, 217, 255, 0.55);
+        0 0 0 5px rgba(var(--gold-rgb), 0.08),
+        0 0 20px rgba(var(--gold-rgb), 0.55);
 
       animation: fsNode 2.7s ease-in-out infinite;
     }
@@ -586,8 +625,8 @@ function injectHomeStyles() {
         );
 
       box-shadow:
-        0 35px 90px rgba(31, 72, 125, 0.18),
-        0 0 0 1px rgba(52, 127, 241, 0.05);
+        0 35px 90px rgba(var(--gold-rgb), 0.18),
+        0 0 0 1px rgba(var(--gold-rgb), 0.05);
 
       backdrop-filter: blur(18px);
 
@@ -607,7 +646,7 @@ function injectHomeStyles() {
 
       margin-bottom: 20px;
 
-      color: #65748a;
+      color: var(--text-muted);
 
       font-size: 9px;
       font-weight: 850;
@@ -653,35 +692,65 @@ function injectHomeStyles() {
       place-items: center;
     }
 
-    .fs-shield {
-      width: 94px;
-      height: 94px;
+    /* ========================================================
+   LARGE GOLD SECURITY SHIELD
+   ======================================================== */
 
-      display: grid;
-      place-items: center;
+.fs-shield {
+    width: 110px !important;
+    height: 110px !important;
 
-      border-radius: 28px;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
 
-      background:
+    overflow: hidden;
+
+    border-radius: 26px !important;
+
+    background:
         radial-gradient(
-          circle at 30% 20%,
-          rgba(57, 217, 255, 0.22),
-          transparent 48%
-        ),
-        linear-gradient(
-          145deg,
-          rgba(52, 127, 241, 0.18),
-          rgba(52, 127, 241, 0.05)
-        );
+            circle at center,
+            rgba(var(--gold-rgb), 0.18),
+            rgba(0, 0, 0, 0.92) 72%
+        ) !important;
 
-      border: 1px solid rgba(52, 127, 241, 0.25);
+    border:
+        1px solid rgba(var(--gold-rgb), 0.38) !important;
 
-      box-shadow:
-        0 0 45px rgba(52, 127, 241, 0.17),
-        inset 0 0 25px rgba(57, 217, 255, 0.06);
+    box-shadow:
+        0 0 35px rgba(var(--gold-rgb), 0.24),
+        inset 0 0 25px rgba(var(--gold-rgb), 0.08) !important;
 
-      animation: fsShield 3s ease-in-out infinite;
-    }
+    animation:
+        fsShield 3s ease-in-out infinite;
+}
+
+
+/* New shield image */
+
+.fs-shield-image {
+    width: 92px !important;
+    height: 92px !important;
+
+    display: block;
+
+    object-fit: contain;
+
+    object-position: center;
+
+    border: none !important;
+
+    border-radius: 0 !important;
+
+    box-shadow:
+        0 0 22px rgba(var(--gold-rgb), 0.35);
+
+    filter:
+        brightness(1.05)
+        contrast(1.08)
+        saturate(1.12);
+}
 
     @keyframes fsShield {
       50% {
@@ -703,7 +772,7 @@ function injectHomeStyles() {
       stroke-linejoin: round;
 
       filter: drop-shadow(
-        0 0 8px rgba(52, 127, 241, 0.25)
+        0 0 8px rgba(var(--gold-rgb), 0.25)
       );
     }
 
@@ -711,7 +780,7 @@ function injectHomeStyles() {
       position: absolute;
       inset: 8px;
 
-      border: 1px solid rgba(52, 127, 241, 0.18);
+      border: 1px solid rgba(var(--gold-rgb), 0.18);
 
       border-radius: 34px;
 
@@ -772,7 +841,7 @@ function injectHomeStyles() {
 
       border-radius: 99px;
 
-      background: #e8eef6;
+      background: var(--text-primary);
     }
 
     .fs-risk-track span {
@@ -856,7 +925,7 @@ function injectHomeStyles() {
       background: rgba(255, 255, 255, 0.90);
 
       box-shadow:
-        0 17px 40px rgba(29, 62, 106, 0.13);
+        0 17px 40px rgba(var(--gold-rgb), 0.13);
 
       backdrop-filter: blur(15px);
 
@@ -888,7 +957,7 @@ function injectHomeStyles() {
 
       border-radius: 9px;
 
-      background: rgba(52, 127, 241, 0.10);
+      background: rgba(var(--gold-rgb), 0.10);
 
       color: var(--fs-blue);
 
@@ -926,12 +995,12 @@ function injectHomeStyles() {
         linear-gradient(
           90deg,
           transparent,
-          rgba(57, 217, 255, 0.85),
+          rgba(var(--gold-rgb), 0.85),
           transparent
         );
 
       box-shadow:
-        0 0 12px rgba(57, 217, 255, 0.45);
+        0 0 12px rgba(var(--gold-rgb), 0.45);
 
       animation: fsScan 4s ease-in-out infinite;
     }
@@ -973,7 +1042,7 @@ function injectHomeStyles() {
       background: rgba(255, 255, 255, 0.78);
 
       box-shadow:
-        0 17px 40px rgba(30, 59, 104, 0.06);
+        0 17px 40px rgba(var(--gold-rgb), 0.06);
 
       backdrop-filter: blur(12px);
     }
@@ -998,14 +1067,14 @@ function injectHomeStyles() {
       width: 33px;
       height: 33px;
 
-      flex: 0 0 auto;
+            flex: 0 0 auto;
 
       display: grid;
       place-items: center;
 
       border-radius: 9px;
 
-      background: rgba(52, 127, 241, 0.09);
+      background: rgba(var(--gold-rgb), 0.09);
 
       color: var(--fs-blue);
 
@@ -1108,7 +1177,7 @@ function injectHomeStyles() {
       background: rgba(255, 255, 255, 0.82);
 
       box-shadow:
-        0 12px 32px rgba(30, 59, 104, 0.04);
+        0 12px 32px rgba(var(--gold-rgb), 0.04);
 
       transition:
         transform 0.25s ease,
@@ -1129,16 +1198,16 @@ function injectHomeStyles() {
 
       border-radius: 50%;
 
-      background: rgba(52, 127, 241, 0.07);
+      background: rgba(var(--gold-rgb), 0.07);
     }
 
     .fs-feature:hover {
       transform: translateY(-6px);
 
-      border-color: rgba(52, 127, 241, 0.28);
+      border-color: rgba(var(--gold-rgb), 0.28);
 
       box-shadow:
-        0 23px 45px rgba(30, 59, 104, 0.10);
+        0 23px 45px rgba(var(--gold-rgb), 0.10);
     }
 
     .fs-feature-number {
@@ -1147,7 +1216,7 @@ function injectHomeStyles() {
       top: 20px;
       right: 21px;
 
-      color: #9caabd;
+      color: var(--text-muted);
 
       font-size: 9px;
       font-weight: 850;
@@ -1162,10 +1231,10 @@ function injectHomeStyles() {
 
       margin-bottom: 28px;
 
-      border: 1px solid rgba(52, 127, 241, 0.18);
+      border: 1px solid rgba(var(--gold-rgb), 0.18);
       border-radius: 12px;
 
-      background: rgba(52, 127, 241, 0.08);
+      background: rgba(var(--gold-rgb), 0.08);
 
       color: var(--fs-blue);
 
@@ -1227,7 +1296,7 @@ function injectHomeStyles() {
     .fs-step:hover {
       transform: translateY(-5px);
 
-      border-color: rgba(52, 127, 241, 0.27);
+      border-color: rgba(var(--gold-rgb), 0.27);
     }
 
     .fs-step-number {
@@ -1264,7 +1333,7 @@ function injectHomeStyles() {
         linear-gradient(
           90deg,
           transparent,
-          rgba(52, 127, 241, 0.32),
+          rgba(var(--gold-rgb), 0.32),
           transparent
         );
     }
@@ -1287,19 +1356,19 @@ function injectHomeStyles() {
 
       gap: 30px;
 
-      border: 1px solid rgba(52, 127, 241, 0.16);
+      border: 1px solid rgba(var(--gold-rgb), 0.16);
 
       border-radius: 22px;
 
       background:
         radial-gradient(
           circle at 90% 15%,
-          rgba(57, 217, 255, 0.13),
+          rgba(var(--gold-rgb), 0.13),
           transparent 18rem
         ),
         linear-gradient(
           135deg,
-          rgba(52, 127, 241, 0.08),
+          rgba(var(--gold-rgb), 0.08),
           rgba(255, 255, 255, 0.82)
         );
     }
@@ -1345,24 +1414,24 @@ function injectHomeStyles() {
 
   gap: 30px;
 
-  border: 1px solid rgba(52, 127, 241, 0.16);
+  border: 1px solid rgba(var(--gold-rgb), 0.16);
 
   border-radius: 22px;
 
   background:
     radial-gradient(
       circle at 90% 15%,
-      rgba(57, 217, 255, 0.13),
+      rgba(var(--gold-rgb), 0.13),
       transparent 18rem
     ),
     linear-gradient(
       135deg,
-      rgba(52, 127, 241, 0.08),
+      rgba(var(--gold-rgb), 0.08),
       rgba(255, 255, 255, 0.82)
     );
 
   box-shadow:
-    0 20px 55px rgba(30, 59, 104, 0.08);
+    0 20px 55px rgba(var(--gold-rgb), 0.08);
 
   position: relative;
 
@@ -1382,7 +1451,7 @@ function injectHomeStyles() {
 
   border-radius: 50%;
 
-  background: rgba(52, 127, 241, 0.08);
+  background: rgba(var(--gold-rgb), 0.08);
 
   filter: blur(35px);
 
@@ -1437,18 +1506,19 @@ function injectHomeStyles() {
 
 
 .fs-demo-button {
+    color: #17130b !important;
 
-  position: relative;
+    background: linear-gradient(
+        135deg,
+        #fff1b8,
+        #e5bd58,
+        #c9952f
+    ) !important;
 
-  z-index: 2;
+    border: 1px solid rgba(255, 231, 154, 0.75);
 
-  flex-shrink: 0;
-
-  border: 0;
-
-  cursor: pointer;
-
-  font-family: inherit;
+    box-shadow:
+        0 10px 28px rgba(201, 149, 47, 0.28);
 }
 
 
@@ -1505,7 +1575,7 @@ function injectHomeStyles() {
 
   inset: 0;
 
-  background: rgba(5, 15, 30, 0.62);
+  background: rgba(0, 0, 0, 0.62);
 
   backdrop-filter: blur(7px);
 }
@@ -1593,7 +1663,7 @@ function injectHomeStyles() {
 
 .fs-demo-close:hover {
 
-  background: rgba(52, 127, 241, 0.08);
+  background: rgba(var(--gold-rgb), 0.08);
 
   transform: rotate(90deg);
 }
@@ -1613,14 +1683,14 @@ function injectHomeStyles() {
 
   border-radius: 14px;
 
-  background: rgba(52, 127, 241, 0.10);
+  background: rgba(var(--gold-rgb), 0.10);
 
   color: var(--fs-blue);
 
   font-size: 23px;
 
   box-shadow:
-    0 10px 25px rgba(52, 127, 241, 0.10);
+    0 10px 25px rgba(var(--gold-rgb), 0.10);
 }
 
 
@@ -1699,7 +1769,7 @@ function injectHomeStyles() {
   border-color: var(--fs-blue);
 
   box-shadow:
-    0 0 0 3px rgba(52, 127, 241, 0.10);
+    0 0 0 3px rgba(var(--gold-rgb), 0.10);
 }
 
 
@@ -1758,32 +1828,32 @@ function injectHomeStyles() {
   background:
     radial-gradient(
       circle at 90% 15%,
-      rgba(57, 217, 255, 0.10),
+      rgba(var(--gold-rgb), 0.10),
       transparent 18rem
     ),
     linear-gradient(
       135deg,
-      rgba(52, 127, 241, 0.12),
-      rgba(14, 27, 45, 0.92)
+      rgba(var(--gold-rgb), 0.12),
+      rgba(16, 16, 14, 0.92)
     );
 
-  border-color: #203b59;
+  border-color: var(--border-light);
 }
 
 
 [data-theme="dark"] .fs-demo-dialog {
 
-  background: #0e1b2d;
+  background: var(--surface);
 
-  border-color: #203b59;
+  border-color: var(--border-light);
 }
 
 
 [data-theme="dark"] .fs-demo-form-group input {
 
-  background: #07111f;
+  background: var(--bg-primary);
 
-  border-color: #29415f;
+  border-color: var(--border-light);
 }
 
 
@@ -1881,19 +1951,19 @@ function injectHomeStyles() {
        ======================================================== */
 
     [data-theme="dark"] .fs-home {
-      --fs-bg: #07111f;
-      --fs-card: #0e1b2d;
-      --fs-text: #edf5ff;
-      --fs-muted: #94a7c1;
-      --fs-border: #20324a;
+      --fs-bg: var(--bg-primary);
+      --fs-card: var(--surface);
+      --fs-text: var(--text-primary);
+      --fs-muted: var(--text-secondary);
+      --fs-border: var(--border-light);
 
       background:
         radial-gradient(
           circle at 80% 5%,
-          rgba(52, 127, 241, 0.14),
+          rgba(var(--gold-rgb), 0.14),
           transparent 28%
         ),
-        #07111f;
+        var(--bg-primary);
     }
 
     [data-theme="dark"] .fs-nav {
@@ -1907,23 +1977,23 @@ function injectHomeStyles() {
     [data-theme="dark"] .fs-tech-strip,
     [data-theme="dark"] .fs-feature,
     [data-theme="dark"] .fs-step {
-      background: rgba(14, 27, 45, 0.88);
+      background: rgba(16, 16, 14, 0.88);
       border-color: var(--fs-border);
       color: var(--fs-text);
     }
 
     [data-theme="dark"] .fs-risk-track {
-      background: #1a2b40;
+      background: var(--surface-hover);
     }
 
     [data-theme="dark"] .fs-cta {
       background:
         radial-gradient(
           circle at 90% 15%,
-          rgba(57, 217, 255, 0.08),
+          rgba(var(--gold-rgb), 0.08),
           transparent 18rem
         ),
-        rgba(14, 27, 45, 0.75);
+        rgba(16, 16, 14, 0.75);
     }
 
     /* ========================================================
@@ -2135,14 +2205,13 @@ export function renderHome() {
           class="fs-brand"
           aria-label="FraudShieldAI home"
         >
-          <img
-            src="assets/images/FraudShield_dashboard_logo.jpeg"
-            alt="FraudShieldAI"
+         <img
+            src="assets/images/FraudShieldAI_full_logo.png"
+            alt="FraudShield AI"
+            class="full-brand-logo"
           />
 
-          <span>
-            FraudShield<span>AI</span>
-          </span>
+          
         </a>
 
 
@@ -2317,28 +2386,12 @@ export function renderHome() {
               <div class="fs-shield-ring"></div>
 
               <div class="fs-shield">
-
-                <svg
-                  viewBox="0 0 64 64"
-                  aria-hidden="true"
-                >
-
-                  <path
-                    d="M32 5
-                       51 12
-                       v16
-                       c0 13-7.8 24.7-19 31
-                       C20.8 52.7 13 41 13 28
-                       V12L32 5Z"
-                  />
-
-                  <path
-                    d="m22 31 6 6 14-15"
-                  />
-
-                </svg>
-
-              </div>
+              <img
+              src="assets/images/fraud-shield.png"
+              alt="FraudShield AI security shield"
+              class="fs-shield-image"
+           />
+         </div>
 
             </div>
 
@@ -3012,15 +3065,13 @@ export function renderHome() {
           class="fs-brand"
         >
 
-          <img
-            src="assets/images/FraudShield_dashboard_logo.jpeg"
-            alt="FraudShieldAI"
-          />
+         <img
+            src="assets/images/FraudShieldAI_full_logo.png"
+            alt="FraudShield AI"
+            class="login-full-logo"
+         />
 
-          <span>
-            FraudShield<span>AI</span>
-          </span>
-
+          
         </a>
 
 

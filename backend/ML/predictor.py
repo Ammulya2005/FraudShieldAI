@@ -5,10 +5,44 @@ from typing import Any, Dict
 import joblib
 import numpy as np
 import pandas as pd
-
+from prometheus_client import Counter, Histogram
 
 BASE_DIR = Path(__file__).resolve().parent
+# ============================================================
+# PROMETHEUS FRAUD DETECTION METRICS
+# ============================================================
+
+TRANSACTIONS_PROCESSED = Counter(
+    "fraudshield_transactions_processed_total",
+    "Total number of transactions processed"
+)
+
+FRAUD_DETECTED = Counter(
+    "fraudshield_fraud_detected_total",
+    "Total number of transactions classified as fraud"
+)
+
+LEGITIMATE_DETECTED = Counter(
+    "fraudshield_legitimate_detected_total",
+    "Total number of transactions classified as legitimate"
+)
+
+XGBOOST_PREDICTIONS = Counter(
+    "fraudshield_xgboost_predictions_total",
+    "Total number of XGBoost predictions"
+)
+
+ISOLATION_FOREST_ANOMALIES = Counter(
+    "fraudshield_isolation_forest_anomalies_total",
+    "Total number of Isolation Forest anomalies detected"
+)
+
+PREDICTION_LATENCY = Histogram(
+    "fraudshield_prediction_latency_seconds",
+    "Time taken to process a fraud prediction"
+)
 MODEL_DIR = BASE_DIR / "saved_models"
+
 
 XGBOOST_MODEL_PATH = MODEL_DIR / "xgboost_model.pkl"
 ISOLATION_MODEL_PATH = MODEL_DIR / "isolation_forest_model.pkl"
@@ -177,37 +211,67 @@ class FraudPredictor:
         df = df[self.feature_columns]
 
         return df
-
     def predict(
-        self,
-        transaction: Dict[str, Any]
-    ) -> Dict[str, Any]:
+    self,
+    transaction: Dict[str, Any]
+) -> Dict[str, Any]:
+
+    # --------------------------------------------------------
+    # Start prediction latency measurement
+    # --------------------------------------------------------
+
+     with PREDICTION_LATENCY.time():
+
+        # Count every transaction processed
+        TRANSACTIONS_PROCESSED.inc()
+
         df = self._build_feature_frame(
             transaction
         )
 
         scaled_features = self.scaler.transform(df)
 
+        # ----------------------------------------------------
+        # XGBoost Prediction
+        # ----------------------------------------------------
+
         xgb_prediction = int(
-            self.xgb_model.predict(scaled_features)[0]
+            self.xgb_model.predict(
+                scaled_features
+            )[0]
         )
 
+        XGBOOST_PREDICTIONS.inc()
+
         xgb_probability = 0.0
+
         if hasattr(
             self.xgb_model,
             "predict_proba"
         ):
+
             xgb_probability = float(
                 self.xgb_model.predict_proba(
                     scaled_features
                 )[0][1]
             )
 
+        # ----------------------------------------------------
+        # Isolation Forest Prediction
+        # ----------------------------------------------------
+
         isolation_prediction = int(
             self.iso_model.predict(
                 scaled_features
             )[0]
         )
+
+        # Isolation Forest returns:
+        #  1  = normal
+        # -1  = anomaly
+
+        if isolation_prediction == -1:
+            ISOLATION_FOREST_ANOMALIES.inc()
 
         anomaly_score = float(
             self.iso_model.decision_function(
@@ -223,6 +287,10 @@ class FraudPredictor:
             )
         )
 
+        # ----------------------------------------------------
+        # Combine XGBoost + Isolation Forest
+        # ----------------------------------------------------
+
         final_risk_score = round(
             (
                 (xgb_probability * 0.7) +
@@ -231,32 +299,67 @@ class FraudPredictor:
             4
         )
 
+        # ----------------------------------------------------
+        # Final Fraud Decision
+        # ----------------------------------------------------
+
         final_prediction = (
-         "fraud"
-          if final_risk_score >= 0.65
-          else "legitimate"
-       )
+            "fraud"
+            if final_risk_score >= 0.65
+            else "legitimate"
+        )
+
+        # ----------------------------------------------------
+        # Count Final Predictions
+        # ----------------------------------------------------
+
+        if final_prediction == "fraud":
+
+            FRAUD_DETECTED.inc()
+
+        else:
+
+            LEGITIMATE_DETECTED.inc()
+
+        # ----------------------------------------------------
+        # Return Prediction Result
+        # ----------------------------------------------------
 
         return {
-            "xgboost_prediction": xgb_prediction,
-            "xgboost_probability": round(
-                xgb_probability,
-                4
-            ),
-            "isolation_prediction": isolation_prediction,
-            "anomaly_score": round(
-                anomaly_score,
-                4
-            ),
-            "risk_score": final_risk_score,
-            "final_prediction": final_prediction,
-            "status": (
-                "pending_review"
-                if final_prediction == "fraud"
-                else "clean"
-            )
-        }
 
+            "xgboost_prediction":
+                xgb_prediction,
+
+            "xgboost_probability":
+                round(
+                    xgb_probability,
+                    4
+                ),
+
+            "isolation_prediction":
+                isolation_prediction,
+
+            "anomaly_score":
+                round(
+                    anomaly_score,
+                    4
+                ),
+
+            "risk_score":
+                final_risk_score,
+
+            "final_prediction":
+                final_prediction,
+
+            "status":
+                (
+                    "pending_review"
+                    if final_prediction == "fraud"
+                    else "clean"
+                )
+
+        }
+    
 
 predictor = FraudPredictor()
 

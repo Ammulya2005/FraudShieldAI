@@ -10,8 +10,16 @@
  * The parent .chart-wrapper controls the height.
  * The canvas fills that complete area.
  *
- * This fixes the problem where Fraud Velocity Trend
- * occupies only the upper portion of its card.
+ * Dashboard chart design:
+ *   Transaction Trend:
+ *      Gold  = Total Transactions
+ *      Red   = Fraud Detected
+ *      Green = Blocked
+ *
+ *   Risk Distribution:
+ *      Green  = Low Risk
+ *      Gold   = Medium Risk
+ *      Red    = High Risk
  * ============================================================
  */
 
@@ -26,7 +34,6 @@ function getCssVariable(
 ) {
 
   const value =
-
     getComputedStyle(
       document.documentElement
     )
@@ -48,42 +55,67 @@ function getCssVariable(
 
 function getThemeColors() {
 
+  const isDark =
+    document.documentElement.getAttribute(
+      'data-theme'
+    ) === 'dark';
+
+
   return {
 
+    /*
+     * Main chart text.
+     */
+
     text:
+      isDark
+        ? '#fff8e5'
+        : '#4f4637',
 
-      getCssVariable(
-        '--text-secondary',
-        '#475569'
-      ),
 
+    /*
+     * Secondary / muted chart text.
+     */
 
     muted:
+      isDark
+        ? '#a99a74'
+        : '#81745f',
 
-      getCssVariable(
-        '--text-muted',
-        '#64748b'
-      ),
 
+    /*
+     * Chart grid / border color.
+     */
 
     border:
-
       getCssVariable(
-        '--border-color',
-        '#dbe2ea'
+        '--border-light',
+        'rgba(201, 149, 47, 0.18)'
       ),
 
+
+    /*
+     * Primary theme color.
+     * Gold in Black & Gold theme.
+     */
 
     primary:
-
       getCssVariable(
         '--accent-primary',
-        '#3b82f6'
+        '#d6a83a'
       ),
 
 
-    low:
+    /*
+     * Risk colors.
+     *
+     * Green = Low
+     * Yellow = Medium
+     * Orange = High
+     * Red = Critical
+     */
 
+    low:
       getCssVariable(
         '--risk-low',
         '#10b981'
@@ -91,7 +123,6 @@ function getThemeColors() {
 
 
     medium:
-
       getCssVariable(
         '--risk-medium',
         '#f59e0b'
@@ -99,7 +130,6 @@ function getThemeColors() {
 
 
     high:
-
       getCssVariable(
         '--risk-high',
         '#f97316'
@@ -107,7 +137,6 @@ function getThemeColors() {
 
 
     critical:
-
       getCssVariable(
         '--risk-critical',
         '#ef4444'
@@ -143,6 +172,10 @@ function getCanvas(
   }
 
 
+  /*
+   * Make sure Chart.js is available.
+   */
+
   if (
     typeof Chart ===
     'undefined'
@@ -172,17 +205,16 @@ function baseChartOptions(
 
   return {
 
+    /*
+     * Responsive chart.
+     */
+
     responsive:
       true,
 
 
     /*
-     * VERY IMPORTANT
-     *
-     * The parent wrapper controls chart height.
-     *
-     * Without this, Chart.js calculates its own
-     * aspect ratio and leaves whitespace.
+     * Parent wrapper controls height.
      */
 
     maintainAspectRatio:
@@ -190,10 +222,7 @@ function baseChartOptions(
 
 
     /*
-     * Disable animation during chart rendering.
-     *
-     * This removes the visual jerk when ingestion
-     * updates the dashboard.
+     * Disable animation during live updates.
      */
 
     animation:
@@ -201,13 +230,16 @@ function baseChartOptions(
 
 
     /*
-     * Slight delay when browser resizes.
-     * Prevents excessive resize calculations.
+     * Small resize delay.
      */
 
     resizeDelay:
       80,
 
+
+    /*
+     * Common interaction.
+     */
 
     interaction: {
 
@@ -219,6 +251,10 @@ function baseChartOptions(
 
     },
 
+
+    /*
+     * Common plugins.
+     */
 
     plugins: {
 
@@ -265,7 +301,7 @@ function baseChartOptions(
 
 
 // ============================================================
-// FRAUD VELOCITY TREND
+// FRAUD VELOCITY / TRANSACTION TREND
 // ============================================================
 
 export function renderFraudTrendsChart(
@@ -274,7 +310,11 @@ export function renderFraudTrendsChart(
 
   labels = [],
 
-  data = []
+  data = [],
+
+  blockedData = [],
+
+  totalData = []
 
 ) {
 
@@ -296,8 +336,7 @@ export function renderFraudTrendsChart(
 
 
   /*
-   * Prevent duplicate Chart.js instances
-   * attached to the same canvas.
+   * Destroy previous chart instance.
    */
 
   const existing =
@@ -311,6 +350,36 @@ export function renderFraudTrendsChart(
     existing.destroy();
 
   }
+
+
+  /*
+   * Fraud values.
+   */
+
+  const fraud =
+    Array.isArray(data)
+      ? data
+      : [];
+
+
+  /*
+   * Blocked values.
+   */
+
+  const blocked =
+    Array.isArray(blockedData)
+      ? blockedData
+      : [];
+
+
+  /*
+   * Total transaction values.
+   */
+
+  const total =
+    Array.isArray(totalData)
+      ? totalData
+      : [];
 
 
   return new Chart(
@@ -327,77 +396,123 @@ export function renderFraudTrendsChart(
 
         labels:
 
-          Array.isArray(
-            labels
-          )
-
+          Array.isArray(labels)
             ? labels
-
             : [],
 
 
         datasets: [
 
+          // --------------------------------------------------
+          // TOTAL TRANSACTIONS
+          // --------------------------------------------------
+
           {
-
             label:
-              'Anomalous Transaction Volume',
-
+              'Total Transactions',
 
             data:
-
-              Array.isArray(
-                data
-              )
-
-                ? data
-
-                : [],
-
+              total,
 
             borderColor:
-              colors.critical,
-
+              '#d6a83a',
 
             backgroundColor:
-              'rgba(239, 68, 68, 0.10)',
+              'transparent',
 
+            pointBackgroundColor:
+              '#d6a83a',
 
-            borderWidth:
-              2.5,
-
+            pointBorderColor:
+              '#d6a83a',
 
             pointRadius:
               3,
 
-
             pointHoverRadius:
               5,
-
-
-            pointBackgroundColor:
-              colors.critical,
-
-
-            pointBorderColor:
-              colors.critical,
-
-
-            fill:
-              true,
-
-
-            /*
-             * Small curve makes the graph
-             * look smooth without excessive animation.
-             */
 
             tension:
               0.28,
 
+            borderWidth:
+              2
 
-            spanGaps:
-              true
+          },
+
+
+          // --------------------------------------------------
+          // FRAUD DETECTED
+          // --------------------------------------------------
+
+          {
+            label:
+              'Fraud Detected',
+
+            data:
+              fraud,
+
+            borderColor:
+              '#ef4444',
+
+            backgroundColor:
+              'transparent',
+
+            pointBackgroundColor:
+              '#ef4444',
+
+            pointBorderColor:
+              '#ef4444',
+
+            pointRadius:
+              3,
+
+            pointHoverRadius:
+              5,
+
+            tension:
+              0.28,
+
+            borderWidth:
+              2
+
+          },
+
+
+          // --------------------------------------------------
+          // BLOCKED
+          // --------------------------------------------------
+
+          {
+            label:
+              'Blocked',
+
+            data:
+              blocked,
+
+            borderColor:
+              '#10b981',
+
+            backgroundColor:
+              'transparent',
+
+            pointBackgroundColor:
+              '#10b981',
+
+            pointBorderColor:
+              '#10b981',
+
+            pointRadius:
+              3,
+
+            pointHoverRadius:
+              5,
+
+            tension:
+              0.28,
+
+            borderWidth:
+              2
 
           }
 
@@ -413,14 +528,64 @@ export function renderFraudTrendsChart(
         ),
 
 
-        /*
-         * Do not force a tiny chart height here.
-         *
-         * The .chart-wrapper controls the full
-         * available chart rectangle.
-         */
+        plugins: {
+
+          ...baseChartOptions(
+            colors
+          ).plugins,
+
+
+          // ------------------------------------------------
+          // TRANSACTION TREND LEGEND
+          // ------------------------------------------------
+
+          legend: {
+
+            display:
+              true,
+
+            position:
+              'top',
+
+            align:
+              'start',
+
+            labels: {
+
+              color:
+                colors.text,
+
+              usePointStyle:
+                true,
+
+              pointStyle:
+                'circle',
+
+              boxWidth:
+                8,
+
+              padding:
+                12,
+
+              font: {
+
+                size:
+                  10
+
+              }
+
+            }
+
+          }
+
+        },
+
 
         scales: {
+
+          // ------------------------------------------------
+          // X AXIS
+          // ------------------------------------------------
 
           x: {
 
@@ -433,7 +598,6 @@ export function renderFraudTrendsChart(
                 false
 
             },
-
 
             ticks: {
 
@@ -461,11 +625,14 @@ export function renderFraudTrendsChart(
           },
 
 
+          // ------------------------------------------------
+          // Y AXIS
+          // ------------------------------------------------
+
           y: {
 
             beginAtZero:
               true,
-
 
             grid: {
 
@@ -476,7 +643,6 @@ export function renderFraudTrendsChart(
                 false
 
             },
-
 
             ticks: {
 
@@ -516,12 +682,9 @@ export function renderRiskDistributionChart(
 
   canvasId,
 
-  data = [
-    1,
-    0,
-    0,
-    0
-  ]
+  data = [1, 0, 0],
+
+  totalTransactions = null
 
 ) {
 
@@ -542,6 +705,10 @@ export function renderRiskDistributionChart(
     getThemeColors();
 
 
+  /*
+   * Destroy existing chart.
+   */
+
   const existing =
     Chart.getChart(
       canvas
@@ -554,6 +721,251 @@ export function renderRiskDistributionChart(
 
   }
 
+
+  /*
+   * Three categories:
+   *
+   * Low Risk
+   * Medium Risk
+   * High Risk
+   *
+   * If old code sends four categories:
+   *
+   * Low
+   * Medium
+   * High
+   * Critical
+   *
+   * High + Critical are combined.
+   */
+
+  let values =
+    Array.isArray(data)
+      ? data.map(
+          value =>
+            Math.max(
+              0,
+              Number(value) || 0
+            )
+        )
+      : [1, 0, 0];
+
+
+  /*
+   * Backward compatibility:
+   * Combine High + Critical.
+   */
+
+  if (
+    values.length >= 4
+  ) {
+
+    values = [
+
+      values[0],
+
+      values[1],
+
+      values[2] +
+        values[3]
+
+    ];
+
+  }
+
+
+  /*
+   * Make sure exactly
+   * three values exist.
+   */
+
+  values = [
+
+    values[0] ?? 0,
+
+    values[1] ?? 0,
+
+    values[2] ?? 0
+
+  ];
+
+
+  /*
+   * Total of risk values.
+   */
+
+  const valueTotal =
+    values.reduce(
+
+      (sum, value) =>
+        sum + value,
+
+      0
+
+    );
+
+
+  /*
+   * Center number.
+   */
+
+  const centerTotal =
+    Number.isFinite(
+      Number(
+        totalTransactions
+      )
+    )
+
+      ? Number(
+          totalTransactions
+        )
+
+      : valueTotal;
+
+
+  // ========================================================
+  // CENTER TEXT PLUGIN
+  // ========================================================
+
+  const centerTextPlugin = {
+
+    id:
+      'fraudShieldRiskCenter',
+
+
+    afterDraw(chart) {
+
+      const {
+        ctx,
+        chartArea
+      } = chart;
+
+
+      if (!chartArea) {
+
+        return;
+
+      }
+
+
+      const meta =
+        chart.getDatasetMeta(
+          0
+        );
+
+
+      if (
+        !meta ||
+        !meta.data ||
+        !meta.data.length
+      ) {
+
+        return;
+
+      }
+
+
+      const x =
+        meta.data[0].x;
+
+
+      const y =
+        meta.data[0].y;
+
+
+      ctx.save();
+
+
+      ctx.textAlign =
+        'center';
+
+
+      ctx.textBaseline =
+        'middle';
+
+
+      /*
+       * Main number.
+       */
+
+      ctx.fillStyle =
+        colors.text;
+
+
+      ctx.font =
+        '700 18px sans-serif';
+
+
+      const liveCenterTotal =
+        Number.isFinite(
+          Number(
+            chart.$fraudShieldTotal
+          )
+        )
+
+          ? Number(
+              chart.$fraudShieldTotal
+            )
+
+          : centerTotal;
+
+
+      ctx.fillText(
+
+        liveCenterTotal.toLocaleString(
+
+          'en-US',
+
+          {
+
+            maximumFractionDigits:
+              1
+
+          }
+
+        ),
+
+        x,
+
+        y - 7
+
+      );
+
+
+      /*
+       * "Transactions"
+       * under the number.
+       */
+
+      ctx.fillStyle =
+        colors.muted;
+
+
+      ctx.font =
+        '10px sans-serif';
+
+
+      ctx.fillText(
+
+        'Transactions',
+
+        x,
+
+        y + 10
+
+      );
+
+
+      ctx.restore();
+
+    }
+
+  };
+
+
+  // ========================================================
+  // CREATE DOUGHNUT
+  // ========================================================
 
   return new Chart(
 
@@ -573,9 +985,7 @@ export function renderRiskDistributionChart(
 
           'Medium Risk',
 
-          'High Risk',
-
-          'Critical Anomaly'
+          'High Risk'
 
         ],
 
@@ -585,28 +995,22 @@ export function renderRiskDistributionChart(
           {
 
             data:
+              values,
 
-              Array.isArray(
-                data
-              )
 
-                ? data
-
-                : [
-                    1,
-                    0,
-                    0,
-                    0
-                  ],
-
+            /*
+             * Reference colors:
+             *
+             * Green
+             * Gold
+             * Red
+             */
 
             backgroundColor: [
 
               colors.low,
 
               colors.medium,
-
-              colors.high,
 
               colors.critical
 
@@ -627,6 +1031,13 @@ export function renderRiskDistributionChart(
       },
 
 
+      plugins: [
+
+        centerTextPlugin
+
+      ],
+
+
       options: {
 
         ...baseChartOptions(
@@ -635,7 +1046,7 @@ export function renderRiskDistributionChart(
 
 
         /*
-         * Doughnut thickness.
+         * Doughnut hole size.
          */
 
         cutout:
@@ -644,30 +1055,178 @@ export function renderRiskDistributionChart(
 
         plugins: {
 
-          legend: {
+          ...baseChartOptions(
+            colors
+          ).plugins,
 
-            position:
-              'bottom',
+
+ // ------------------------------------------------
+// RISK LEGEND
+// ------------------------------------------------
+
+legend: {
+
+    display: true,
+
+    position: 'right',
+
+    align: 'center',
+
+    labels: {
+
+        // Force legend text to gold
+        color: '#d6a83a',
+
+        // Compatibility with older Chart.js versions
+        fontColor: '#d6a83a',
+
+        usePointStyle: true,
+
+        pointStyle: 'circle',
+
+        boxWidth: 8,
+
+        padding: 12,
+
+        font: {
+            size: 12,
+            weight: '600'
+        },
+
+        /*
+         * Add percentages and FORCE
+         * every legend item's text color.
+         */
+
+        generateLabels(chart) {
+
+            const chartData =
+                chart.data;
+
+            const dataset =
+                chartData.datasets[0];
+
+            const total =
+                dataset.data.reduce(
+                    (sum, value) =>
+                        sum + Number(value || 0),
+                    0
+                );
+
+            return chartData.labels.map(
+                (label, index) => {
+
+                    const value =
+                        Number(
+                            dataset.data[index] || 0
+                        );
+
+                    const percentage =
+                        total > 0
+                            ? (
+                                value /
+                                total *
+                                100
+                            ).toFixed(0)
+                            : '0';
+
+                    return {
+
+                        text:
+                            `${label}   ${percentage}%`,
+
+                        fillStyle:
+                            dataset.backgroundColor[index],
+
+                        strokeStyle:
+                            dataset.backgroundColor[index],
+
+                        lineWidth: 0,
+
+                        hidden: false,
+
+                        index: index,
+
+                        // FORCE GOLD TEXT
+                        color: '#d6a83a',
+
+                        fontColor: '#d6a83a'
+
+                    };
+
+                }
+            );
+
+        }
+
+    }
+
+},
+
+          // ------------------------------------------------
+          // TOOLTIP
+          // ------------------------------------------------
+
+          tooltip: {
+
+            enabled:
+              true,
 
 
-            labels: {
+            callbacks: {
 
-              color:
-                colors.text,
+              label(context) {
 
-              usePointStyle:
-                true,
+                const values =
+                  context
+                    .dataset
+                    .data;
 
-              boxWidth:
-                8,
 
-              padding:
-                12,
+                const total =
+                  values.reduce(
 
-              font: {
+                    (sum, value) =>
+                      sum +
+                      Number(
+                        value || 0
+                      ),
 
-                size:
-                  10
+                    0
+
+                  );
+
+
+                const value =
+                  Number(
+                    context.raw || 0
+                  );
+
+
+                const percentage =
+
+                  total > 0
+
+                    ? (
+
+                        value /
+                        total *
+                        100
+
+                      ).toFixed(
+                        1
+                      )
+
+                    : '0.0';
+
+
+                return (
+
+                  `${context.label}: ` +
+                  `${value} ` +
+                  `(${percentage}%)`
+
+                );
 
               }
 

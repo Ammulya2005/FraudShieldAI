@@ -36,7 +36,186 @@
   <script
     src="https://cdn.jsdelivr.net/npm/chart.js"
   ></script>
+  <script>
+    const chartThemeColor = getComputedStyle(
+        document.documentElement
+    ).getPropertyValue('--text-primary').trim() || '#fff8e5';
 
+    Chart.defaults.color = chartThemeColor;
+
+    Chart.defaults.plugins.legend.labels.color = chartThemeColor;
+</script>
+    <style id="fraudshield-dashboard-theme-fix">
+
+/* ============================================================
+   FRAUDSHIELD AI — DASHBOARD CARD THEME FIX
+   DO NOT REMOVE
+   ============================================================ */
+
+/* =========================
+   DARK MODE
+   ========================= */
+
+html[data-theme="dark"] .dashboard-page .card-metric,
+html[data-theme="dark"] .dashboard-page .chart-card,
+html[data-theme="dark"] .dashboard-page .live-stream-card,
+html[data-theme="dark"] .dashboard-page .card {
+    background: #10100e !important;
+    background-color: #10100e !important;
+    color: #fff8e5 !important;
+    border-color: #40351f !important;
+}
+
+
+/* Dashboard card titles */
+
+html[data-theme="dark"] .dashboard-page .card-metric h3,
+html[data-theme="dark"] .dashboard-page .chart-card h3,
+html[data-theme="dark"] .dashboard-page .live-stream-card h3 {
+    color: #f3dfaa !important;
+}
+
+
+/* Dashboard normal text */
+
+html[data-theme="dark"] .dashboard-page .card-metric p,
+html[data-theme="dark"] .dashboard-page .chart-card p,
+html[data-theme="dark"] .dashboard-page .live-stream-card p {
+    color: #d8c9a3 !important;
+}
+
+
+/* Dashboard metric values */
+
+html[data-theme="dark"] .dashboard-page .card-metric .metric-val {
+    color: #fff8e5 !important;
+}
+
+
+/* Keep risk colors */
+
+html[data-theme="dark"] .dashboard-page .metric-risk-low {
+    color: #10b981 !important;
+}
+
+html[data-theme="dark"] .dashboard-page .metric-risk-medium {
+    color: #f59e0b !important;
+}
+
+html[data-theme="dark"] .dashboard-page .metric-risk-high {
+    color: #f97316 !important;
+}
+
+html[data-theme="dark"] .dashboard-page .metric-risk-critical {
+    color: #ef4444 !important;
+}
+
+
+/* Chart wrappers */
+
+html[data-theme="dark"] .dashboard-page .chart-wrapper,
+html[data-theme="dark"] .dashboard-page .chart-wrapper-wide,
+html[data-theme="dark"] .dashboard-page .chart-wrapper-risk {
+    background: #10100e !important;
+}
+
+
+/* Dashboard table */
+
+html[data-theme="dark"] .dashboard-page .table-container,
+html[data-theme="dark"] .dashboard-page .data-table {
+    background: #10100e !important;
+    background-color: #10100e !important;
+    color: #fff8e5 !important;
+    border-color: #40351f !important;
+}
+
+
+html[data-theme="dark"] .dashboard-page .data-table thead,
+html[data-theme="dark"] .dashboard-page .data-table thead tr,
+html[data-theme="dark"] .dashboard-page .data-table th {
+    background: #18160f !important;
+    color: #f3dfaa !important;
+    border-color: #40351f !important;
+}
+
+
+html[data-theme="dark"] .dashboard-page .data-table tbody,
+html[data-theme="dark"] .dashboard-page .data-table tbody tr,
+html[data-theme="dark"] .dashboard-page .data-table td {
+    background: #10100e !important;
+    color: #fff8e5 !important;
+    border-color: #2b261a !important;
+}
+
+
+/* =========================
+   LIGHT MODE
+   ========================= */
+
+html[data-theme="light"] .dashboard-page .card-metric,
+html[data-theme="light"] .dashboard-page .chart-card,
+html[data-theme="light"] .dashboard-page .live-stream-card,
+html[data-theme="light"] .dashboard-page .card {
+    background: #fffdf8 !important;
+    background-color: #fffdf8 !important;
+    color: #17130b !important;
+    border-color: #e5d4ae !important;
+}
+
+
+html[data-theme="light"] .dashboard-page .card-metric h3,
+html[data-theme="light"] .dashboard-page .chart-card h3,
+html[data-theme="light"] .dashboard-page .live-stream-card h3 {
+    color: #4f4637 !important;
+}
+
+
+html[data-theme="light"] .dashboard-page .card-metric p,
+html[data-theme="light"] .dashboard-page .chart-card p,
+html[data-theme="light"] .dashboard-page .live-stream-card p {
+    color: #81745f !important;
+}
+
+
+html[data-theme="light"] .dashboard-page .card-metric .metric-val {
+    color: #17130b !important;
+}
+
+
+html[data-theme="light"] .dashboard-page .chart-wrapper,
+html[data-theme="light"] .dashboard-page .chart-wrapper-wide,
+html[data-theme="light"] .dashboard-page .chart-wrapper-risk {
+    background: #fffdf8 !important;
+}
+
+
+html[data-theme="light"] .dashboard-page .table-container,
+html[data-theme="light"] .dashboard-page .data-table {
+    background: #fffdf8 !important;
+    background-color: #fffdf8 !important;
+    color: #17130b !important;
+    border-color: #e5d4ae !important;
+}
+
+
+html[data-theme="light"] .dashboard-page .data-table thead,
+html[data-theme="light"] .dashboard-page .data-table thead tr,
+html[data-theme="light"] .dashboard-page .data-table th {
+    background: #f6eedc !important;
+    color: #4f4637 !important;
+}
+
+
+html[data-theme="light"] .dashboard-page .data-table tbody,
+html[data-theme="light"] .dashboard-page .data-table tbody tr,
+html[data-theme="light"] .dashboard-page .data-table td {
+    background: #fffdf8 !important;
+    color: #17130b !important;
+    border-color: #eee4ce !important;
+}
+
+</style>
 </head>
 
 
@@ -83,93 +262,139 @@
       <div class="brand">
 
         <img
-          class="brand-logo"
-          src="assets/images/FraudShield_dashboard_logo.jpeg"
-          alt="FraudShield AI logo"
-        />
+        class="brand-logo full-dashboard-logo"
+        src="assets/images/FraudShieldAI_full_logo.png"
+        alt="FraudShield AI"
+      />
 
-        <h2>
-          FraudShield<span>AI</span>
-        </h2>
-
-      </div>
+     </div>
 
 
       <!-- Navigation -->
-
       <nav class="nav-menu">
 
-        <a
-          href="#/dashboard"
-          class="nav-item"
-          data-role="analyst,fraud_manager,admin,super_admin"
-        >
-          <span class="icon">📊</span>
-          Overview
-        </a>
+  <!-- Overview -->
+  <a
+    href="#/dashboard"
+    class="nav-item"
+    data-role="analyst,fraud_manager,admin,super_admin"
+  >
+    <span class="icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24">
+        <path d="M3 10.5 12 3l9 7.5"></path>
+        <path d="M5 9.5V21h14V9.5"></path>
+        <path d="M9 21v-6h6v6"></path>
+      </svg>
+    </span>
+    <span class="nav-label">Overview</span>
+  </a>
 
 
-        <a
-          href="#/transactions"
-          class="nav-item"
-          data-role="analyst,fraud_manager,admin,super_admin"
-        >
-          <span class="icon">⚡</span>
-          Transactions
-        </a>
+  <!-- Transactions -->
+  <a
+    href="#/transactions"
+    class="nav-item"
+    data-role="analyst,fraud_manager,admin,super_admin"
+  >
+    <span class="icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24">
+        <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+        <path d="M3 10h18"></path>
+        <path d="M7 15h4"></path>
+      </svg>
+    </span>
+    <span class="nav-label">Transactions</span>
+  </a>
 
 
-        <a
-          href="#/alerts"
-          class="nav-item"
-          data-role="analyst,fraud_manager,admin"
-        >
-          <span class="icon">🚨</span>
-          Alerts
-        </a>
+  <!-- Alerts -->
+  <a
+    href="#/alerts"
+    class="nav-item"
+    data-role="analyst,fraud_manager,admin"
+  >
+    <span class="icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 3 21 20H3L12 3Z"></path>
+        <path d="M12 9v5"></path>
+        <path d="M12 17h.01"></path>
+      </svg>
+    </span>
+    <span class="nav-label">Alerts</span>
+  </a>
 
 
-        <a
-          href="#/cases"
-          class="nav-item"
-          data-role="analyst,fraud_manager,admin"
-        >
-          <span class="icon">📁</span>
-          Fraud Cases
-        </a>
+  <!-- Fraud Cases -->
+  <a
+    href="#/cases"
+    class="nav-item"
+    data-role="analyst,fraud_manager,admin"
+  >
+    <span class="icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24">
+        <path d="M4 5h10l6 6v8H4V5Z"></path>
+        <path d="M14 5v6h6"></path>
+        <path d="M8 15h8"></path>
+        <path d="M8 18h5"></path>
+      </svg>
+    </span>
+    <span class="nav-label">Fraud Cases</span>
+  </a>
 
 
-        <a
-          href="#/models"
-          class="nav-item"
-          data-role="fraud_manager,admin"
-        >
-          <span class="icon">🧠</span>
-          ML Models
-        </a>
+  <!-- ML Models -->
+  <a
+    href="#/models"
+    class="nav-item"
+    data-role="fraud_manager,admin"
+  >
+    <span class="icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24">
+        <path d="M4 19V5"></path>
+        <path d="M4 19h17"></path>
+        <path d="m6 15 4-5 3 3 5-7"></path>
+      </svg>
+    </span>
+    <span class="nav-label">ML Models</span>
+  </a>
 
 
-        <a
-          href="#/admin"
-          class="nav-item"
-          data-role="admin,super_admin"
-        >
-          <span class="icon">⚙️</span>
-          Administration
-        </a>
+  <!-- Administration -->
+  <a
+    href="#/admin"
+    class="nav-item"
+    data-role="admin,super_admin"
+  >
+    <span class="icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24">
+        <circle cx="9" cy="8" r="3"></circle>
+        <circle cx="17" cy="9" r="2.5"></circle>
+        <path d="M3 20c0-3.3 2.7-5 6-5s6 1.7 6 5"></path>
+        <path d="M14 15c2.8-.2 5 1.4 5 4"></path>
+      </svg>
+    </span>
+    <span class="nav-label">Administration</span>
+  </a>
 
 
-        <a
-          href="#/requests"
-          class="nav-item"
-          data-role="admin,super_admin"
-        >
-          <span class="icon">📋</span>
-          Requests
-        </a>
+  <!-- Requests -->
+  <a
+    href="#/requests"
+    class="nav-item"
+    data-role="admin,super_admin"
+  >
+    <span class="icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24">
+        <rect x="4" y="3" width="16" height="18" rx="2"></rect>
+        <path d="M8 8h8"></path>
+        <path d="M8 12h8"></path>
+        <path d="M8 16h5"></path>
+      </svg>
+    </span>
+    <span class="nav-label">Requests</span>
+  </a>
 
-      </nav>
-
+</nav>
 
       <!-- ===================================================
            USER PROFILE
