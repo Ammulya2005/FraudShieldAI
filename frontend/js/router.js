@@ -25,7 +25,7 @@ const routes = {
   '/dashboard': {
     render: renderDashboard,
     init: initDashboardEvents,
-    roles: ['analyst', 'fraud_manager', 'admin', 'super_admin']
+    roles: ['user', 'analyst', 'fraud_manager', 'admin', 'super_admin']
   },
   '/transactions': {
     render: renderTransactions,
