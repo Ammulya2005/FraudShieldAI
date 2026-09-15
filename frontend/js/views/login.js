@@ -1211,7 +1211,7 @@ export function renderLogin() {
             <div class="login-feature">
 
               <div class="feature-icon">
-                ⚡
+                <img src="assets/images/real_time_monitoring.png" alt="Real-Time Monitoring" />
               </div>
 
               <div>
@@ -1232,7 +1232,7 @@ export function renderLogin() {
             <div class="login-feature">
 
               <div class="feature-icon">
-                🧠
+                <img src="assets/images/Risk_scoring.png" alt="AI Risk Scoring" />
               </div>
 
               <div>
@@ -1253,7 +1253,7 @@ export function renderLogin() {
             <div class="login-feature">
 
               <div class="feature-icon">
-                🚨
+                <img src="assets/images/active-fraud-alerts.png" alt="Instant Fraud Alerts" />
               </div>
 
               <div>
@@ -1318,7 +1318,7 @@ export function renderLogin() {
 
 
             <div class="login-welcome-icon">
-              🔐
+              <img src="assets/images/welcome_login.png" alt="Welcome" />
             </div>
 
 
