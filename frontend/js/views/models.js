@@ -779,33 +779,43 @@ function renderMLMonitoringChart(
 
   }
 
+  // Recreate the chart if the page created a new canvas
+if (
+  mlMonitoringChart &&
+  mlMonitoringChart.canvas !== canvas
+) {
+  mlMonitoringChart.destroy();
+  mlMonitoringChart = null;
+}
 
-  if (mlMonitoringChart) {
 
-    mlMonitoringChart.data.labels =
-      history.labels;
+if (mlMonitoringChart) {
 
-    mlMonitoringChart.data.datasets[0].data =
-      history.transactions;
+  mlMonitoringChart.data.labels =
+    history.labels;
 
-    mlMonitoringChart.data.datasets[1].data =
-      history.fraud;
+  mlMonitoringChart.data.datasets[0].data =
+    history.transactions;
 
-    mlMonitoringChart.data.datasets[2].data =
-      history.anomalies;
+  mlMonitoringChart.data.datasets[1].data =
+    history.fraud;
 
-    mlMonitoringChart.update('none');
+  mlMonitoringChart.data.datasets[2].data =
+    history.anomalies;
 
-    return;
+  mlMonitoringChart.update('none');
 
-  }
+  return;
+
+}
+ 
 
 
   mlMonitoringChart =
     new Chart(
       canvas,
       {
-        type: 'line',
+        type: 'bar',
 
         data: {
 
@@ -813,61 +823,46 @@ function renderMLMonitoringChart(
 
           datasets: [
 
-            {
-              label: 'Transactions',
-              data: history.transactions,
+  {
+    label: 'Transactions',
+    data: history.transactions,
 
-              borderColor: '#d6a83a',
-              backgroundColor: 'transparent',
+    backgroundColor: '#d6a83a',
+    borderColor: '#d6a83a',
+    borderWidth: 1,
 
-              pointBackgroundColor: '#d6a83a',
-              pointBorderColor: '#d6a83a',
+    borderRadius: 4,
+    barPercentage: 0.75,
+    categoryPercentage: 0.7
+  },
 
-              pointRadius: 3,
-              pointHoverRadius: 5,
+  {
+    label: 'Fraud',
+    data: history.fraud,
 
-              tension: 0.28,
-              borderWidth: 2
-            },
+    backgroundColor: '#ef4444',
+    borderColor: '#ef4444',
+    borderWidth: 1,
 
+    borderRadius: 4,
+    barPercentage: 0.75,
+    categoryPercentage: 0.7
+  },
 
-            {
-              label: 'Fraud',
-              data: history.fraud,
+  {
+    label: 'Anomalies',
+    data: history.anomalies,
 
-              borderColor: '#ef4444',
-              backgroundColor: 'transparent',
+    backgroundColor: '#f59e0b',
+    borderColor: '#f59e0b',
+    borderWidth: 1,
 
-              pointBackgroundColor: '#ef4444',
-              pointBorderColor: '#ef4444',
+    borderRadius: 4,
+    barPercentage: 0.75,
+    categoryPercentage: 0.7
+  }
 
-              pointRadius: 3,
-              pointHoverRadius: 5,
-
-              tension: 0.28,
-              borderWidth: 2
-            },
-
-
-            {
-              label: 'Anomalies',
-              data: history.anomalies,
-
-              borderColor: '#f59e0b',
-              backgroundColor: 'transparent',
-
-              pointBackgroundColor: '#f59e0b',
-              pointBorderColor: '#f59e0b',
-
-              pointRadius: 3,
-              pointHoverRadius: 5,
-
-              tension: 0.28,
-              borderWidth: 2
-            }
-
-          ]
-
+]
         },
 
 

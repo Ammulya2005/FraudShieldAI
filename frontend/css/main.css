@@ -4841,7 +4841,6 @@ html[data-theme="dark"] .sidebar .nav-item {
 
     position: relative !important;
 
-    display: flex !important;
     align-items: center !important;
 
     background: transparent !important;
@@ -6031,4 +6030,19 @@ html[data-theme="light"] .sidebar .nav-menu .nav-item.active .nav-label {
 html[data-theme="light"] .sidebar .nav-menu .nav-item.active svg {
     color: #d5a63a !important;
     stroke: #d5a63a !important;
+}
+
+/* ============================================================
+   LIVE MODEL ACTIVITY - CHART SIZE
+   ============================================================ */
+
+.models-page .ml-activity-chart {
+    height: 360px !important;
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    .models-page .ml-activity-chart {
+        height: 240px !important;
+    }
 }

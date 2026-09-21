@@ -2,18 +2,19 @@ from backend.database.mongodb import db
 
 USER_ROLE_COLLECTION = "user_roles"
 
+async def assign_role(user_id: str, role_name: str):
+    existing_role = await db[USER_ROLE_COLLECTION].find_one({
+        "user_id": user_id,
+        "role_name": role_name
+    })
 
-async def assign_role(
-    user_id: str,
-    role_name: str
-):
+    if existing_role:
+        return existing_role
 
-    return await db[USER_ROLE_COLLECTION].insert_one(
-        {
-            "user_id": user_id,
-            "role_name": role_name
-        }
-    )
+    return await db[USER_ROLE_COLLECTION].insert_one({
+        "user_id": user_id,
+        "role_name": role_name
+    })
 
 
 # async def get_user_roles(user_id: str) -> list:

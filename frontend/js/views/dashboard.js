@@ -50,7 +50,11 @@ let riskData = [
   0,
   0
 ];
-
+let previousStreamMetrics = {
+    total: null,
+    fraud: null,
+    blocked: null
+};
 
 // ============================================================
 // DASHBOARD HTML
@@ -1409,46 +1413,75 @@ function updateCharts(
     );
 
 
-  // ==========================================================
-  // TOTAL TRANSACTIONS
-  // ==========================================================
+ // =========================================================
+// RAW STREAM VALUES
+// =========================================================
 
-  const totalValue =
-
+const rawTotal =
   Number(
-    summary?.total_transactions ?? 0
+    summary?.total_transactions ??
+    streamMetrics?.total_ingested ??
+    streamMetrics?.processed_count ??
+    0
+  );
+
+const rawFraud =
+  Number(
+    summary?.total_fraud_transactions ??
+    streamMetrics?.fraud_detected ??
+    streamMetrics?.fraud_count ??
+    0
+  );
+
+const rawBlocked =
+  Number(
+    streamMetrics?.blocked ??
+    streamMetrics?.blocked_count ??
+    streamMetrics?.transactions_blocked ??
+    streamMetrics?.alerts_count ??
+    0
   );
 
 
-  // ==========================================================
-  // FRAUD DETECTED
-  // ==========================================================
+// =========================================================
+// CALCULATE VALUES SINCE LAST REFRESH
+// =========================================================
 
-  const fraudValue =
+let totalValue = 0;
+let fraudValue = 0;
+let blockedValue = 0;
 
-  Number(
-    summary?.total_fraud_transactions ?? 0
-  );
+if (previousStreamMetrics.total !== null) {
+  totalValue =
+    rawTotal >= previousStreamMetrics.total
+      ? rawTotal - previousStreamMetrics.total
+      : rawTotal;
+}
 
-  // ==========================================================
-  // BLOCKED
-  //
-  // Use a real blocked field when the backend provides one.
-  // ==========================================================
+if (previousStreamMetrics.fraud !== null) {
+  fraudValue =
+    rawFraud >= previousStreamMetrics.fraud
+      ? rawFraud - previousStreamMetrics.fraud
+      : rawFraud;
+}
 
-  const blockedValue =
+if (previousStreamMetrics.blocked !== null) {
+  blockedValue =
+    rawBlocked >= previousStreamMetrics.blocked
+      ? rawBlocked - previousStreamMetrics.blocked
+      : rawBlocked;
+}
 
-    Number(
 
-      streamMetrics?.blocked ??
+// =========================================================
+// SAVE CURRENT VALUES FOR NEXT REFRESH
+// =========================================================
 
-      streamMetrics?.blocked_count ??
-
-      streamMetrics?.transactions_blocked ??
-
-      0
-
-    );
+previousStreamMetrics = {
+  total: rawTotal,
+  fraud: rawFraud,
+  blocked: rawBlocked
+};
 
 
   // ==========================================================
