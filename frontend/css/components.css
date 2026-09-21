@@ -1503,8 +1503,55 @@
 }
 
 
+/* =========================================================
+   LOGIN FEATURE ICONS
+   Normalize all feature images
+   ========================================================= */
+
 .feature-icon {
+    width: 38px;
+    height: 38px;
+
+    min-width: 38px;
+    min-height: 38px;
+
+    flex: 0 0 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    border-radius: 8px;
+
     font-size: 1rem;
+}
+
+
+.feature-icon img {
+    width: 30px !important;
+    height: 30px !important;
+
+    min-width: 30px !important;
+    min-height: 30px !important;
+
+    max-width: 30px !important;
+    max-height: 30px !important;
+
+    display: block;
+
+    object-fit: contain;
+    object-position: center;
+
+    margin: 0;
+    padding: 0;
+
+    border: 0;
+
+    border-radius: 0;
+
+    box-shadow: none;
 }
 
 
@@ -1691,28 +1738,70 @@
 }
 
 
+
+
+/* =========================================================
+   LOGIN WELCOME ICON
+   ========================================================= */
+
 .login-welcome-icon {
     width: 42px;
     height: 42px;
 
-    flex-shrink: 0;
+    min-width: 42px;
+    min-height: 42px;
+
+    flex: 0 0 42px;
 
     display: flex;
-
     align-items: center;
-
     justify-content: center;
+
+    padding: 6px;
+
+    box-sizing: border-box;
+
+    overflow: hidden;
 
     border-radius: 10px;
 
     background:
-        rgba(var(--gold-rgb), 0.1);
+        rgba(var(--gold-rgb), 0.10);
 
     border:
         1px solid
         rgba(var(--gold-rgb), 0.25);
 
     font-size: 1.15rem;
+}
+
+
+/* =========================================================
+   WELCOME IMAGE
+   ========================================================= */
+
+.login-welcome-icon img {
+    width: 30px !important;
+    height: 30px !important;
+
+    min-width: 30px !important;
+    min-height: 30px !important;
+
+    max-width: 30px !important;
+    max-height: 30px !important;
+
+    display: block;
+
+    object-fit: contain;
+    object-position: center;
+
+    margin: 0;
+    padding: 0;
+
+    border: 0;
+    border-radius: 0;
+
+    box-shadow: none;
 }
 
 
@@ -4071,4 +4160,487 @@
 
 .home-nav-links {
     flex-shrink: 0;
+}
+
+/* =========================================================
+   FRAUDSHIELD AI — LOGIN VISUAL BALANCE
+   Feature images + welcome image
+   ========================================================= */
+
+/* ---------------------------------------------------------
+   FEATURE SECTION
+   --------------------------------------------------------- */
+
+.login-features {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 0.75rem;
+
+    margin-top: 1rem;
+
+    align-items: stretch;
+}
+
+
+/* ---------------------------------------------------------
+   FEATURE CARD
+   --------------------------------------------------------- */
+
+.login-feature {
+    min-width: 0;
+    min-height: 82px;
+
+    display: grid;
+
+    grid-template-columns:
+        50px minmax(0, 1fr);
+
+    align-items: center;
+
+    gap: 0.65rem;
+
+    padding:
+        0.72rem
+        0.78rem;
+
+    box-sizing: border-box;
+
+    overflow: hidden;
+
+    border:
+        1px solid
+        var(--border-light);
+
+    border-radius: 10px;
+
+    background:
+        rgba(255, 255, 255, 0.025);
+
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.login-feature:hover {
+
+    transform:
+        translateY(-2px);
+
+    border-color:
+        rgba(
+            var(--gold-rgb),
+            0.45
+        );
+
+    box-shadow:
+        0 8px 24px
+        rgba(0, 0, 0, 0.16);
+}
+
+
+/* ---------------------------------------------------------
+   IMAGE CONTAINER
+   All three images get exactly the same visual frame.
+   --------------------------------------------------------- */
+
+.feature-icon {
+
+    width: 50px;
+    height: 50px;
+
+    min-width: 50px;
+    min-height: 50px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    box-sizing: border-box;
+
+    overflow: hidden;
+
+    border-radius: 11px;
+
+    border:
+        1px solid
+        rgba(
+            var(--gold-rgb),
+            0.22
+        );
+
+    background:
+        radial-gradient(
+            circle at 50% 45%,
+            rgba(
+                var(--gold-rgb),
+                0.14
+            ),
+            transparent 68%
+        ),
+        rgba(
+            0,
+            0,
+            0,
+            0.30
+        );
+
+    box-shadow:
+        inset 0 0 18px
+        rgba(
+            var(--gold-rgb),
+            0.06
+        );
+
+    flex-shrink: 0;
+}
+
+
+/* ---------------------------------------------------------
+   ACTUAL IMAGE
+   IMPORTANT:
+   The image itself is constrained, not just its parent.
+   --------------------------------------------------------- */
+
+.feature-image {
+
+    display: block;
+
+    width: 38px;
+    height: 38px;
+
+    min-width: 38px;
+    min-height: 38px;
+
+    max-width: 38px;
+    max-height: 38px;
+
+    object-fit: contain;
+
+    object-position: center;
+
+    margin: 0;
+    padding: 0;
+
+    border: 0;
+
+    border-radius: 7px;
+
+    box-shadow: none;
+}
+
+
+/* ---------------------------------------------------------
+   OPTICAL SIZE CORRECTIONS
+   The source images have different internal proportions.
+   --------------------------------------------------------- */
+
+/* Real-time monitoring */
+.feature-icon--monitoring .feature-image {
+
+    width: 36px;
+    height: 36px;
+
+    min-width: 36px;
+    min-height: 36px;
+
+    max-width: 36px;
+    max-height: 36px;
+}
+
+
+/* AI risk scoring */
+.feature-icon--risk .feature-image {
+
+    width: 38px;
+    height: 38px;
+
+    min-width: 38px;
+    min-height: 38px;
+
+    max-width: 38px;
+    max-height: 38px;
+}
+
+
+/* Instant fraud alerts
+   This source image has a much larger canvas,
+   therefore give its visible symbol slightly more room. */
+
+.feature-icon--alerts .feature-image {
+
+    width: 44px;
+    height: 40px;
+
+    min-width: 44px;
+    min-height: 40px;
+
+    max-width: 44px;
+    max-height: 40px;
+}
+
+
+/* ---------------------------------------------------------
+   TEXT SIDE
+   --------------------------------------------------------- */
+
+.login-feature > div:last-child {
+
+    min-width: 0;
+}
+
+
+.login-feature strong {
+
+    display: block;
+
+    margin:
+        0 0
+        0.18rem;
+
+    color:
+        var(--text-primary);
+
+    font-size:
+        0.72rem;
+
+    line-height:
+        1.2;
+
+    font-weight:
+        700;
+
+    white-space:
+        nowrap;
+
+    overflow:
+        hidden;
+
+    text-overflow:
+        ellipsis;
+}
+
+
+.login-feature span {
+
+    display: block;
+
+    color:
+        var(--text-muted);
+
+    font-size:
+        0.60rem;
+
+    line-height:
+        1.35;
+}
+
+
+/* =========================================================
+   WELCOME IMAGE
+   ========================================================= */
+
+.login-welcome-icon {
+
+    width: 46px;
+    height: 46px;
+
+    min-width: 46px;
+    min-height: 46px;
+
+    flex:
+        0 0 46px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 6px;
+
+    box-sizing: border-box;
+
+    overflow: hidden;
+
+    border-radius: 12px;
+
+    background:
+        radial-gradient(
+            circle at 50% 45%,
+            rgba(
+                var(--gold-rgb),
+                0.18
+            ),
+            transparent 68%
+        ),
+        rgba(
+            0,
+            0,
+            0,
+            0.25
+        );
+
+    border:
+        1px solid
+        rgba(
+            var(--gold-rgb),
+            0.28
+        );
+
+    box-shadow:
+        0 8px 22px
+        rgba(0, 0, 0, 0.16);
+}
+
+
+/* Actual welcome image */
+
+.login-welcome-icon .welcome-image {
+
+    display: block;
+
+    width: 32px;
+    height: 32px;
+
+    min-width: 32px;
+    min-height: 32px;
+
+    max-width: 32px;
+    max-height: 32px;
+
+    object-fit: contain;
+
+    object-position: center;
+
+    margin: 0;
+    padding: 0;
+
+    border: 0;
+
+    border-radius: 7px;
+
+    box-shadow: none;
+}
+
+
+/* ---------------------------------------------------------
+   DARK MODE IMAGE BLENDING
+   Helps black image backgrounds merge into the dashboard.
+   --------------------------------------------------------- */
+
+[data-theme="dark"] .feature-image,
+[data-theme="dark"] .welcome-image {
+
+    mix-blend-mode:
+        screen;
+}
+
+
+/* ---------------------------------------------------------
+   LIGHT MODE
+   --------------------------------------------------------- */
+
+[data-theme="light"] .feature-icon,
+[data-theme="light"] .login-welcome-icon {
+
+    background:
+        radial-gradient(
+            circle at 50% 45%,
+            rgba(
+                var(--gold-rgb),
+                0.12
+            ),
+            transparent 68%
+        ),
+        rgba(
+            255,
+            255,
+            255,
+            0.72
+        );
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 1100px) {
+
+    .login-features {
+
+        grid-template-columns:
+            1fr;
+    }
+
+
+    .login-feature {
+
+        min-height:
+            76px;
+
+        grid-template-columns:
+            50px
+            minmax(0, 1fr);
+    }
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 560px) {
+
+    .login-feature {
+
+        min-height:
+            70px;
+
+        padding:
+            0.65rem
+            0.7rem;
+    }
+
+
+    .feature-icon {
+
+        width: 44px;
+        height: 44px;
+
+        min-width: 44px;
+        min-height: 44px;
+    }
+
+
+    .feature-image {
+
+        width: 34px;
+        height: 34px;
+
+        min-width: 34px;
+        min-height: 34px;
+
+        max-width: 34px;
+        max-height: 34px;
+    }
+
+
+    .feature-icon--alerts
+    .feature-image {
+
+        width: 39px;
+        height: 36px;
+
+        min-width: 39px;
+        min-height: 36px;
+
+        max-width: 39px;
+        max-height: 36px;
+    }
 }

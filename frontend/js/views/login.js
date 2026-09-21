@@ -1207,13 +1207,14 @@ export function renderLogin() {
 
           <div class="login-features">
 
+           <div class="login-feature">
 
-            <div class="login-feature">
-
-              <div class="feature-icon">
-                <img src="assets/images/real_time_monitoring.png" alt="Real-Time Monitoring" />
-              </div>
-
+              <div class="feature-icon feature-icon--monitoring">
+                <img src="assets/images/real_time_monitoring.png"
+                     alt="Real-Time Monitoring"
+                     class="feature-image"
+                />
+             </div>
               <div>
 
                 <strong>
@@ -1231,8 +1232,11 @@ export function renderLogin() {
 
             <div class="login-feature">
 
-              <div class="feature-icon">
-                <img src="assets/images/Risk_scoring.png" alt="AI Risk Scoring" />
+              <div class="feature-icon feature-icon--risk">
+                <img src="assets/images/Risk_scoring.png"
+                     alt="AI Risk Scoring"
+                     class="feature-image"
+                />
               </div>
 
               <div>
@@ -1252,8 +1256,11 @@ export function renderLogin() {
 
             <div class="login-feature">
 
-              <div class="feature-icon">
-                <img src="assets/images/active-fraud-alerts.png" alt="Instant Fraud Alerts" />
+             <div class="feature-icon feature-icon--alerts">
+                <img src="assets/images/active-fraud-alerts.png"
+                     alt="Instant Fraud Alerts"
+                     class="feature-image"
+                  />
               </div>
 
               <div>
@@ -1317,8 +1324,11 @@ export function renderLogin() {
           <div class="login-heading">
 
 
-            <div class="login-welcome-icon">
-              <img src="assets/images/welcome_login.png" alt="Welcome" />
+           <div class="login-welcome-icon">
+              <img src="assets/images/welcome_login.png"
+                   alt="Welcome"
+                   class="welcome-image"
+               />
             </div>
 
 
