@@ -8,6 +8,7 @@ from typing import Optional
 
 from fastapi import HTTPException
 from kafka import KafkaConsumer
+from kafka.structs import OffsetAndMetadata
 
 
 PROJECT_ROOT = os.path.abspath(
@@ -237,10 +238,13 @@ class FraudKafkaConsumer:
                             await asyncio.to_thread(
                                 self.consumer.commit,
                                 offsets={
-                                    topic_partition:
-                                    message.offset + 1
-                                }
-                            )
+                                topic_partition:
+                                OffsetAndMetadata(
+                                     message.offset + 1,
+                                          ""
+                               )
+                            }
+                        )
 
 
                             print(
@@ -274,14 +278,14 @@ class FraudKafkaConsumer:
 
                                 self.processed_count += 1
 
-
                                 await asyncio.to_thread(
-                                    self.consumer.commit,
-                                    offsets={
-                                        topic_partition:
-                                        message.offset + 1
-                                    }
-                                )
+                                  self.consumer.commit,
+                                  offsets={
+                                   topic_partition:
+                                   OffsetAndMetadata(message.offset + 1, "")
+                                  }
+                               )
+                                
 
                             else:
 
